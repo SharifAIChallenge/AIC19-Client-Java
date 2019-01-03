@@ -1,12 +1,13 @@
 package client.model;
 
-import java.util.ArrayList;
-
 public class Map
 {
     private Cell[][] cells;
-    private int rowNum,columnNum;
-    private Cell[] myRespawnZone,oppRespawnZone,mainZone;
+    private int rowNum;
+    private int columnNum;
+    private Cell[] myRespawnZone;
+    private Cell[] oppRespawnZone;
+    private Cell[] objectiveZone;
 
     public Cell getCell(int row,int column)
     {
@@ -63,13 +64,13 @@ public class Map
         this.oppRespawnZone = oppRespawnZone;
     }
 
-    public Cell[] getMainZone()
+    public Cell[] getObjectiveZone()
     {
-        return mainZone;
+        return objectiveZone;
     }
 
-    public void setMainZone(Cell[] mainZone)
+    public void setObjectiveZone(Cell[] objectiveZone)
     {
-        this.mainZone = mainZone;
+        this.objectiveZone = objectiveZone;
     }
 }

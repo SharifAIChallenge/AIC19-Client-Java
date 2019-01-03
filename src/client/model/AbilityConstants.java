@@ -2,17 +2,18 @@ package client.model;
 
 public class AbilityConstants
 {
-    private String name,type;
+    private AbilityName name;
+    private String type;
     private int range;
     private int APCost;
     private int cooldown;
 
-    public String getName()
+    public AbilityName getName()
     {
         return name;
     }
 
-    public void setName(String name)
+    public void setName(AbilityName name)
     {
         this.name = name;
     }

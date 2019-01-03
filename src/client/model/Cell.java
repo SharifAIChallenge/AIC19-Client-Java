@@ -2,9 +2,13 @@ package client.model;
 
 public class Cell
 {
-    private boolean isWall,isInMyRespawnZone,isInOppRespawnZone,isInMainZone;
+    private boolean isWall;
+    private boolean isInMyRespawnZone;
+    private boolean isInOppRespawnZone;
+    private boolean isInObjectiveZone;
     private boolean isInVision;
-    private int row,column;
+    private int row;
+    private int column;
 
     public boolean isWall()
     {
@@ -36,14 +40,14 @@ public class Cell
         isInOppRespawnZone = inOppRespawnZone;
     }
 
-    public boolean isInMainZone()
+    public boolean isInObjectiveZone()
     {
-        return isInMainZone;
+        return isInObjectiveZone;
     }
 
-    public void setInMainZone(boolean inMainZone)
+    public void setInObjectiveZone(boolean inObjectiveZone)
     {
-        isInMainZone = inMainZone;
+        isInObjectiveZone = inObjectiveZone;
     }
 
     public boolean isInVision()

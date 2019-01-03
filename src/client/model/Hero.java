@@ -9,9 +9,10 @@ public class Hero
     private HeroConstants heroConstants;
     private Ability[] abilities;
     private DodgeAbility[] dodgeAbilities;
-    private PowerAbility[] healAbilities,attackAbilities;
-    private int HP;
-    private Cell cell;
+    private PowerAbility[] healAbilities;
+    private PowerAbility[] attackAbilities;
+    private int currentHP;
+    private Cell currentCell;
     private Cell[] recentPath;
 
     @Override
@@ -93,24 +94,24 @@ public class Hero
         this.attackAbilities = attackAbilities;
     }
 
-    public int getHP()
+    public int getCurrentHP()
     {
-        return HP;
+        return currentHP;
     }
 
-    public void setHP(int HP)
+    public void setCurrentHP(int currentHP)
     {
-        this.HP = HP;
+        this.currentHP = currentHP;
     }
 
-    public Cell getCell()
+    public Cell getCurrentCell()
     {
-        return cell;
+        return currentCell;
     }
 
-    public void setCell(Cell cell)
+    public void setCurrentCell(Cell currentCell)
     {
-        this.cell = cell;
+        this.currentCell = currentCell;
     }
 
     public Cell[] getRecentPath()

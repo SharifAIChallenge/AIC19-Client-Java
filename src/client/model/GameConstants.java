@@ -1,8 +1,11 @@
 package client.model;
 
-public class Constants
+public class GameConstants
 {
-    private int respawnTime, timeout, maxAP, maxTurns;
+    private int respawnTime;
+    private int timeout;
+    private int maxAP;
+    private int maxTurns;
 
     public int getRespawnTime()
     {
