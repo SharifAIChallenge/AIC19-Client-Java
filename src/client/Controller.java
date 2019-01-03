@@ -15,7 +15,8 @@ import java.util.function.Consumer;
  * this class.
  * Please do not change this class.
  */
-public class Controller {
+public class Controller
+{
 
     // Logging tag
     private static final String TAG = "Controller";
@@ -53,7 +54,8 @@ public class Controller {
      * @param token      client token
      * @param retryDelay connection retry delay
      */
-    public Controller(String hostIP, int hostPort, String token, long retryDelay) {
+    public Controller(String hostIP, int hostPort, String token, long retryDelay)
+    {
         this.terminator = new Object();
         this.host = hostIP;
         this.port = hostPort;
@@ -64,21 +66,27 @@ public class Controller {
     /**
      * Starts a client by connecting to the server and sending a token.
      */
-    public void start() {
-        try {
+    public void start()
+    {
+        try
+        {
             network = new Network(this::handleMessage);
-            sender=network::send;
+            sender = network::send;
             ai = new AI();
+
             network.setConnectionData(host, port, token);
-            while (!network.isConnected()) {
+            while (!network.isConnected())
+            {
                 network.connect();
                 Thread.sleep(retryDelay);
             }
-            synchronized (terminator) {
+            synchronized (terminator)
+            {
                 terminator.wait();
             }
             network.terminate();
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             Log.e(TAG, "Can not start the client.", e);
             e.printStackTrace();
         }
@@ -90,18 +98,23 @@ public class Controller {
      *
      * @param msg incoming message
      */
-    private void handleMessage(Message msg) {
+    private void handleMessage(Message msg)
+    {
 
         Log.v(TAG, msg.name + " received.");
-        switch (msg.name) {
+        switch (msg.name)
+        {
+            case "init":
+                handleInitMessage(msg);
+                break;
             case "pick":
                 handlePickMessage(msg);
                 break;
-            case "turn":
-                handleTurnMessage(msg);
+            case "move":
+                handleMoveMessage(msg);
                 break;
-            case "init":
-                handleInitMessage(msg);
+            case "action":
+                handleActionMessage(msg);
                 break;
             case "shutdown":
                 handleShutdownMessage(msg);
@@ -118,48 +131,59 @@ public class Controller {
      *
      * @param msg init message
      */
-    private void handleInitMessage(Message msg) {
-        game=new Game(sender);
+    private void handleInitMessage(Message msg)
+    {
+        game = new Game(sender);
         game.handleInitMessage(msg);
 
     }
 
-    /**
-     * Handles turn message. Gives the message to the model and then executes
-     * client's code to do next turn.
-     *
-     * @param msg turn message
-     */
-    private void handleTurnMessage(Message msg)
+    private void handlePickMessage(Message msg)
     {
-     //   game.setCurrentTurn(game.getCurrentTurn() + 1);
-     //   event=new Event("end", new Object[]{game.getCurrentTurn()});
-        game=new Game(sender);
+        game = new Game(sender);
+        game.handlePickMessage(msg);
+    }
+
+    private void handleMoveMessage(Message msg)
+    {
+        game = new Game(sender);
         game.handleTurnMessage(msg);
 
         /* TODO */// log for debug
-        /* TODO */// handle moveTurn, actionTurn
+        /* TODO */// handle moveTurn
     }
 
-    private void handlePickMessage(Message msg)
+    private void handleActionMessage(Message msg)
     {
-        game=new Game(sender);
-        game.handlePickMessage(msg);
+        game = new Game(sender);
+        game.handleTurnMessage(msg);
+
+        /* TODO */// log for debug
+        /* TODO */// handle actionTurn
     }
+
 
     /**
      * Handles shutdown message.
      *
      * @param msg shutdown message
      */
-    private void handleShutdownMessage(Message msg) {
+    private void handleShutdownMessage(Message msg)
+    {
         network.terminate();
         System.exit(0);
     }
 
-    private void preProccess() //TODO
+    private void preProcess() //TODO
     {
-
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                ai.preProcess();
+            }
+        }).start();
     }
 
     private void pickTurn() //TODO
@@ -178,7 +202,8 @@ public class Controller {
     }
 
 
-    private void sendEndMsg(Event event){
+    private void sendEndMsg(Event event)
+    {
         sender.accept(new Message(Event.EVENT, event));
     }
 
