@@ -6,7 +6,7 @@ public class Cell
     private boolean isInMyRespawnZone;
     private boolean isInOppRespawnZone;
     private boolean isInObjectiveZone;
-    private boolean isInVision;
+    private boolean isInVision = true;
     private int row;
     private int column;
 

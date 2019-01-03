@@ -72,10 +72,11 @@ public class Game
         }
         return null;
     }
-    public Hero getMyHero(int cellRow,int cellColumn)
+
+    public Hero getMyHero(int cellRow, int cellColumn)
     {
-        if(!isInMap(cellRow,cellColumn))return null;
-        return getMyHero(map.getCell(cellRow,cellColumn));
+        if (!isInMap(cellRow, cellColumn)) return null;
+        return getMyHero(map.getCell(cellRow, cellColumn));
     }
 
     public Hero getOppHero(Cell cell)
@@ -87,75 +88,77 @@ public class Game
         }
         return null;
     }
-    public Hero getOppHero(int cellRow,int cellColumn)
-    {
-        if(!isInMap(cellRow,cellColumn))return null;
-        return getOppHero(map.getCell(cellRow,cellColumn));
-    }
 
-    public void castAbility(int heroId, AbilityName abilityName, Cell targetCell)
+    public Hero getOppHero(int cellRow, int cellColumn)
     {
-        /* TODO */
+        if (!isInMap(cellRow, cellColumn)) return null;
+        return getOppHero(map.getCell(cellRow, cellColumn));
     }
 
     public void castAbility(int heroId, AbilityName abilityName, int targetCellRow, int targetCellColumn)
     {
-        castAbility(heroId, abilityName, map.getCell(targetCellRow, targetCellColumn));
+        /* TODO */
+    }
+
+    public void castAbility(int heroId, AbilityName abilityName, Cell targetCell)
+    {
+        castAbility(heroId, abilityName, targetCell.getRow(), targetCell.getColumn());
     }
 
     public void castAbility(Hero hero, AbilityName abilityName, Cell targetCell)
     {
-        castAbility(hero.getId(), abilityName, targetCell);
+        castAbility(hero.getId(), abilityName, targetCell.getRow(), targetCell.getColumn());
     }
 
     public void castAbility(Hero hero, AbilityName abilityName, int targetCellRow, int targetCellColumn)
     {
-        castAbility(hero.getId(), abilityName, map.getCell(targetCellRow, targetCellColumn));
+        castAbility(hero.getId(), abilityName, targetCellRow, targetCellColumn);
     }
 
     public void castAbility(int heroId, Ability ability, Cell targetCell)
     {
-        castAbility(heroId, ability.getAbilityConstants().getName(),targetCell);
+        castAbility(heroId, ability.getAbilityConstants().getName(), targetCell.getRow(), targetCell.getColumn());
     }
 
     public void castAbility(int heroId, Ability ability, int targetCellRow, int targetCellColumn)
     {
-        castAbility(heroId, ability.getAbilityConstants().getName(), map.getCell(targetCellRow, targetCellColumn));
+        castAbility(heroId, ability.getAbilityConstants().getName(), targetCellRow, targetCellColumn);
     }
 
     public void castAbility(Hero hero, Ability ability, Cell targetCell)
     {
-        castAbility(hero.getId(), ability.getAbilityConstants().getName(), targetCell);
+        castAbility(hero.getId(), ability.getAbilityConstants().getName(), targetCell.getRow(), targetCell.getColumn());
     }
 
     public void castAbility(Hero hero, Ability ability, int targetCellRow, int targetCellColumn)
     {
-        castAbility(hero.getId(), ability.getAbilityConstants().getName(), map.getCell(targetCellRow, targetCellColumn));
+        castAbility(hero.getId(), ability.getAbilityConstants().getName(), targetCellRow, targetCellColumn);
     }
 
-    public void moveHero(int heroId, Direction direction)
+    public void moveHero(int heroId, Direction[] directions)
     {
         /* TODO */
     }
 
-    public void moveHero(Hero hero, Direction direction)
+    public void moveHero(Hero hero, Direction[] directions)
     {
-        moveHero(hero.getId(), direction);
+        moveHero(hero.getId(), directions);
     }
 
+    /* TODO */// moveHero direction
     public void pickHero(HeroName heroName)
     {
         /* TODO */
     }
 
-    private boolean isInMap(int cellRow,int cellColumn)
+    private boolean isInMap(int cellRow, int cellColumn)
     {
         return cellRow >= 0 && cellColumn >= 0 && cellRow < map.getRowNum() && cellColumn < map.getColumnNum();
     }
 
     public boolean isAccessible(int cellRow, int cellColumn)
     {
-        if (cellRow < 0 || cellColumn < 0 || cellRow >= map.getRowNum() || cellColumn >= map.getColumnNum())
+        if (!isInMap(cellRow, cellColumn))
             return false;
         return !map.getCell(cellRow, cellColumn).isWall();
     }
@@ -200,51 +203,36 @@ public class Game
         if (startCell == endCell) return new Direction[0];
         if (startCell.isWall() || endCell.isWall()) return null;
 
-        HashMap<Cell,Pair<Cell,Direction>> lastMoveInfo=new HashMap<>(); // saves parent cell and direction to go from parent cell to current cell
-        Cell[] bfsQueue=new Cell[map.getRowNum() * map.getColumnNum() + 10];
+        HashMap<Cell, Pair<Cell, Direction>> lastMoveInfo = new HashMap<>(); // saves parent cell and direction to go from parent cell to current cell
+        Cell[] bfsQueue = new Cell[map.getRowNum() * map.getColumnNum() + 10];
         int queueHead = 0, queueTail = 0;
 
-        lastMoveInfo.put(startCell,new Pair<Cell,Direction>(null,null));
+        lastMoveInfo.put(startCell, new Pair<Cell, Direction>(null, null));
         bfsQueue[queueTail++] = startCell;
 
         while (queueHead != queueTail)
         {
             Cell currentCell = bfsQueue[queueHead++];
-            if(currentCell==endCell)
+            if (currentCell == endCell)
             {
-                ArrayList<Direction> directions=new ArrayList<>();
-                while(currentCell!=startCell)
+                ArrayList<Direction> directions = new ArrayList<>();
+                while (currentCell != startCell)
                 {
                     directions.add(lastMoveInfo.get(currentCell).getSecond());
-                    currentCell=lastMoveInfo.get(currentCell).getFirst();
+                    currentCell = lastMoveInfo.get(currentCell).getFirst();
                 }
                 Collections.reverse(directions);
-                Direction[] directionsArray=new Direction[directions.size()];
+                Direction[] directionsArray = new Direction[directions.size()];
                 return directions.toArray(directionsArray);
             }
-            Cell upCell = getNextCell(currentCell, Direction.UP);
-            if (upCell != null && !lastMoveInfo.containsKey(upCell))
+            for (Direction direction : Direction.values())
             {
-                lastMoveInfo.put(upCell,new Pair<>(currentCell,Direction.UP));
-                bfsQueue[queueTail++]=upCell;
-            }
-            Cell downCell = getNextCell(currentCell, Direction.DOWN);
-            if (downCell != null && !lastMoveInfo.containsKey(downCell))
-            {
-                lastMoveInfo.put(downCell,new Pair<>(currentCell,Direction.DOWN));
-                bfsQueue[queueTail++]=downCell;
-            }
-            Cell leftCell = getNextCell(currentCell, Direction.LEFT);
-            if (leftCell != null && !lastMoveInfo.containsKey(leftCell))
-            {
-                lastMoveInfo.put(leftCell,new Pair<>(currentCell,Direction.LEFT));
-                bfsQueue[queueTail++]=leftCell;
-            }
-            Cell rightCell = getNextCell(currentCell, Direction.RIGHT);
-            if (rightCell != null && !lastMoveInfo.containsKey(rightCell))
-            {
-                lastMoveInfo.put(rightCell,new Pair<>(currentCell,Direction.RIGHT));
-                bfsQueue[queueTail++]=rightCell;
+                Cell nextCell = getNextCell(currentCell, direction);
+                if (nextCell != null && !lastMoveInfo.containsKey(nextCell))
+                {
+                    lastMoveInfo.put(nextCell, new Pair<>(currentCell, direction));
+                    bfsQueue[queueTail++] = nextCell;
+                }
             }
         }
         return null;
@@ -253,8 +241,20 @@ public class Game
 
     public Direction[] getPathMoveDirections(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn)
     {
-        if(!isInMap(startCellRow,startCellColumn) || !isInMap(endCellRow,endCellColumn))return null;
+        if (!isInMap(startCellRow, startCellColumn) || !isInMap(endCellRow, endCellColumn)) return null;
         return getPathMoveDirections(map.getCell(startCellRow, startCellColumn), map.getCell(endCellRow, endCellColumn));
+    }
+
+    public boolean isReachable(Cell startCell, Cell targetCell)
+    {
+        return getPathMoveDirections(startCell, targetCell) != null;
+    }
+
+    public boolean isReachable(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn)
+    {
+        if (!isInMap(startCellRow, startCellColumn) || !isInMap(endCellRow, endCellColumn))
+            return false;
+        return isReachable(map.getCell(startCellRow, startCellColumn), map.getCell(endCellRow, endCellColumn));
     }
 
     /* TODO */// Mahdavi Check
@@ -264,13 +264,103 @@ public class Game
      * If it hits a wall cell just in the corner, it would also stop too.
      *
      * @param startCell
-     * @param endCell
+     * @param targetCell
      * @return
      */
-    private Cell[] getRayCells(Cell startCell, Cell endCell)
+    private Cell[] getRayCells(Cell startCell, Cell targetCell)
     {
+        ArrayList<Cell> path = new ArrayList<>();
+        dfs(startCell, startCell, targetCell, new HashMap<>(), path);
+        Cell[] pathArray = new Cell[path.size()];
+        return path.toArray(pathArray);
+    }
 
-        return null;
+    private void dfs(Cell currentCell, Cell startCell, Cell targetCell, HashMap<Cell, Boolean> isSeen, ArrayList<Cell> path)
+    {
+        isSeen.put(currentCell, true);
+        path.add(currentCell);
+        for (Direction direction : Direction.values())
+        {
+            Cell nextCell = getNextCell(currentCell, direction);
+            if (nextCell != null && !isSeen.containsKey(nextCell))
+            {
+                int collisionState = squareCollision(startCell, targetCell, nextCell);
+
+                if ((collisionState == 0 || collisionState == 1) && nextCell.isWall())
+                    return;
+                if (collisionState == 1)
+                {
+                    dfs(nextCell, startCell, targetCell, isSeen, path);
+                    return;
+                }
+            }
+        }
+        for (int dRow = -1; dRow <= 1; dRow += 2)
+            for (int dColumn = -1; dColumn <= 1; dColumn += 2)
+            {
+                int newRow = currentCell.getRow() + dRow;
+                int newColumn = currentCell.getColumn() + dColumn;
+                if (!isInMap(newRow, newColumn)) continue;
+                Cell nextCell = map.getCell(newRow, newColumn);
+                if (!isSeen.containsKey(nextCell))
+                {
+                    int collisionState = squareCollision(startCell, targetCell, nextCell);
+
+                    if (collisionState == 1 && nextCell.isWall())
+                        return;
+                    if (collisionState == 1)
+                    {
+                        dfs(nextCell, startCell, targetCell, isSeen, path);
+                    }
+                }
+            }
+    }
+
+    /**
+     * Checks the state of collision between the start cell to target cell line and cell square.
+     * -1 -> doesn't pass through square at all
+     * 0 -> passes through just one corner
+     * 1 -> passes through the square
+     *
+     * @param startCell
+     * @param targetCell
+     * @param cell
+     * @return
+     */
+    private int squareCollision(Cell startCell, Cell targetCell, Cell cell)
+    {
+        boolean hasNegative = false, hasPositive = false, hasZero = false;
+        for (int row = 2 * cell.getRow(); row <= 2 * (cell.getRow() + 1); row += 2)
+            for (int column = 2 * cell.getColumn(); column <= 2 * (cell.getColumn() + 1); column += 2)
+            {
+                int crossProduct = crossProduct(2 * startCell.getRow() + 1, 2 * startCell.getColumn() + 1,
+                        2 * targetCell.getRow() + 1, 2 * targetCell.getColumn() + 1, row, column);
+                if (crossProduct < 0) hasNegative = true;
+                else if (crossProduct > 0) hasPositive = true;
+                else hasZero = true;
+            }
+        if (hasNegative && hasPositive) return 1;
+        if (hasZero) return 0;
+        return -1;
+    }
+
+    /**
+     * This method calculates the cross product.
+     * negative return value -> point1-point2 line is on the left side of point1-point3 line
+     * zero return value -> the three points lie on the same line
+     * positive return value -> point1-point2 line is on the right side of point1-point3 line
+     *
+     * @param x1
+     * @param y1
+     * @param x2
+     * @param y2
+     * @param x3
+     * @param y3
+     * @return
+     */
+    private int crossProduct(int x1, int y1, int x2, int y2, int x3, int y3)
+    {
+        return (x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1);
     }
 
     public int manhattanDistance(Cell startCell, Cell endCell)
@@ -278,43 +368,65 @@ public class Game
         return Math.abs(startCell.getRow() - endCell.getRow()) + Math.abs(startCell.getColumn() - endCell.getColumn());
     }
 
-    public int manhattanDistance(int startCellRow,int startCellColumn,int endCellRow,int endCellColumn)
+    public int manhattanDistance(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn)
     {
-        if(!isInMap(startCellRow,startCellColumn) || !isInMap(endCellRow,endCellColumn))return -1;
-        return manhattanDistance(map.getCell(startCellRow,startCellColumn),map.getCell(endCellRow,endCellColumn));
+        if (!isInMap(startCellRow, startCellColumn) || !isInMap(endCellRow, endCellColumn)) return -1;
+        return manhattanDistance(map.getCell(startCellRow, startCellColumn), map.getCell(endCellRow, endCellColumn));
     }
 
     /**
      * If start cell is a wall we would return it as the impact point.
      *
-     * @param ability
+     * @param abilityName
      * @param startCell
      * @param targetCell
      * @return
      */
-    public Cell getImpactCell(Ability ability, Cell startCell, Cell targetCell)/* TODO */// add abilityName
+    public Cell getImpactCell(AbilityName abilityName, Cell startCell, Cell targetCell)/* TODO */// add abilityName
     {
         if (startCell.isWall())
             return startCell;
         if (startCell == targetCell)
             return startCell;
+
+        AbilityConstants currentAbilityConstants = null;
+        for (AbilityConstants abilityConstants : this.abilityConstants) /* TODO */// naming is shit
+        {
+            if (abilityConstants.getName() == abilityName)
+            {
+                currentAbilityConstants = abilityConstants;
+                break;
+            }
+        }
+
         Cell[] rayCells = getRayCells(startCell, targetCell);
         Cell lastValidCell = null; // would not remain null cause range is not zero
         for (Cell cell : rayCells)
         {
             if (getOppHero(cell) != null)
                 return cell;
-            if (manhattanDistance(startCell, cell) > ability.getAbilityConstants().getRange())
+            if (manhattanDistance(startCell, cell) > currentAbilityConstants.getRange())
                 return lastValidCell;
             lastValidCell = cell;
         }
         return lastValidCell;
     }
 
-    public Cell getImpactCell(Ability ability,int startCellRow,int startCellColumn,int endCellRow,int endCellColumn)
+    public Cell getImpactCell(AbilityName abilityName, int startCellRow, int startCellColumn, int endCellRow, int endCellColumn)
     {
-        if(!isInMap(startCellRow,startCellColumn) || !isInMap(endCellRow,endCellColumn))return null;
-        return getImpactCell(ability,map.getCell(startCellRow,startCellColumn),map.getCell(endCellRow,endCellColumn));
+        if (!isInMap(startCellRow, startCellColumn) || !isInMap(endCellRow, endCellColumn)) return null;
+        return getImpactCell(abilityName, map.getCell(startCellRow, startCellColumn), map.getCell(endCellRow, endCellColumn));
+    }
+
+    public Cell getImpactCell(Ability ability, Cell startCell, Cell targetCell)
+    {
+        return getImpactCell(ability.abilityConstants.getName(), startCell, targetCell);
+    }
+
+    public Cell getImpactCell(Ability ability, int startCellRow, int startCellColumn, int endCellRow, int endCellColumn)
+    {
+        if (!isInMap(startCellRow, startCellColumn) || !isInMap(endCellRow, endCellColumn)) return null;
+        return getImpactCell(ability.abilityConstants.getName(), map.getCell(startCellRow, startCellColumn), map.getCell(endCellRow, endCellColumn));
     }
 
     public boolean isInVision(Cell startCell, Cell endCell)
@@ -329,7 +441,7 @@ public class Game
 
     public boolean isInVision(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn)
     {
-        if(!isInMap(startCellRow,startCellColumn) || !isInMap(endCellRow,endCellColumn))return false;
+        if (!isInMap(startCellRow, startCellColumn) || !isInMap(endCellRow, endCellColumn)) return false;
         return isInVision(map.getCell(startCellRow, startCellColumn), map.getCell(endCellRow, endCellColumn));
     }
 
