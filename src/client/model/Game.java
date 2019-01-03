@@ -50,6 +50,42 @@ public class Game
         return null;
     }
 
+    public Hero getMyHero(Cell cell)
+    {
+        for(Hero hero:myHeroes)
+        {
+            if(hero.getCell()==cell)
+                return hero;
+        }
+        return null;
+    }
+
+    public Hero getOppHero(Cell cell)
+    {
+        for(Hero hero:oppHeroes)
+        {
+            if(hero.getCell()==cell)
+                return hero;
+        }
+        return null;
+    }
+
+    private Cell[] getRayCells(Cell startCell,Cell endCell)
+    {
+        return null;
+    }
+
+    public boolean isInVision(Cell startCell,Cell endCell)
+    {
+        return true;
+    }
+
+
+    public boolean isInVision(int startCellRow,int startCellColumn,int endCellRow,int endCellColumn)
+    {
+        return isInVision(map.getCell(startCellRow,startCellColumn),map.getCell(endCellRow,endCellColumn));
+    }
+
     public Hero[] getMyHeroes()
     {
         return myHeroes;

@@ -1,6 +1,8 @@
 package client.model;
 
 
+import java.util.Objects;
+
 public class Hero
 {
     private int id;
@@ -11,6 +13,25 @@ public class Hero
     private int HP;
     private Cell cell;
     private Cell[] recentPath;
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if(this==obj)
+            return true;
+        if(obj==null)
+            return false;
+        if(getClass()!=obj.getClass())
+            return false;
+        Hero hero=(Hero)obj;
+        return Objects.equals(id,hero.id);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return id;
+    }
 
     public int getId()
     {
