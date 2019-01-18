@@ -5,6 +5,15 @@ import common.network.Json;
 
 public class Test {
     public static void main(String[] args) {
+
+    }
+
+    private static void jsonTest2() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("rowNum", Json.GSON.toJsonTree(10));
+        jsonObject.add("columnNum",Json.GSON.toJsonTree(10));
+        Map map = Json.GSON.fromJson(jsonObject,Map.class);
+        System.out.println(Json.GSON.toJson(map));
     }
 
     private static void jsonTest() {

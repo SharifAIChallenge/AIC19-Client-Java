@@ -12,6 +12,7 @@ import java.util.function.Consumer;
 
 public class Game {
     private Map map;
+
     public static GameConstants GAME_CONSTANTS;
     public static HeroConstants[] HERO_CONSTANTS;
     public static AbilityConstants[] ABILITY_CONSTANTS;
@@ -21,12 +22,14 @@ public class Game {
     private Hero[] myDeadHeroes;
     private Hero[] oppDeadHeroes;
 
-    private Cell[] brokenWalls;
-    private Cell[] createdWalls;
+    private CastAbility[] castAbilities;
 
     private int AP;
-    private int score;
+    private int myScore;
+    private int oppScore;
+    private int currentTurn;
 
+    private String currentPhase;
 
     public Game(Consumer<Message> sender) {
 
@@ -58,17 +61,28 @@ public class Game {
         InitJson initJson = Json.GSON.fromJson(msg.args.get(0).getAsJsonObject(), InitJson.class);
         GAME_CONSTANTS = initJson.getGameConstants();
         map = initJson.getMap();
+        map.calculateZones();
         HERO_CONSTANTS = initJson.getHeroes();
         ABILITY_CONSTANTS = initJson.getAbilities();
     }
 
     public void handleTurnMessage(Message msg) {
+        JsonObject jsonRoot = msg.args.get(0).getAsJsonObject();
+        myScore = jsonRoot.get("myScore").getAsInt();
+        oppScore = jsonRoot.get("oppScore").getAsInt();
+        currentTurn = jsonRoot.get("currentTurn").getAsInt();
+        currentPhase = jsonRoot.get("currentPhase").getAsString();
+        AP = jsonRoot.get("AP").getAsInt();
+        Map map = Json.GSON.fromJson(jsonRoot.get("Map").getAsJsonObject(),Map.class);
+        this.map.setCells(map.getCells());
+        castAbilities = Json.GSON.fromJson(jsonRoot.get("castAbilities").getAsJsonObject(),CastAbility[].class);
+        //TODO myHeroes and oppHeroes
     }
 
     public void handlePickMessage(Message msg) {
-        JsonObject rootJson = msg.args.get(0).getAsJsonObject();
-        this.myHeroes = parseHeroes(rootJson, "myHeroes");
-        this.oppHeroes = parseHeroes(rootJson, "oppHeroes");
+        JsonObject jsonRoot = msg.args.get(0).getAsJsonObject();
+        myHeroes = parseHeroes(jsonRoot, "myHeroes");
+        oppHeroes = parseHeroes(jsonRoot, "oppHeroes");
     }
 
     private Hero[] parseHeroes(JsonObject rootJson, String owner) {
@@ -493,20 +507,12 @@ public class Game {
         this.map = map;
     }
 
-    public Cell[] getBrokenWalls() {
-        return brokenWalls;
+    public CastAbility[] getCastAbilities() {
+        return castAbilities;
     }
 
-    public void setBrokenWalls(Cell[] brokenWalls) {
-        this.brokenWalls = brokenWalls;
-    }
-
-    public Cell[] getCreatedWalls() {
-        return createdWalls;
-    }
-
-    public void setCreatedWalls(Cell[] createdWalls) {
-        this.createdWalls = createdWalls;
+    public void setCastAbilities(CastAbility[] castAbilities) {
+        this.castAbilities = castAbilities;
     }
 
     public int getAP() {
@@ -517,11 +523,35 @@ public class Game {
         this.AP = AP;
     }
 
-    public int getScore() {
-        return score;
+    public int getMyScore() {
+        return myScore;
     }
 
-    public void setScore(int score) {
-        this.score = score;
+    public void setMyScore(int myScore) {
+        this.myScore = myScore;
+    }
+
+    public int getOppScore() {
+        return oppScore;
+    }
+
+    public void setOppScore(int oppScore) {
+        this.oppScore = oppScore;
+    }
+
+    public int getCurrentTurn() {
+        return currentTurn;
+    }
+
+    public void setCurrentTurn(int currentTurn) {
+        this.currentTurn = currentTurn;
+    }
+
+    public String getCurrentPhase() {
+        return currentPhase;
+    }
+
+    public void setCurrentPhase(String currentPhase) {
+        this.currentPhase = currentPhase;
     }
 }
