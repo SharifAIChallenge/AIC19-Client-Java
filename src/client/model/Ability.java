@@ -1,28 +1,28 @@
 package client.model;
 
-public abstract class Ability
-{
+public class Ability {
 
     AbilityConstants abilityConstants;
     private int remCooldown;
 
-    public AbilityConstants getAbilityConstants()
-    {
+    Ability(AbilityConstants abilityConstants) {
+        this.abilityConstants = abilityConstants;
+        this.remCooldown = 0;
+    }
+
+    public AbilityConstants getAbilityConstants() {
         return abilityConstants;
     }
 
-    public void setAbilityConstants(AbilityConstants abilityConstants)
-    {
+    public void setAbilityConstants(AbilityConstants abilityConstants) {
         this.abilityConstants = abilityConstants;
     }
 
-    public int getRemCooldown()
-    {
+    public int getRemCooldown() {
         return remCooldown;
     }
 
-    public void setRemCooldown(int remCooldown)
-    {
+    public void setRemCooldown(int remCooldown) {
         this.remCooldown = remCooldown;
     }
 }

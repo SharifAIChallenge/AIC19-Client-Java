@@ -1,7 +1,7 @@
 package client.model;
 
 
-import java.util.Objects;
+import java.util.ArrayList;
 
 public class Hero {
     private int id;
@@ -14,6 +14,36 @@ public class Hero {
     private Cell currentCell;
     private Cell[] recentPath;
 
+    Hero(HeroName heroName, int id) {
+        this.id = id;
+        HeroConstants heroConstants = Game.getHeroConstants(heroName);
+        this.heroConstants = heroConstants;
+        ArrayList<Ability> abilities = new ArrayList<>();
+        ArrayList<Ability> dodgeAbilities = new ArrayList<>();
+        ArrayList<Ability> healAbilities = new ArrayList<>();
+        ArrayList<Ability> attackAbilities = new ArrayList<>();
+        for (AbilityName abilityName : heroConstants.getAbilityNames()) {
+            Ability ability = new Ability(Game.getAbilityConstants(abilityName));
+            abilities.add(ability);
+            switch (ability.getAbilityConstants().getType()) {
+                case HEAL:
+                    healAbilities.add(ability);
+                    break;
+                case DODGE:
+                    dodgeAbilities.add(ability);
+                    break;
+                case ATTACK:
+                    attackAbilities.add(ability);
+                    break;
+            }
+        }
+        this.abilities = abilities.toArray(new Ability[0]);
+        this.dodgeAbilities = dodgeAbilities.toArray(new Ability[0]);
+        this.healAbilities = healAbilities.toArray(new Ability[0]);
+        this.attackAbilities = attackAbilities.toArray(new Ability[0]);
+        currentHP = heroConstants.getMaxHP();
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -23,7 +53,7 @@ public class Hero {
         if (getClass() != obj.getClass())
             return false;
         Hero hero = (Hero) obj;
-        return Objects.equals(id, hero.id);
+        return id == hero.id;
     }
 
     @Override

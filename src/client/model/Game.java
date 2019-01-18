@@ -1,5 +1,8 @@
 package client.model;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import common.network.Json;
 import common.network.data.Message;
 
 import java.util.ArrayList;
@@ -9,9 +12,9 @@ import java.util.function.Consumer;
 
 public class Game {
     private Map map;
-    private GameConstants gameConstants;
-    private AbilityConstants[] abilityConstants;
-    private HeroConstants[] heroConstants;
+    public static GameConstants GAME_CONSTANTS;
+    public static HeroConstants[] HERO_CONSTANTS;
+    public static AbilityConstants[] ABILITY_CONSTANTS;
 
     private Hero[] myHeroes;
     private Hero[] oppHeroes;
@@ -33,18 +36,50 @@ public class Game {
         //TODO
     }
 
-    public void handleInitMessage(Message msg) {
-        /* TODO */// get objects from msg.args.get(0).getAsJsonObject()
-
+    static AbilityConstants getAbilityConstants(AbilityName abilityName) {
+        for (AbilityConstants abilityConstants : ABILITY_CONSTANTS) {
+            if (abilityConstants.getName() == abilityName) {
+                return abilityConstants;
+            }
+        }
+        return null;
     }
 
+    public static HeroConstants getHeroConstants(HeroName heroName) {
+        for (HeroConstants heroConstants : HERO_CONSTANTS) {
+            if (heroConstants.getName() == heroName) {
+                return heroConstants;
+            }
+        }
+        return null;
+    }
+
+    public void handleInitMessage(Message msg) {
+        InitJson initJson = Json.GSON.fromJson(msg.args.get(0).getAsJsonObject(), InitJson.class);
+        GAME_CONSTANTS = initJson.getGameConstants();
+        map = initJson.getMap();
+        HERO_CONSTANTS = initJson.getHeroes();
+        ABILITY_CONSTANTS = initJson.getAbilities();
+    }
 
     public void handleTurnMessage(Message msg) {
-
     }
 
     public void handlePickMessage(Message msg) {
+        JsonObject rootJson = msg.args.get(0).getAsJsonObject();
+        this.myHeroes = parseHeroes(rootJson, "myHeroes");
+        this.oppHeroes = parseHeroes(rootJson, "oppHeroes");
+    }
 
+    private Hero[] parseHeroes(JsonObject rootJson, String owner) {
+        ArrayList<Hero> heroes = new ArrayList<>();
+        JsonArray heroesJson = rootJson.getAsJsonArray(owner);
+        for (int i = 0; i < heroesJson.size(); i++) {
+            int id = heroesJson.get(i).getAsJsonObject().get("id").getAsInt();
+            HeroName heroName = HeroName.valueOf(heroesJson.get(i).getAsJsonObject().get("type").getAsString());
+            heroes.add(new Hero(heroName, id));
+        }
+        return heroes.toArray(new Hero[0]);
     }
 
     public Hero getHero(int id) {
@@ -124,8 +159,8 @@ public class Game {
     public void moveHero(Hero hero, Direction[] directions) {
         moveHero(hero.getId(), directions);
     }
-
     /* TODO */// moveHero direction
+
     public void pickHero(HeroName heroName) {
         /* TODO */
     }
@@ -339,8 +374,8 @@ public class Game {
      */
     public Cell getImpactCell(AbilityName abilityName, Cell startCell, Cell targetCell)/* TODO */// add abilityName
     {
-        Cell[] impactCells = getImpactCells(abilityName,startCell,targetCell);
-        return impactCells[impactCells.length-1];
+        Cell[] impactCells = getImpactCells(abilityName, startCell, targetCell);
+        return impactCells[impactCells.length - 1];
     }
 
     private Cell[] getImpactCells(AbilityName abilityName, Cell startCell, Cell targetCell) {
@@ -368,18 +403,6 @@ public class Game {
                 || ((getMyHero(lastCell) != null && abilityConstants.getType().equals(AbilityType.HEAL)))))
             impactCells.add(lastCell);
         return impactCells.toArray(new Cell[0]);
-    }
-
-    private AbilityConstants getAbilityConstants(AbilityName abilityName) {
-        AbilityConstants currentAbilityConstants = null;
-        for (AbilityConstants abilityConstants : this.abilityConstants) /* TODO */// naming is shit
-        {
-            if (abilityConstants.getName() == abilityName) {
-                currentAbilityConstants = abilityConstants;
-                break;
-            }
-        }
-        return currentAbilityConstants;
     }
 
     public Cell getImpactCell(AbilityName abilityName, int startCellRow, int startCellColumn, int endCellRow, int endCellColumn) {
@@ -425,7 +448,6 @@ public class Game {
         return lastCell == endCell;
     }
 
-
     public boolean isInVision(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn) {
         if (!isInMap(startCellRow, startCellColumn) || !isInMap(endCellRow, endCellColumn)) return false;
         return isInVision(map.getCell(startCellRow, startCellColumn), map.getCell(endCellRow, endCellColumn));
@@ -469,30 +491,6 @@ public class Game {
 
     public void setMap(Map map) {
         this.map = map;
-    }
-
-    public GameConstants getGameConstants() {
-        return gameConstants;
-    }
-
-    public void setGameConstants(GameConstants gameConstants) {
-        this.gameConstants = gameConstants;
-    }
-
-    public AbilityConstants[] getAbilityConstants() {
-        return abilityConstants;
-    }
-
-    public void setAbilityConstants(AbilityConstants[] abilityConstants) {
-        this.abilityConstants = abilityConstants;
-    }
-
-    public HeroConstants[] getHeroConstants() {
-        return heroConstants;
-    }
-
-    public void setHeroConstants(HeroConstants[] heroConstants) {
-        this.heroConstants = heroConstants;
     }
 
     public Cell[] getBrokenWalls() {
