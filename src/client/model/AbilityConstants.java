@@ -2,14 +2,14 @@ package client.model;
 
 public class AbilityConstants {
     private AbilityName name;
-    private String type;
+    private AbilityType type;
     private int range;
     private int APCost;
     private int cooldown;
     private int areaOfEffect;
     private int power;
     private boolean isLobbing;
-    private boolean piercing;
+    private boolean isPiercing;
 
     public AbilityName getName() {
         return name;
@@ -19,11 +19,11 @@ public class AbilityConstants {
         this.name = name;
     }
 
-    public String getType() {
+    public AbilityType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(AbilityType type) {
         this.type = type;
     }
 
@@ -77,10 +77,10 @@ public class AbilityConstants {
     }
 
     public boolean isPiercing() {
-        return piercing;
+        return isPiercing;
     }
 
     public void setPiercing(boolean piercing) {
-        this.piercing = piercing;
+        this.isPiercing = piercing;
     }
 }
