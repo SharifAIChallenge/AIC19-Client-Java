@@ -192,22 +192,22 @@ public class Game {
     private Cell getNextCell(Cell cell, Direction direction) {
         switch (direction) {
             case UP:
-                if (isAccessible(cell.getRow() - 1, cell.getColumn()))
+                if (isInMap(cell.getRow() - 1, cell.getColumn()))
                     return map.getCell(cell.getRow() - 1, cell.getColumn());
                 else
                     return null;
             case DOWN:
-                if (isAccessible(cell.getRow() + 1, cell.getColumn()))
+                if (isInMap(cell.getRow() + 1, cell.getColumn()))
                     return map.getCell(cell.getRow() + 1, cell.getColumn());
                 else
                     return null;
             case LEFT:
-                if (isAccessible(cell.getRow(), cell.getColumn() - 1))
+                if (isInMap(cell.getRow(), cell.getColumn() - 1))
                     return map.getCell(cell.getRow(), cell.getColumn() - 1);
                 else
                     return null;
             case RIGHT:
-                if (isAccessible(cell.getRow(), cell.getColumn() + 1))
+                if (isInMap(cell.getRow(), cell.getColumn() + 1))
                     return map.getCell(cell.getRow(), cell.getColumn() + 1);
                 else
                     return null;
