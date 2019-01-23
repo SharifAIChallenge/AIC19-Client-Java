@@ -5,18 +5,14 @@ import com.google.gson.JsonObject;
 import common.network.Json;
 import common.network.data.Message;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class Game {
-    private Map map;
-
     public static GameConstants GAME_CONSTANTS;
     public static HeroConstants[] HERO_CONSTANTS;
     public static AbilityConstants[] ABILITY_CONSTANTS;
-
+    private Map map;
     private Hero[] myHeroes;
     private Hero[] oppHeroes;
     private Hero[] myDeadHeroes;
@@ -73,9 +69,9 @@ public class Game {
         currentTurn = jsonRoot.get("currentTurn").getAsInt();
         currentPhase = jsonRoot.get("currentPhase").getAsString();
         AP = jsonRoot.get("AP").getAsInt();
-        Map map = Json.GSON.fromJson(jsonRoot.get("Map").getAsJsonObject(),Map.class);
+        Map map = Json.GSON.fromJson(jsonRoot.get("Map").getAsJsonObject(), Map.class);
         this.map.setCells(map.getCells());
-        castAbilities = Json.GSON.fromJson(jsonRoot.get("castAbilities").getAsJsonObject(),CastAbility[].class);
+        castAbilities = Json.GSON.fromJson(jsonRoot.get("castAbilities").getAsJsonObject(), CastAbility[].class);
         //TODO myHeroes and oppHeroes
     }
 
@@ -378,6 +374,32 @@ public class Game {
         return manhattanDistance(map.getCell(startCellRow, startCellColumn), map.getCell(endCellRow, endCellColumn));
     }
 
+    private Cell[] getImpactCells(AbilityName abilityName, Cell startCell, Cell targetCell) {
+        AbilityConstants abilityConstants = getAbilityConstants(abilityName);
+        if (abilityConstants.isLobbing()) {
+            return new Cell[]{targetCell};
+        }
+        if (startCell.isWall() || startCell == targetCell) {
+            return new Cell[]{startCell};
+        }
+        ArrayList<Cell> impactCells = new ArrayList<>();
+        Cell[] rayCells = getRayCells(startCell, targetCell);
+        Cell lastCell = null;
+        for (Cell cell : rayCells) {
+            if (manhattanDistance(startCell, cell) > abilityConstants.getRange())
+                break;
+            lastCell = cell;
+            if (cell != startCell && ((getOppHero(cell) != null && !abilityConstants.getType().equals(AbilityType.HEAL))
+                    || ((getMyHero(cell) != null && abilityConstants.getType().equals(AbilityType.HEAL))))) {
+                impactCells.add(cell);
+                if (!abilityConstants.isPiercing()) break;
+            }
+        }
+        if (!impactCells.contains(lastCell))
+            impactCells.add(lastCell);
+        return impactCells.toArray(new Cell[0]);
+    }
+
     /**
      * If start cell is a wall we would return it as the impact point.
      *
@@ -390,33 +412,6 @@ public class Game {
     {
         Cell[] impactCells = getImpactCells(abilityName, startCell, targetCell);
         return impactCells[impactCells.length - 1];
-    }
-
-    private Cell[] getImpactCells(AbilityName abilityName, Cell startCell, Cell targetCell) {
-        AbilityConstants abilityConstants = getAbilityConstants(abilityName);
-        if (startCell.isWall() || startCell == targetCell) {
-            return new Cell[]{startCell};
-        }
-        if (abilityConstants.isLobbing()) {
-            return new Cell[]{targetCell};
-        }
-        ArrayList<Cell> impactCells = new ArrayList<>();
-        Cell[] rayCells = getRayCells(startCell, targetCell);
-        Cell lastCell = null; // would not remain null cause range is not zero
-        for (Cell cell : rayCells) {
-            if (manhattanDistance(startCell, cell) > abilityConstants.getRange())
-                break;
-            lastCell = cell;
-            if (cell != startCell && ((getOppHero(cell) != null && !abilityConstants.getType().equals(AbilityType.HEAL))
-                    || ((getMyHero(cell) != null && abilityConstants.getType().equals(AbilityType.HEAL))))) {
-                impactCells.add(cell);
-                if (!abilityConstants.isPiercing()) break;
-            }
-        }
-        if (lastCell == startCell || ((getOppHero(lastCell) == null && !abilityConstants.getType().equals(AbilityType.HEAL))
-                || ((getMyHero(lastCell) != null && abilityConstants.getType().equals(AbilityType.HEAL)))))
-            impactCells.add(lastCell);
-        return impactCells.toArray(new Cell[0]);
     }
 
     public Cell getImpactCell(AbilityName abilityName, int startCellRow, int startCellColumn, int endCellRow, int endCellColumn) {
@@ -435,24 +430,53 @@ public class Game {
 
     public Hero[] getAbilityTargets(AbilityName abilityName, Cell startCell, Cell targetCell) {
         AbilityConstants abilityConstants = getAbilityConstants(abilityName);
-        ArrayList<Hero> targets = new ArrayList<>();
         Cell[] impactCells = getImpactCells(abilityName, startCell, targetCell);
-        for (Cell cell : impactCells) targets.addAll(getHeroesInAOE(cell, abilityConstants.getAreaOfEffect()));
-        return targets.toArray(new Hero[0]);
+        Set<Cell> affectedCells = new HashSet<>();
+        for (Cell cell : impactCells) {
+            affectedCells.addAll(getCellsInAOE(cell, abilityConstants.getAreaOfEffect()));
+        }
+        if (abilityConstants.getType() == AbilityType.HEAL) {
+            return getMyHeroesInCells(affectedCells.toArray(new Cell[0]));
+        } else {
+            return getOppHeroesInCells(affectedCells.toArray(new Cell[0]));
+        }
     }
 
-    private ArrayList<Hero> getHeroesInAOE(Cell impactCell, int AOE) {
-        ArrayList<Hero> targets = new ArrayList<>();
+    private ArrayList<Cell> getCellsInAOE(Cell impactCell, int AOE) {
+        ArrayList<Cell> cells = new ArrayList<>();
         for (int row = impactCell.getRow() - AOE; row <= impactCell.getRow() + AOE; row++) {
             for (int col = impactCell.getColumn() - AOE; col <= impactCell.getColumn() + AOE; col++) {
-                if (isInMap(row, col)) continue;
+                if (!isInMap(row, col)) continue;
                 Cell cell = map.getCell(row, col);
-                if (manhattanDistance(impactCell, cell) <= AOE && getOppHero(cell) != null)
-                    targets.add(getOppHero(cell));
+                if (manhattanDistance(impactCell, cell) <= AOE)
+                    cells.add(cell);
             }
         }
-        return targets;
+        return cells;
     }
+
+    private Hero[] getOppHeroesInCells(Cell[] cells) {
+        ArrayList<Hero> heroes = new ArrayList<>();
+        for (Cell cell : cells) {
+            Hero hero = getOppHero(cell);
+            if (hero != null) {
+                heroes.add(hero);
+            }
+        }
+        return heroes.toArray(new Hero[0]);
+    }
+
+    private Hero[] getMyHeroesInCells(Cell[] cells) {
+        ArrayList<Hero> heroes = new ArrayList<>();
+        for (Cell cell : cells) {
+            Hero hero = getMyHero(cell);
+            if (hero != null) {
+                heroes.add(hero);
+            }
+        }
+        return heroes.toArray(new Hero[0]);
+    }
+
 
     public boolean isInVision(Cell startCell, Cell endCell) {
         if (startCell.isWall() || endCell.isWall())
