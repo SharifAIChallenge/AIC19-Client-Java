@@ -170,8 +170,8 @@ public class Game {
     }
 
     public void castAbility(int heroId, AbilityName abilityName, int targetCellRow, int targetCellColumn) {
-        Event event = new Event("c",new Object[]{heroId,abilityName.toString(),targetCellRow,targetCellColumn});
-        sender.accept(new Message(Event.EVENT,event));
+        Event event = new Event("c", new Object[]{heroId, abilityName.toString(), targetCellRow, targetCellColumn});
+        sender.accept(new Message(Event.EVENT, event));
     }
 
     public void castAbility(int heroId, AbilityName abilityName, Cell targetCell) {
@@ -207,8 +207,8 @@ public class Game {
         for (int i = 0; i < directions.length; i++) {
             directionStrings[i] = directions[i].toString();
         }
-        Event event = new Event("m",new Object[]{heroId,directionStrings});
-        sender.accept(new Message(Event.EVENT,event));
+        Event event = new Event("m", new Object[]{heroId, directionStrings});
+        sender.accept(new Message(Event.EVENT, event));
     }
 
     public void moveHero(Hero hero, Direction[] directions) {
@@ -433,8 +433,8 @@ public class Game {
             if (manhattanDistance(startCell, cell) > abilityConstants.getRange())
                 break;
             lastCell = cell;
-            if (cell != startCell && ((getOppHero(cell) != null && !abilityConstants.getType().equals(AbilityType.HEAL))
-                    || ((getMyHero(cell) != null && abilityConstants.getType().equals(AbilityType.HEAL))))) {
+            if ((getOppHero(cell) != null && !abilityConstants.getType().equals(AbilityType.HEAL))
+                    || ((getMyHero(cell) != null && abilityConstants.getType().equals(AbilityType.HEAL)))) {
                 impactCells.add(cell);
                 if (!abilityConstants.isPiercing()) break;
             }
