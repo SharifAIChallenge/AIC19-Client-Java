@@ -11,6 +11,7 @@ public class Hero {
     private Ability[] healAbilities;
     private Ability[] attackAbilities;
     private int currentHP;
+    private int respawnTime;
     private Cell currentCell;
     private Cell[] recentPath;
 
@@ -131,5 +132,45 @@ public class Hero {
 
     public void setRecentPath(Cell[] recentPath) {
         this.recentPath = recentPath;
+    }
+
+    public HeroName getName() {
+        return heroConstants.getName();
+    }
+
+    public void setName(HeroName name) {
+        heroConstants.setName(name);
+    }
+
+    public AbilityName[] getAbilityNames() {
+        return heroConstants.getAbilityNames();
+    }
+
+    public void setAbilityNames(AbilityName[] abilityNames) {
+        heroConstants.setAbilityNames(abilityNames);
+    }
+
+    public int getMaxHP() {
+        return heroConstants.getMaxHP();
+    }
+
+    public void setMaxHP(int maxHP) {
+        heroConstants.setMaxHP(maxHP);
+    }
+
+    public int getMoveAPCost() {
+        return heroConstants.getMoveAPCost();
+    }
+
+    public void setMoveAPCost(int moveAPCost) {
+        heroConstants.setMoveAPCost(moveAPCost);
+    }
+
+    public int getRespawnTime() {
+        return respawnTime;
+    }
+
+    public void setRespawnTime(int respawnTime) {
+        this.respawnTime = respawnTime;
     }
 }

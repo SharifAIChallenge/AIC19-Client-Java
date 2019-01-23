@@ -2,6 +2,7 @@ package client.model;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import common.model.Event;
 import common.network.Json;
 import common.network.data.Message;
 
@@ -26,9 +27,10 @@ public class Game {
     private int currentTurn;
 
     private String currentPhase;
+    private Consumer<Message> sender;
 
     public Game(Consumer<Message> sender) {
-
+        this.sender = sender;
     }
 
     public Game(Game game) {
@@ -69,10 +71,47 @@ public class Game {
         currentTurn = jsonRoot.get("currentTurn").getAsInt();
         currentPhase = jsonRoot.get("currentPhase").getAsString();
         AP = jsonRoot.get("AP").getAsInt();
-        Map map = Json.GSON.fromJson(jsonRoot.get("Map").getAsJsonObject(), Map.class);
-        this.map.setCells(map.getCells());
+        Map mapJson = Json.GSON.fromJson(jsonRoot.get("Map").getAsJsonObject(), Map.class);
+        this.map.setCells(mapJson.getCells());
         castAbilities = Json.GSON.fromJson(jsonRoot.get("castAbilities").getAsJsonObject(), CastAbility[].class);
-        //TODO myHeroes and oppHeroes
+        JsonArray myHeroesJson = jsonRoot.getAsJsonArray("myHeroes");
+        ArrayList<Hero> myHeroes = getHeroesFromJson(myHeroesJson);
+        this.myHeroes = myHeroes.toArray(new Hero[0]);
+        JsonArray oppHeroesJson = jsonRoot.getAsJsonArray("oppHeroes");
+        ArrayList<Hero> oppHeroes = getHeroesFromJson(oppHeroesJson);
+        this.oppHeroes = oppHeroes.toArray(new Hero[0]);
+        //TODO oppHeroes and oppHeroes
+    }
+
+    private ArrayList<Hero> getHeroesFromJson(JsonArray heroesJson) {
+        ArrayList<Hero> heroes = new ArrayList<>();
+        for (int i = 0; i < heroesJson.size(); i++) {
+            JsonObject heroJson = heroesJson.get(i).getAsJsonObject();
+            int id = heroJson.get("id").getAsInt();
+            HeroName name = HeroName.valueOf(heroJson.get("type").getAsString());
+            int currentHP = heroJson.get("currentHP").getAsInt();
+            int respawnTime = heroJson.get("respawnTime").getAsInt();
+            JsonObject currentCellJson = heroJson.get("currentCell").getAsJsonObject();
+            int row = currentCellJson.get("row").getAsInt();
+            int column = currentCellJson.get("column").getAsInt();
+            Cell currentCell = map.getCell(row, column);
+            JsonArray recentPathJson = heroJson.get("recentPath").getAsJsonArray();
+            ArrayList<Cell> recentCells = new ArrayList<>();
+            for (int j = 0; j < recentPathJson.size(); j++) {
+                JsonObject recentCellJson = heroJson.get("currentCell").getAsJsonObject();
+                int recentRow = recentCellJson.get("row").getAsInt();
+                int recentColumn = recentCellJson.get("column").getAsInt();
+                Cell recentCell = map.getCell(recentRow, recentColumn);
+                recentCells.add(recentCell);
+            }
+            Hero hero = new Hero(name, id);
+            hero.setCurrentHP(currentHP);
+            hero.setCurrentCell(currentCell);
+            hero.setRespawnTime(respawnTime);
+            hero.setRecentPath(recentCells.toArray(new Cell[0]));
+            heroes.add(hero);
+        }
+        return heroes;
     }
 
     public void handlePickMessage(Message msg) {
@@ -131,7 +170,8 @@ public class Game {
     }
 
     public void castAbility(int heroId, AbilityName abilityName, int targetCellRow, int targetCellColumn) {
-        /* TODO */
+        Event event = new Event("c",new Object[]{heroId,abilityName.toString(),targetCellRow,targetCellColumn});
+        sender.accept(new Message(Event.EVENT,event));
     }
 
     public void castAbility(int heroId, AbilityName abilityName, Cell targetCell) {
@@ -163,7 +203,12 @@ public class Game {
     }
 
     public void moveHero(int heroId, Direction[] directions) {
-        /* TODO */
+        String[] directionStrings = new String[directions.length];
+        for (int i = 0; i < directions.length; i++) {
+            directionStrings[i] = directions[i].toString();
+        }
+        Event event = new Event("m",new Object[]{heroId,directionStrings});
+        sender.accept(new Message(Event.EVENT,event));
     }
 
     public void moveHero(Hero hero, Direction[] directions) {
@@ -172,7 +217,8 @@ public class Game {
     /* TODO */// moveHero direction
 
     public void pickHero(HeroName heroName) {
-        /* TODO */
+        Event event = new Event("p", new Object[]{heroName.toString()});
+        sender.accept(new Message(Event.EVENT, event));
     }
 
     private boolean isInMap(int cellRow, int cellColumn) {
@@ -238,8 +284,7 @@ public class Game {
                     currentCell = lastMoveInfo.get(currentCell).getFirst();
                 }
                 Collections.reverse(directions);
-                Direction[] directionsArray = new Direction[directions.size()];
-                return directions.toArray(directionsArray);
+                return directions.toArray(new Direction[0]);
             }
             for (Direction direction : Direction.values()) {
                 Cell nextCell = getNextCell(currentCell, direction);
@@ -281,8 +326,7 @@ public class Game {
     private Cell[] getRayCells(Cell startCell, Cell targetCell) {
         ArrayList<Cell> path = new ArrayList<>();
         dfs(startCell, startCell, targetCell, new HashMap<>(), path);
-        Cell[] pathArray = new Cell[path.size()];
-        return path.toArray(pathArray);
+        return path.toArray(new Cell[0]);
     }
 
     private void dfs(Cell currentCell, Cell startCell, Cell targetCell, HashMap<Cell, Boolean> isSeen, ArrayList<Cell> path) {
@@ -577,5 +621,37 @@ public class Game {
 
     public void setCurrentPhase(String currentPhase) {
         this.currentPhase = currentPhase;
+    }
+
+    public int getRespawnTime() {
+        return GAME_CONSTANTS.getRespawnTime();
+    }
+
+    public void setRespawnTime(int respawnTime) {
+        GAME_CONSTANTS.setRespawnTime(respawnTime);
+    }
+
+    public int getTimeout() {
+        return GAME_CONSTANTS.getTimeout();
+    }
+
+    public void setTimeout(int timeout) {
+        GAME_CONSTANTS.setTimeout(timeout);
+    }
+
+    public int getMaxAP() {
+        return GAME_CONSTANTS.getMaxAP();
+    }
+
+    public void setMaxAP(int maxAP) {
+        GAME_CONSTANTS.setMaxAP(maxAP);
+    }
+
+    public int getMaxTurns() {
+        return GAME_CONSTANTS.getMaxTurns();
+    }
+
+    public void setMaxTurns(int maxTurns) {
+        GAME_CONSTANTS.setMaxTurns(maxTurns);
     }
 }
