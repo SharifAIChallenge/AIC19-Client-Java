@@ -62,6 +62,18 @@ public class Hero {
         return id;
     }
 
+    public Ability getAbility(AbilityName abilityName)
+    {
+        for(Ability ability:abilities)
+        {
+            if(ability.getName()==abilityName)
+            {
+                return ability;
+            }
+        }
+        return null;
+    }
+
     public int getId() {
         return id;
     }
