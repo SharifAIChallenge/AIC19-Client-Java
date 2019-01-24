@@ -15,17 +15,13 @@ public class Hero {
     private Cell currentCell;
     private Cell[] recentPath;
 
-    Hero(HeroName heroName, int id) {
+    Hero(HeroConstants heroConstants, int id, ArrayList<Ability> abilities) {
         this.id = id;
-        HeroConstants heroConstants = Game.getHeroConstants(heroName);
         this.heroConstants = heroConstants;
-        ArrayList<Ability> abilities = new ArrayList<>();
         ArrayList<Ability> dodgeAbilities = new ArrayList<>();
         ArrayList<Ability> healAbilities = new ArrayList<>();
         ArrayList<Ability> attackAbilities = new ArrayList<>();
-        for (AbilityName abilityName : heroConstants.getAbilityNames()) {
-            Ability ability = new Ability(Game.getAbilityConstants(abilityName));
-            abilities.add(ability);
+        for (Ability ability : abilities) {
             switch (ability.getAbilityConstants().getType()) {
                 case HEAL:
                     healAbilities.add(ability);

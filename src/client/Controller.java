@@ -1,6 +1,7 @@
 package client;
 
 import client.model.Game;
+import client.model.Phase;
 import common.model.Event;
 import common.network.data.Message;
 import common.util.Log;
@@ -72,6 +73,7 @@ public class Controller
         {
             network = new Network(this::handleMessage);
             sender = network::send;
+            game = new Game(sender);
             ai = new AI();
 
             network.setConnectionData(host, port, token);
@@ -110,11 +112,8 @@ public class Controller
             case "pick":
                 handlePickMessage(msg);
                 break;
-            case "move":
-                handleMoveMessage(msg);
-                break;
-            case "action":
-                handleActionMessage(msg);
+            case "turn":
+                handleTurnMessage(msg);
                 break;
             case "shutdown":
                 handleShutdownMessage(msg);
@@ -133,35 +132,36 @@ public class Controller
      */
     private void handleInitMessage(Message msg)
     {
-        game = new Game(sender);
+        game = new Game(game);
         game.handleInitMessage(msg);
-
+        event=new Event("end", new Object[]{0});
+        preProcess();
+        pickTurn();
     }
 
     private void handlePickMessage(Message msg)
     {
-        game = new Game(sender);
+        game = new Game(game);
         game.handlePickMessage(msg);
+        event=new Event("end", new Object[]{game.getCurrentTurn()});
+        pickTurn();
     }
 
-    private void handleMoveMessage(Message msg)
+    private void handleTurnMessage(Message msg)
     {
-        game = new Game(sender);
+        game = new Game(game);
         game.handleTurnMessage(msg);
-
+        event=new Event("end", new Object[]{game.getCurrentTurn()});
+        if (game.getCurrentPhase() == Phase.MOVE)
+        {
+            moveTurn();
+        } else
+        {
+            actionTurn();
+        }
         /* TODO */// log for debug
         /* TODO */// handle moveTurn
     }
-
-    private void handleActionMessage(Message msg)
-    {
-        game = new Game(sender);
-        game.handleTurnMessage(msg);
-
-        /* TODO */// log for debug
-        /* TODO */// handle actionTurn
-    }
-
 
     /**
      * Handles shutdown message.
@@ -174,31 +174,36 @@ public class Controller
         System.exit(0);
     }
 
-    private void preProcess() //TODO
+    private void preProcess()
     {
-        new Thread(new Runnable()
+        new Thread(() -> ai.preProcess()).start();
+    }
+
+    private void pickTurn()
+    {
+        new Thread(() ->
         {
-            @Override
-            public void run()
-            {
-                ai.preProcess();
-            }
+            ai.pickTurn();
+            sendEndMsg(event);
         }).start();
     }
 
-    private void pickTurn() //TODO
+    private void moveTurn()
     {
-
+        new Thread(() ->
+        {
+            ai.moveTurn();
+            sendEndMsg(event);
+        }).start();
     }
 
-    private void moveTurn() //TODO
+    private void actionTurn()
     {
-
-    }
-
-    private void actionTurn() //TODO
-    {
-
+        new Thread(() ->
+        {
+            ai.actionTurn();
+            sendEndMsg(event);
+        }).start();
     }
 
 

@@ -11,9 +11,9 @@ import java.util.function.Consumer;
 
 public class Game
 {
-    public static GameConstants GAME_CONSTANTS;
-    public static HeroConstants[] HERO_CONSTANTS;
-    public static AbilityConstants[] ABILITY_CONSTANTS;
+    private GameConstants gameConstants;
+    private HeroConstants[] heroConstants;
+    private AbilityConstants[] abilityConstants;
     private Map map;
     private Hero[] myHeroes;
     private Hero[] oppHeroes;
@@ -27,7 +27,7 @@ public class Game
     private int oppScore;
     private int currentTurn;
 
-    private String currentPhase;
+    private Phase currentPhase;
     private Consumer<Message> sender;
 
     public Game(Consumer<Message> sender)
@@ -37,12 +37,16 @@ public class Game
 
     public Game(Game game)
     {
-        //TODO
+        gameConstants=game.gameConstants;
+        heroConstants=game.heroConstants;
+        abilityConstants=game.abilityConstants;
+        map=game.map;
+        sender=game.sender;
     }
 
-    static AbilityConstants getAbilityConstants(AbilityName abilityName)
+    private AbilityConstants getAbilityConstants(AbilityName abilityName)
     {
-        for (AbilityConstants abilityConstants : ABILITY_CONSTANTS)
+        for (AbilityConstants abilityConstants : abilityConstants)
         {
             if (abilityConstants.getName() == abilityName)
             {
@@ -52,9 +56,9 @@ public class Game
         return null;
     }
 
-    public static HeroConstants getHeroConstants(HeroName heroName)
+    private HeroConstants getHeroConstants(HeroName heroName)
     {
-        for (HeroConstants heroConstants : HERO_CONSTANTS)
+        for (HeroConstants heroConstants : heroConstants)
         {
             if (heroConstants.getName() == heroName)
             {
@@ -67,11 +71,11 @@ public class Game
     public void handleInitMessage(Message msg)
     {
         InitJson initJson = Json.GSON.fromJson(msg.args.get(0).getAsJsonObject(), InitJson.class);
-        GAME_CONSTANTS = initJson.getGameConstants();
+        gameConstants = initJson.getGameConstants();
         map = initJson.getMap();
         map.calculateZones();
-        HERO_CONSTANTS = initJson.getHeroes();
-        ABILITY_CONSTANTS = initJson.getAbilities();
+        heroConstants = initJson.getHeroes();
+        abilityConstants = initJson.getAbilities();
     }
 
     public void handleTurnMessage(Message msg)
@@ -80,7 +84,7 @@ public class Game
         myScore = jsonRoot.get("myScore").getAsInt();
         oppScore = jsonRoot.get("oppScore").getAsInt();
         currentTurn = jsonRoot.get("currentTurn").getAsInt();
-        currentPhase = jsonRoot.get("currentPhase").getAsString();
+        currentPhase = Phase.valueOf(jsonRoot.get("currentPhase").getAsString());
         AP = jsonRoot.get("AP").getAsInt();
         Map mapJson = Json.GSON.fromJson(jsonRoot.get("Map").getAsJsonObject(), Map.class);
         this.map.setCells(mapJson.getCells());
@@ -88,9 +92,27 @@ public class Game
         JsonArray myHeroesJson = jsonRoot.getAsJsonArray("myHeroes");
         ArrayList<Hero> myHeroes = getHeroesFromJson(myHeroesJson);
         this.myHeroes = myHeroes.toArray(new Hero[0]);
+        ArrayList<Hero> myDeadHeroes=new ArrayList<>();
+        for(Hero hero:myHeroes)
+        {
+            if(hero.getCurrentHP()==0)
+            {
+                myDeadHeroes.add(hero);
+            }
+        }
+        this.myDeadHeroes=myDeadHeroes.toArray(new Hero[0]);
         JsonArray oppHeroesJson = jsonRoot.getAsJsonArray("oppHeroes");
         ArrayList<Hero> oppHeroes = getHeroesFromJson(oppHeroesJson);
         this.oppHeroes = oppHeroes.toArray(new Hero[0]);
+        ArrayList<Hero> oppDeadHeroes=new ArrayList<>();
+        for(Hero hero:oppHeroes)
+        {
+            if(hero.getCurrentHP()==0)
+            {
+                oppDeadHeroes.add(hero);
+            }
+        }
+        this.oppDeadHeroes=oppDeadHeroes.toArray(new Hero[0]);
     }
 
     private ArrayList<Hero> getHeroesFromJson(JsonArray heroesJson)
@@ -117,15 +139,18 @@ public class Game
                 Cell recentCell = map.getCell(recentRow, recentColumn);
                 recentCells.add(recentCell);
             }
-            Hero hero = new Hero(name, id);
-            JsonArray cooldownsJson=heroJson.get("cooldowns").getAsJsonArray();
-            for(int j=0;j<cooldownsJson.size();j++)
+            ArrayList<Ability> abilities=new ArrayList<>();
+            JsonArray cooldownsJson = heroJson.get("cooldowns").getAsJsonArray();
+            for (int j = 0; j < cooldownsJson.size(); j++)
             {
-                JsonObject cooldownJson=cooldownsJson.get(j).getAsJsonObject();
-                AbilityName abilityName=AbilityName.valueOf(cooldownJson.get("name").getAsString());
-                int remCooldown=cooldownJson.get("remCooldown").getAsInt();
-                hero.getAbility(abilityName).setRemCooldown(remCooldown);
+                JsonObject cooldownJson = cooldownsJson.get(j).getAsJsonObject();
+                AbilityName abilityName = AbilityName.valueOf(cooldownJson.get("name").getAsString());
+                int remCooldown = cooldownJson.get("remCooldown").getAsInt();
+                Ability ability=new Ability(getAbilityConstants(abilityName));
+                ability.setRemCooldown(remCooldown);
+                abilities.add(ability);
             }
+            Hero hero = new Hero(getHeroConstants(name), id,abilities);
             hero.setCurrentHP(currentHP);
             hero.setCurrentCell(currentCell);
             hero.setRespawnTime(respawnTime);
@@ -140,7 +165,9 @@ public class Game
         JsonObject jsonRoot = msg.args.get(0).getAsJsonObject();
         myHeroes = parseHeroes(jsonRoot, "myHeroes");
         oppHeroes = parseHeroes(jsonRoot, "oppHeroes");
+        currentTurn=jsonRoot.get("currentTurn").getAsInt();
     }
+
 
     private Hero[] parseHeroes(JsonObject rootJson, String owner)
     {
@@ -150,7 +177,13 @@ public class Game
         {
             int id = heroesJson.get(i).getAsJsonObject().get("id").getAsInt();
             HeroName heroName = HeroName.valueOf(heroesJson.get(i).getAsJsonObject().get("type").getAsString());
-            heroes.add(new Hero(heroName, id));
+            HeroConstants heroConstants=getHeroConstants(heroName);
+            ArrayList<Ability> abilities=new ArrayList<>();
+            for(AbilityName abilityName:heroConstants.getAbilityNames())
+            {
+                abilities.add(new Ability(getAbilityConstants(abilityName)));
+            }
+            heroes.add(new Hero(heroConstants, id,abilities));
         }
         return heroes.toArray(new Hero[0]);
     }
@@ -258,7 +291,6 @@ public class Game
     {
         moveHero(hero.getId(), directions);
     }
-    /* TODO */// moveHero direction
 
     public void pickHero(HeroName heroName)
     {
@@ -273,45 +305,18 @@ public class Game
         return !map.getCell(cellRow, cellColumn).isWall();
     }
 
-    private Cell getNextCell(Cell cell, Direction direction)
-    {
-        switch (direction)
-        {
-            case UP:
-                if (map.isInMap(cell.getRow() - 1, cell.getColumn()))
-                    return map.getCell(cell.getRow() - 1, cell.getColumn());
-                else
-                    return null;
-            case DOWN:
-                if (map.isInMap(cell.getRow() + 1, cell.getColumn()))
-                    return map.getCell(cell.getRow() + 1, cell.getColumn());
-                else
-                    return null;
-            case LEFT:
-                if (map.isInMap(cell.getRow(), cell.getColumn() - 1))
-                    return map.getCell(cell.getRow(), cell.getColumn() - 1);
-                else
-                    return null;
-            case RIGHT:
-                if (map.isInMap(cell.getRow(), cell.getColumn() + 1))
-                    return map.getCell(cell.getRow(), cell.getColumn() + 1);
-                else
-                    return null;
-        }
-        return null; // never happens
-    }
+
 
     /**
      * In case of start cell and end cell being the same cells, return empty array.
-     *
+     * If there is no path, return empty array.
      * @param startCell
      * @param endCell
      * @return
      */
     public Direction[] getPathMoveDirections(Cell startCell, Cell endCell)
     {
-        if (startCell == endCell) return new Direction[0];
-        if (startCell.isWall() || endCell.isWall()) return null;
+        if (startCell == endCell || startCell.isWall() || endCell.isWall()) return new Direction[0];
 
         HashMap<Cell, Pair<Cell, Direction>> lastMoveInfo = new HashMap<>(); // saves parent cell and direction to go from parent cell to current cell
         Cell[] bfsQueue = new Cell[map.getRowNum() * map.getColumnNum() + 10];
@@ -344,19 +349,19 @@ public class Game
                 }
             }
         }
-        return null;
+        return new Direction[0];
     }
 
 
     public Direction[] getPathMoveDirections(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn)
     {
-        if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(endCellRow, endCellColumn)) return null;
+        if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(endCellRow, endCellColumn)) return new Direction[0];
         return getPathMoveDirections(map.getCell(startCellRow, startCellColumn), map.getCell(endCellRow, endCellColumn));
     }
 
     public boolean isReachable(Cell startCell, Cell targetCell)
     {
-        return getPathMoveDirections(startCell, targetCell) != null;
+        return (getPathMoveDirections(startCell, targetCell) != new Direction[0]) || startCell==targetCell;
     }
 
     public boolean isReachable(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn)
@@ -364,114 +369,6 @@ public class Game
         if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(endCellRow, endCellColumn))
             return false;
         return isReachable(map.getCell(startCellRow, startCellColumn), map.getCell(endCellRow, endCellColumn));
-    }
-
-    /* TODO */// Mahdavi Check
-
-    /**
-     * Get all the cells that collide with the ray line in at least one non corner point, before reaching a wall.
-     * If it hits a wall cell just in the corner, it would also stop too.
-     *
-     * @param startCell
-     * @param targetCell
-     * @return
-     */
-    private Cell[] getRayCells(Cell startCell, Cell targetCell)
-    {
-        ArrayList<Cell> path = new ArrayList<>();
-        dfs(startCell, startCell, targetCell, new HashMap<>(), path);
-        return path.toArray(new Cell[0]);
-    }
-
-    private void dfs(Cell currentCell, Cell startCell, Cell targetCell, HashMap<Cell, Boolean> isSeen, ArrayList<Cell> path)
-    {
-        isSeen.put(currentCell, true);
-        path.add(currentCell);
-        for (Direction direction : Direction.values())
-        {
-            Cell nextCell = getNextCell(currentCell, direction);
-            if (nextCell != null && !isSeen.containsKey(nextCell) && isCloser(currentCell, targetCell, nextCell))
-            {
-                int collisionState = squareCollision(startCell, targetCell, nextCell);
-                if ((collisionState == 0 || collisionState == 1) && nextCell.isWall())
-                    return;
-                if (collisionState == 1)
-                {
-                    dfs(nextCell, startCell, targetCell, isSeen, path);
-                    return;
-                }
-            }
-        }
-        for (int dRow = -1; dRow <= 1; dRow += 2)
-            for (int dColumn = -1; dColumn <= 1; dColumn += 2)
-            {
-                int newRow = currentCell.getRow() + dRow;
-                int newColumn = currentCell.getColumn() + dColumn;
-                Cell nextCell = null;
-                if (map.isInMap(newRow, newColumn)) nextCell = map.getCell(newRow, newColumn);
-                if (nextCell != null && !isSeen.containsKey(nextCell) && isCloser(currentCell, targetCell, nextCell))
-                {
-                    int collisionState = squareCollision(startCell, targetCell, nextCell);
-                    if (collisionState == 0 || collisionState == 1 && nextCell.isWall())
-                        return;
-                    if (collisionState == 1)
-                    {
-                        dfs(nextCell, startCell, targetCell, isSeen, path);
-                    }
-                }
-            }
-    }
-
-    private boolean isCloser(Cell currentCell, Cell targetCell, Cell nextCell)
-    {
-        return manhattanDistance(nextCell, targetCell) <= manhattanDistance(currentCell, targetCell);
-    }
-
-    /**
-     * Checks the state of collision between the start cell to target cell line and cell square.
-     * -1 -> doesn't pass through square at all
-     * 0 -> passes through just one corner
-     * 1 -> passes through the square
-     *
-     * @param startCell
-     * @param targetCell
-     * @param cell
-     * @return
-     */
-    private int squareCollision(Cell startCell, Cell targetCell, Cell cell)
-    {
-        boolean hasNegative = false, hasPositive = false, hasZero = false;
-        for (int row = 2 * cell.getRow(); row <= 2 * (cell.getRow() + 1); row += 2)
-            for (int column = 2 * cell.getColumn(); column <= 2 * (cell.getColumn() + 1); column += 2)
-            {
-                int crossProduct = crossProduct(2 * startCell.getRow() + 1, 2 * startCell.getColumn() + 1,
-                        2 * targetCell.getRow() + 1, 2 * targetCell.getColumn() + 1, row, column);
-                if (crossProduct < 0) hasNegative = true;
-                else if (crossProduct > 0) hasPositive = true;
-                else hasZero = true;
-            }
-        if (hasNegative && hasPositive) return 1;
-        if (hasZero) return 0;
-        return -1;
-    }
-
-    /**
-     * This method calculates the cross product.
-     * negative return value -> point1-point2 line is on the left side of point1-point3 line
-     * zero return value -> the three points lie on the same line
-     * positive return value -> point1-point2 line is on the right side of point1-point3 line
-     *
-     * @param x1
-     * @param y1
-     * @param x2
-     * @param y2
-     * @param x3
-     * @param y3
-     * @return
-     */
-    private int crossProduct(int x1, int y1, int x2, int y2, int x3, int y3)
-    {
-        return (x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1);
     }
 
     public int manhattanDistance(Cell startCell, Cell endCell)
@@ -485,7 +382,7 @@ public class Game
         return manhattanDistance(map.getCell(startCellRow, startCellColumn), map.getCell(endCellRow, endCellColumn));
     }
 
-    private Cell[] getImpactCells(AbilityName abilityName, Cell startCell, Cell targetCell)
+    public Cell[] getImpactCells(AbilityName abilityName, Cell startCell, Cell targetCell)
     {
         AbilityConstants abilityConstants = getAbilityConstants(abilityName);
         if (abilityConstants.isLobbing())
@@ -524,16 +421,18 @@ public class Game
      * @param targetCell
      * @return
      */
-    public Cell getImpactCell(AbilityName abilityName, Cell startCell, Cell targetCell)/* TODO */// add abilityName
+    public Cell getImpactCell(AbilityName abilityName, Cell startCell, Cell targetCell)
     {
         Cell[] impactCells = getImpactCells(abilityName, startCell, targetCell);
         return impactCells[impactCells.length - 1];
     }
 
-    public Cell getImpactCell(AbilityName abilityName, int startCellRow, int startCellColumn, int endCellRow, int endCellColumn)
+    public Cell getImpactCell(AbilityName abilityName, int startCellRow, int startCellColumn, int endCellRow,
+                              int endCellColumn)
     {
-        if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(endCellRow, endCellColumn)) return null;
-        return getImpactCell(abilityName, map.getCell(startCellRow, startCellColumn), map.getCell(endCellRow, endCellColumn));
+        if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(endCellRow, endCellColumn))return null;
+        return getImpactCell(abilityName, map.getCell(startCellRow, startCellColumn), map.getCell(endCellRow,
+                endCellColumn));
     }
 
     public Cell getImpactCell(Ability ability, Cell startCell, Cell targetCell)
@@ -563,6 +462,29 @@ public class Game
         {
             return getOppHeroesInCells(affectedCells.toArray(new Cell[0]));
         }
+    }
+
+    public Hero[] getAbilityTargets(Ability ability, Cell startCell, Cell targetCell)
+    {
+        return getAbilityTargets(ability.getName(), startCell, targetCell);
+    }
+
+    public Hero[] getAbilityTargets(AbilityName abilityName, int startCellRow, int startCellColumn, int targetCellRow,
+                                    int targetCellColumn)
+    {
+        if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(targetCellRow, targetCellColumn))
+            return new Hero[0];
+        return getAbilityTargets(abilityName, map.getCell(startCellRow, startCellColumn), map.getCell(targetCellRow,
+                targetCellColumn));
+    }
+
+    public Hero[] getAbilityTargets(Ability ability, int startCellRow, int startCellColumn, int targetCellRow,
+                                    int targetCellColumn)
+    {
+        if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(targetCellRow, targetCellColumn))
+            return new Hero[0];
+        return getAbilityTargets(ability.getName(), map.getCell(startCellRow, startCellColumn),
+                map.getCell(targetCellRow, targetCellColumn));
     }
 
     private ArrayList<Cell> getCellsInAOE(Cell impactCell, int AOE)
@@ -607,6 +529,141 @@ public class Game
             }
         }
         return heroes.toArray(new Hero[0]);
+    }
+
+    /**
+     * Get all the cells that collide with the ray line in at least one non corner point, before reaching a wall.
+     * If it hits a wall cell just in the corner, it would also stop too.
+     *
+     * @param startCell
+     * @param targetCell
+     * @return
+     */
+    public Cell[] getRayCells(Cell startCell, Cell targetCell)
+    {
+        ArrayList<Cell> path = new ArrayList<>();
+        dfs(startCell, startCell, targetCell, new HashMap<>(), path);
+        return path.toArray(new Cell[0]);
+    }
+
+    public void dfs(Cell currentCell, Cell startCell, Cell targetCell, HashMap<Cell, Boolean> isSeen,
+                           ArrayList<Cell> path)
+    {
+        isSeen.put(currentCell, true);
+        path.add(currentCell);
+        for (Direction direction : Direction.values())
+        {
+            Cell nextCell = getNextCell(currentCell, direction);
+            if (nextCell != null && !isSeen.containsKey(nextCell) && isCloser(currentCell, targetCell, nextCell))
+            {
+                int collisionState = squareCollision(startCell, targetCell, nextCell);
+                if ((collisionState == 0 || collisionState == 1) && nextCell.isWall())
+                    return;
+                if (collisionState == 1)
+                {
+                    dfs(nextCell, startCell, targetCell, isSeen, path);
+                    return;
+                }
+            }
+        }
+        for (int dRow = -1; dRow <= 1; dRow += 2)
+            for (int dColumn = -1; dColumn <= 1; dColumn += 2)
+            {
+                int newRow = currentCell.getRow() + dRow;
+                int newColumn = currentCell.getColumn() + dColumn;
+                Cell nextCell = null;
+                if (map.isInMap(newRow, newColumn)) nextCell = map.getCell(newRow, newColumn);
+                if (nextCell != null && !isSeen.containsKey(nextCell) && isCloser(currentCell, targetCell, nextCell))
+                {
+                    int collisionState = squareCollision(startCell, targetCell, nextCell);
+                    if (collisionState == 0 || collisionState == 1 && nextCell.isWall())
+                        return;
+                    if (collisionState == 1)
+                    {
+                        dfs(nextCell, startCell, targetCell, isSeen, path);
+                    }
+                }
+            }
+    }
+
+    public boolean isCloser(Cell currentCell, Cell targetCell, Cell nextCell)
+    {
+        return manhattanDistance(nextCell, targetCell) <= manhattanDistance(currentCell, targetCell);
+    }
+
+    /**
+     * Checks the state of collision between the start cell to target cell line and cell square.
+     * -1 -> doesn't pass through square at all
+     * 0 -> passes through just one corner
+     * 1 -> passes through the square
+     *
+     * @param startCell
+     * @param targetCell
+     * @param cell
+     * @return
+     */
+    public int squareCollision(Cell startCell, Cell targetCell, Cell cell)
+    {
+        boolean hasNegative = false, hasPositive = false, hasZero = false;
+        for (int row = 2 * cell.getRow(); row <= 2 * (cell.getRow() + 1); row += 2)
+            for (int column = 2 * cell.getColumn(); column <= 2 * (cell.getColumn() + 1); column += 2)
+            {
+                int crossProduct = crossProduct(2 * startCell.getRow() + 1, 2 * startCell.getColumn() + 1,
+                        2 * targetCell.getRow() + 1, 2 * targetCell.getColumn() + 1, row, column);
+                if (crossProduct < 0) hasNegative = true;
+                else if (crossProduct > 0) hasPositive = true;
+                else hasZero = true;
+            }
+        if (hasNegative && hasPositive) return 1;
+        if (hasZero) return 0;
+        return -1;
+    }
+
+    /**
+     * This method calculates the cross product.
+     * negative return value -> point1-point2 line is on the left side of point1-point3 line
+     * zero return value -> the three points lie on the same line
+     * positive return value -> point1-point2 line is on the right side of point1-point3 line
+     *
+     * @param x1
+     * @param y1
+     * @param x2
+     * @param y2
+     * @param x3
+     * @param y3
+     * @return
+     */
+    public int crossProduct(int x1, int y1, int x2, int y2, int x3, int y3)
+    {
+        return (x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1);
+    }
+
+    public Cell getNextCell(Cell cell, Direction direction)
+    {
+        switch (direction)
+        {
+            case UP:
+                if (map.isInMap(cell.getRow() - 1, cell.getColumn()))
+                    return map.getCell(cell.getRow() - 1, cell.getColumn());
+                else
+                    return null;
+            case DOWN:
+                if (map.isInMap(cell.getRow() + 1, cell.getColumn()))
+                    return map.getCell(cell.getRow() + 1, cell.getColumn());
+                else
+                    return null;
+            case LEFT:
+                if (map.isInMap(cell.getRow(), cell.getColumn() - 1))
+                    return map.getCell(cell.getRow(), cell.getColumn() - 1);
+                else
+                    return null;
+            case RIGHT:
+                if (map.isInMap(cell.getRow(), cell.getColumn() + 1))
+                    return map.getCell(cell.getRow(), cell.getColumn() + 1);
+                else
+                    return null;
+        }
+        return null; // never happens
     }
 
 
@@ -725,53 +782,53 @@ public class Game
         this.currentTurn = currentTurn;
     }
 
-    public String getCurrentPhase()
+    public Phase getCurrentPhase()
     {
         return currentPhase;
     }
 
-    public void setCurrentPhase(String currentPhase)
+    public void setCurrentPhase(Phase currentPhase)
     {
         this.currentPhase = currentPhase;
     }
 
     public int getRespawnTime()
     {
-        return GAME_CONSTANTS.getRespawnTime();
+        return gameConstants.getRespawnTime();
     }
 
     public void setRespawnTime(int respawnTime)
     {
-        GAME_CONSTANTS.setRespawnTime(respawnTime);
+        gameConstants.setRespawnTime(respawnTime);
     }
 
     public int getTimeout()
     {
-        return GAME_CONSTANTS.getTimeout();
+        return gameConstants.getTimeout();
     }
 
     public void setTimeout(int timeout)
     {
-        GAME_CONSTANTS.setTimeout(timeout);
+        gameConstants.setTimeout(timeout);
     }
 
     public int getMaxAP()
     {
-        return GAME_CONSTANTS.getMaxAP();
+        return gameConstants.getMaxAP();
     }
 
     public void setMaxAP(int maxAP)
     {
-        GAME_CONSTANTS.setMaxAP(maxAP);
+        gameConstants.setMaxAP(maxAP);
     }
 
     public int getMaxTurns()
     {
-        return GAME_CONSTANTS.getMaxTurns();
+        return gameConstants.getMaxTurns();
     }
 
     public void setMaxTurns(int maxTurns)
     {
-        GAME_CONSTANTS.setMaxTurns(maxTurns);
+        gameConstants.setMaxTurns(maxTurns);
     }
 }
