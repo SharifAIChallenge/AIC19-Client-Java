@@ -32,8 +32,8 @@ public class Map
             for (int column = 0; column < columnNum; column++)
             {
                 Cell cell = cells[row][column];
-                if (cell.isInMyRespawnZone()) myRespawnZone.add(cell);
-                if (cell.isInOppRespawnZone()) oppRespawnZone.add(cell);
+                if (cell.isInFirstRespawnZone()) myRespawnZone.add(cell);
+                if (cell.isInSecondRespawnZone()) oppRespawnZone.add(cell);
                 if (cell.isInObjectiveZone()) objectiveZone.add(cell);
             }
         }

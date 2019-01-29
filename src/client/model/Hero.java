@@ -58,12 +58,9 @@ public class Hero {
         return id;
     }
 
-    public Ability getAbility(AbilityName abilityName)
-    {
-        for(Ability ability:abilities)
-        {
-            if(ability.getName()==abilityName)
-            {
+    public Ability getAbility(AbilityName abilityName) {
+        for (Ability ability : abilities) {
+            if (ability.getName() == abilityName) {
                 return ability;
             }
         }
@@ -174,6 +171,14 @@ public class Hero {
         heroConstants.setMoveAPCost(moveAPCost);
     }
 
+    public int getHeroConstantsRespawnTime() {
+        return heroConstants.getRespawnTime();
+    }
+
+    public void setHeroConstantsRespawnTime(int respawnTime) {
+        heroConstants.setRespawnTime(respawnTime);
+    }
+
     public int getRespawnTime() {
         return respawnTime;
     }
@@ -182,3 +187,4 @@ public class Hero {
         this.respawnTime = respawnTime;
     }
 }
+

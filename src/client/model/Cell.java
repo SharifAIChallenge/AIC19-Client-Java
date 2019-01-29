@@ -1,11 +1,9 @@
 package client.model;
 
-import java.util.Objects;
-
 public class Cell {
     private boolean isWall;
-    private boolean isInMyRespawnZone;
-    private boolean isInOppRespawnZone;
+    private boolean isInFirstRespawnZone;
+    private boolean isInSecondRespawnZone;
     private boolean isInObjectiveZone;
     private boolean isInVision = true;
     private int row;
@@ -19,20 +17,20 @@ public class Cell {
         isWall = wall;
     }
 
-    public boolean isInMyRespawnZone() {
-        return isInMyRespawnZone;
+    public boolean isInFirstRespawnZone() {
+        return isInFirstRespawnZone;
     }
 
-    public void setInMyRespawnZone(boolean inMyRespawnZone) {
-        isInMyRespawnZone = inMyRespawnZone;
+    public void setInFirstRespawnZone(boolean inFirstRespawnZone) {
+        isInFirstRespawnZone = inFirstRespawnZone;
     }
 
-    public boolean isInOppRespawnZone() {
-        return isInOppRespawnZone;
+    public boolean isInSecondRespawnZone() {
+        return isInSecondRespawnZone;
     }
 
-    public void setInOppRespawnZone(boolean inOppRespawnZone) {
-        isInOppRespawnZone = inOppRespawnZone;
+    public void setInSecondRespawnZone(boolean inSecondRespawnZone) {
+        isInSecondRespawnZone = inSecondRespawnZone;
     }
 
     public boolean isInObjectiveZone() {

@@ -2,6 +2,5 @@ package client.model;
 
 public enum AbilityName
 {
-    DODGE,HEAL;
-
+    DODGE,HEAL
 }

@@ -2,21 +2,12 @@ package client.model;
 
 public class GameConstants
 {
-    private int respawnTime;
     private int timeout;
     private int maxAP;
     private int maxTurns;
-
-    public int getRespawnTime()
-    {
-        return respawnTime;
-    }
-
-    public void setRespawnTime(int respawnTime)
-    {
-        this.respawnTime = respawnTime;
-    }
-
+    private int killScore;
+    private int objectiveZoneScore;
+    
     public int getTimeout()
     {
         return timeout;
@@ -45,5 +36,21 @@ public class GameConstants
     public void setMaxTurns(int maxTurns)
     {
         this.maxTurns = maxTurns;
+    }
+
+    public int getKillScore() {
+        return killScore;
+    }
+
+    public void setKillScore(int killScore) {
+        this.killScore = killScore;
+    }
+
+    public int getObjectiveZoneScore() {
+        return objectiveZoneScore;
+    }
+
+    public void setObjectiveZoneScore(int objectiveZoneScore) {
+        this.objectiveZoneScore = objectiveZoneScore;
     }
 }

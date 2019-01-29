@@ -6,6 +6,7 @@ public class HeroConstants
     private AbilityName[] abilityNames;
     private int maxHP;
     private int moveAPCost;
+    private int respawnTime;
 
     public HeroName getName()
     {
@@ -45,5 +46,13 @@ public class HeroConstants
     public void setMoveAPCost(int moveAPCost)
     {
         this.moveAPCost = moveAPCost;
+    }
+
+    public int getRespawnTime() {
+        return respawnTime;
+    }
+
+    public void setRespawnTime(int respawnTime) {
+        this.respawnTime = respawnTime;
     }
 }

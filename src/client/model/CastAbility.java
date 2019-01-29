@@ -2,7 +2,7 @@ package client.model;
 
 public class CastAbility {
     private int casterId;
-    private int targetHeroId;
+    private int[] targetHeroIds;
     private Cell startCell;
     private Cell endCell;
     private AbilityName abilityName;
@@ -15,12 +15,12 @@ public class CastAbility {
         this.casterId = casterId;
     }
 
-    public int getTargetHeroId() {
-        return targetHeroId;
+    public int[] getTargetHeroIds() {
+        return targetHeroIds;
     }
 
-    public void setTargetHeroId(int targetHeroId) {
-        this.targetHeroId = targetHeroId;
+    public void setTargetHeroIds(int[] targetHeroIds) {
+        this.targetHeroIds = targetHeroIds;
     }
 
     public Cell getStartCell() {
