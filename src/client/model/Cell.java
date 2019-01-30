@@ -2,8 +2,8 @@ package client.model;
 
 public class Cell {
     private boolean isWall;
-    private boolean isInFirstRespawnZone;
-    private boolean isInSecondRespawnZone;
+    private boolean isInMyRespawnZone;
+    private boolean isInOppRespawnZone;
     private boolean isInObjectiveZone;
     private boolean isInVision = true;
     private int row;
@@ -17,20 +17,20 @@ public class Cell {
         isWall = wall;
     }
 
-    public boolean isInFirstRespawnZone() {
-        return isInFirstRespawnZone;
+    public boolean isInMyRespawnZone() {
+        return isInMyRespawnZone;
     }
 
-    public void setInFirstRespawnZone(boolean inFirstRespawnZone) {
-        isInFirstRespawnZone = inFirstRespawnZone;
+    public void setInMyRespawnZone(boolean inMyRespawnZone) {
+        isInMyRespawnZone = inMyRespawnZone;
     }
 
-    public boolean isInSecondRespawnZone() {
-        return isInSecondRespawnZone;
+    public boolean isInOppRespawnZone() {
+        return isInOppRespawnZone;
     }
 
-    public void setInSecondRespawnZone(boolean inSecondRespawnZone) {
-        isInSecondRespawnZone = inSecondRespawnZone;
+    public void setInOppRespawnZone(boolean inOppRespawnZone) {
+        isInOppRespawnZone = inOppRespawnZone;
     }
 
     public boolean isInObjectiveZone() {
@@ -75,6 +75,6 @@ public class Cell {
 
     @Override
     public int hashCode() {
-        return row*1000+column; //TODO
+        return row * 1000 + column; //TODO
     }
 }
