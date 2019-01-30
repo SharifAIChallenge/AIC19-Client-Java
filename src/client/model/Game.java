@@ -135,7 +135,7 @@ public class Game {
             Hero hero = new Hero(getHeroConstants(name), id, abilities);
             hero.setCurrentHP(currentHP);
             hero.setCurrentCell(currentCell);
-            hero.setRespawnTime(respawnTime);
+            hero.setRemRespawnTime(respawnTime);
             hero.setRecentPath(recentCells.toArray(new Cell[0]));
             heroes.add(hero);
         }

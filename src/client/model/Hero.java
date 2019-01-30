@@ -11,7 +11,7 @@ public class Hero {
     private Ability[] healAbilities;
     private Ability[] attackAbilities;
     private int currentHP;
-    private int respawnTime;
+    private int remRespawnTime;
     private Cell currentCell;
     private Cell[] recentPath;
 
@@ -179,12 +179,12 @@ public class Hero {
         heroConstants.setRespawnTime(respawnTime);
     }
 
-    public int getRespawnTime() {
-        return respawnTime;
+    public int getRemRespawnTime() {
+        return remRespawnTime;
     }
 
-    public void setRespawnTime(int respawnTime) {
-        this.respawnTime = respawnTime;
+    public void setRemRespawnTime(int remRespawnTime) {
+        this.remRespawnTime = remRespawnTime;
     }
 }
 
