@@ -2,5 +2,5 @@ package client.model;
 
 public enum AbilityName
 {
-    DODGE,HEAL
+    suicide, kill, heal, attack, dodge
 }

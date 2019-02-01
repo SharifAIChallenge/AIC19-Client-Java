@@ -9,7 +9,7 @@ import common.network.data.Message;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class Game {
+public class Game{ // TODO implement World
     private GameConstants gameConstants;
     private HeroConstants[] heroConstants;
     private AbilityConstants[] abilityConstants;
@@ -60,12 +60,15 @@ public class Game {
     }
 
     public void handleInitMessage(Message msg) {
-        InitJson initJson = Json.GSON.fromJson(msg.args.get(0).getAsJsonObject(), InitJson.class);
+        JsonArray messageArray = msg.args;
+        JsonObject mainObject = messageArray.get(0).getAsJsonObject();
+
+        InitJson initJson = Json.GSON.fromJson(mainObject, InitJson.class);
         gameConstants = initJson.getGameConstants();
         map = initJson.getMap();
         map.calculateZones();
-        heroConstants = initJson.getHeroes();
-        abilityConstants = initJson.getAbilities();
+        heroConstants = initJson.getHeroConstants();
+        abilityConstants = initJson.getAbilityConstants();
     }
 
     public void handleTurnMessage(Message msg) {
@@ -75,10 +78,10 @@ public class Game {
         currentTurn = jsonRoot.get("currentTurn").getAsInt();
         currentPhase = Phase.valueOf(jsonRoot.get("currentPhase").getAsString());
         AP = jsonRoot.get("AP").getAsInt();
-        Map mapJson = Json.GSON.fromJson(jsonRoot.get("Map").getAsJsonObject(), Map.class);
-        this.map.setCells(mapJson.getCells());
-        myCastAbilities = Json.GSON.fromJson(jsonRoot.get("myCastAbilities").getAsJsonObject(), CastAbility[].class);
-        oppCastAbilities = Json.GSON.fromJson(jsonRoot.get("oppCastAbilities").getAsJsonObject(), CastAbility[].class);
+        Cell[][] turnCells = Json.GSON.fromJson(jsonRoot.get("map").getAsJsonArray(), Cell[][].class);
+        this.map.setCells(turnCells);
+        myCastAbilities = Json.GSON.fromJson(jsonRoot.get("myCastAbilities").getAsJsonArray(), CastAbility[].class);
+        oppCastAbilities = Json.GSON.fromJson(jsonRoot.get("oppCastAbilities").getAsJsonArray(), CastAbility[].class);
         JsonArray myHeroesJson = jsonRoot.getAsJsonArray("myHeroes");
         ArrayList<Hero> myHeroes = getHeroesFromJson(myHeroesJson);
         this.myHeroes = myHeroes.toArray(new Hero[0]);
@@ -109,10 +112,15 @@ public class Game {
             HeroName name = HeroName.valueOf(heroJson.get("type").getAsString());
             int currentHP = heroJson.get("currentHP").getAsInt();
             int respawnTime = heroJson.get("respawnTime").getAsInt();
-            JsonObject currentCellJson = heroJson.get("currentCell").getAsJsonObject();
-            int row = currentCellJson.get("row").getAsInt();
-            int column = currentCellJson.get("column").getAsInt();
-            Cell currentCell = map.getCell(row, column);
+
+            Cell currentCell = null;
+            if (heroJson.get("currentCell") != null)
+            {
+                JsonObject currentCellJson = heroJson.get("currentCell").getAsJsonObject();
+                int row = currentCellJson.get("row").getAsInt();
+                int column = currentCellJson.get("column").getAsInt();
+                currentCell = map.getCell(row, column); // TODO check this out, ask Ruhollah
+            }
             JsonArray recentPathJson = heroJson.get("recentPath").getAsJsonArray();
             ArrayList<Cell> recentCells = new ArrayList<>();
             for (int j = 0; j < recentPathJson.size(); j++) {
@@ -205,7 +213,7 @@ public class Game {
     }
 
     public void castAbility(int heroId, AbilityName abilityName, int targetCellRow, int targetCellColumn) {
-        Event event = new Event("c", new Object[]{heroId, abilityName.toString(), targetCellRow, targetCellColumn});
+        Event event = new Event("cast", new Object[]{heroId, abilityName.toString(), targetCellRow, targetCellColumn});
         sender.accept(new Message(Event.EVENT, event));
     }
 
@@ -242,7 +250,7 @@ public class Game {
         for (int i = 0; i < directions.length; i++) {
             directionStrings[i] = directions[i].toString();
         }
-        Event event = new Event("m", new Object[]{heroId, directionStrings});
+        Event event = new Event("move", new Object[]{heroId, Json.GSON.toJson(directionStrings)}); // TODO ask Ruhollah
         sender.accept(new Message(Event.EVENT, event));
     }
 
@@ -251,7 +259,7 @@ public class Game {
     }
 
     public void pickHero(HeroName heroName) {
-        Event event = new Event("p", new Object[]{heroName.toString()});
+        Event event = new Event("pick", new Object[]{heroName.toString()});
         sender.accept(new Message(Event.EVENT, event));
     }
 

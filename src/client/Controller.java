@@ -6,7 +6,6 @@ import common.model.Event;
 import common.network.data.Message;
 import common.util.Log;
 
-import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -44,8 +43,6 @@ public class Controller
     private final Object terminator;
 
     Consumer<Message> sender;
-
-    Event event;
 
     /**
      * Constructor
@@ -134,30 +131,28 @@ public class Controller
     {
         game = new Game(game);
         game.handleInitMessage(msg);
-        event=new Event("end", new Object[]{0});
-        preProcess();
-        pickTurn();
+        preProcess(game);
     }
 
     private void handlePickMessage(Message msg)
     {
-        game = new Game(game);
-        game.handlePickMessage(msg);
-        event=new Event("end", new Object[]{game.getCurrentTurn()});
-        pickTurn();
+        Game newGame = new Game(game);
+        newGame.handlePickMessage(msg);
+        Event endEvent = new Event("end", new Object[]{newGame.getCurrentTurn()});
+        pickTurn(newGame, endEvent);
     }
 
     private void handleTurnMessage(Message msg)
     {
-        game = new Game(game);
-        game.handleTurnMessage(msg);
-        event=new Event("end", new Object[]{game.getCurrentTurn()});
+        Game newGame = new Game(game);
+        newGame.handleTurnMessage(msg);
+        Event endEvent = new Event("end", new Object[]{newGame.getCurrentTurn()});
         if (game.getCurrentPhase() == Phase.MOVE)
         {
-            moveTurn();
+            moveTurn(newGame, endEvent);
         } else
         {
-            actionTurn();
+            actionTurn(newGame, endEvent);
         }
         /* TODO */// log for debug
         /* TODO */// handle moveTurn
@@ -174,35 +169,35 @@ public class Controller
         System.exit(0);
     }
 
-    private void preProcess()
+    private void preProcess(Game game)
     {
-        new Thread(() -> ai.preProcess()).start();
+        new Thread(() -> ai.preProcess(game)).start();
     }
 
-    private void pickTurn()
+    private void pickTurn(Game game, Event endEvent)
     {
         new Thread(() ->
         {
-            ai.pickTurn();
-            sendEndMsg(event);
+            ai.pickTurn(game);
+            sendEndMsg(endEvent);
         }).start();
     }
 
-    private void moveTurn()
+    private void moveTurn(Game game, Event endEvent)
     {
         new Thread(() ->
         {
-            ai.moveTurn();
-            sendEndMsg(event);
+            ai.moveTurn(game);
+            sendEndMsg(endEvent);
         }).start();
     }
 
-    private void actionTurn()
+    private void actionTurn(Game game, Event endEvent)
     {
         new Thread(() ->
         {
-            ai.actionTurn();
-            sendEndMsg(event);
+            ai.actionTurn(game);
+            sendEndMsg(endEvent);
         }).start();
     }
 

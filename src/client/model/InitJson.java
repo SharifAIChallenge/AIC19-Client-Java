@@ -3,8 +3,8 @@ package client.model;
 public class InitJson {
     private Map map;
     private GameConstants gameConstants;
-    private HeroConstants[] heroes;
-    private AbilityConstants[] abilities;
+    private HeroConstants[] heroConstants;
+    private AbilityConstants[] abilityConstants;
 
     public Map getMap() {
         return map;
@@ -22,19 +22,19 @@ public class InitJson {
         this.gameConstants = gameConstants;
     }
 
-    public HeroConstants[] getHeroes() {
-        return heroes;
+    public HeroConstants[] getHeroConstants() {
+        return heroConstants;
     }
 
-    public void setHeroes(HeroConstants[] heroes) {
-        this.heroes = heroes;
+    public void setHeroConstants(HeroConstants[] heroConstants) {
+        this.heroConstants = heroConstants;
     }
 
-    public AbilityConstants[] getAbilities() {
-        return abilities;
+    public AbilityConstants[] getAbilityConstants() {
+        return abilityConstants;
     }
 
-    public void setAbilities(AbilityConstants[] abilities) {
-        this.abilities = abilities;
+    public void setAbilityConstants(AbilityConstants[] abilityConstants) {
+        this.abilityConstants = abilityConstants;
     }
 }

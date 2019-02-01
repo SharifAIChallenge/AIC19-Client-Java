@@ -2,5 +2,5 @@ package client.model;
 
 public enum HeroName
 {
-    HEALER
+    HEALER, Ruhollah, Ali, Omid
 }
