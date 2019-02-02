@@ -9,7 +9,7 @@ import common.network.data.Message;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class Game{ // TODO implement World
+public class Game implements World { // TODO implement World
     private GameConstants gameConstants;
     private HeroConstants[] heroConstants;
     private AbilityConstants[] abilityConstants;
@@ -114,8 +114,7 @@ public class Game{ // TODO implement World
             int respawnTime = heroJson.get("respawnTime").getAsInt();
 
             Cell currentCell = new Cell(-1, -1);
-            if (heroJson.get("currentCell") != null)
-            {
+            if (heroJson.get("currentCell") != null) {
                 JsonObject currentCellJson = heroJson.get("currentCell").getAsJsonObject();
                 int row = currentCellJson.get("row").getAsInt();
                 int column = currentCellJson.get("column").getAsInt();
@@ -158,7 +157,6 @@ public class Game{ // TODO implement World
         currentPhase = Phase.PICK;
     }
 
-
     private Hero[] parseHeroes(JsonObject rootJson, String owner) {
         ArrayList<Hero> heroes = new ArrayList<>();
         JsonArray heroesJson = rootJson.getAsJsonArray(owner);
@@ -175,6 +173,7 @@ public class Game{ // TODO implement World
         return heroes.toArray(new Hero[0]);
     }
 
+    @Override
     public Hero getHero(int id) {
         for (int i = 0; i < myHeroes.length; i++) {
             if (myHeroes[i].getId() == id)
@@ -187,6 +186,7 @@ public class Game{ // TODO implement World
         return null;
     }
 
+    @Override
     public Hero getMyHero(Cell cell) {
         for (Hero hero : myHeroes) {
             if (hero.getCurrentCell() == cell)
@@ -195,11 +195,13 @@ public class Game{ // TODO implement World
         return null;
     }
 
+    @Override
     public Hero getMyHero(int cellRow, int cellColumn) {
         if (!map.isInMap(cellRow, cellColumn)) return null;
         return getMyHero(map.getCell(cellRow, cellColumn));
     }
 
+    @Override
     public Hero getOppHero(Cell cell) {
         for (Hero hero : oppHeroes) {
             if (hero.getCurrentCell() == cell)
@@ -208,44 +210,54 @@ public class Game{ // TODO implement World
         return null;
     }
 
+    @Override
     public Hero getOppHero(int cellRow, int cellColumn) {
         if (!map.isInMap(cellRow, cellColumn)) return null;
         return getOppHero(map.getCell(cellRow, cellColumn));
     }
 
+    @Override
     public void castAbility(int heroId, AbilityName abilityName, int targetCellRow, int targetCellColumn) {
         Event event = new Event("cast", new Object[]{heroId, abilityName.toString(), targetCellRow, targetCellColumn});
         sender.accept(new Message(Event.EVENT, event));
     }
 
+    @Override
     public void castAbility(int heroId, AbilityName abilityName, Cell targetCell) {
         castAbility(heroId, abilityName, targetCell.getRow(), targetCell.getColumn());
     }
 
+    @Override
     public void castAbility(Hero hero, AbilityName abilityName, Cell targetCell) {
         castAbility(hero.getId(), abilityName, targetCell.getRow(), targetCell.getColumn());
     }
 
+    @Override
     public void castAbility(Hero hero, AbilityName abilityName, int targetCellRow, int targetCellColumn) {
         castAbility(hero.getId(), abilityName, targetCellRow, targetCellColumn);
     }
 
+    @Override
     public void castAbility(int heroId, Ability ability, Cell targetCell) {
         castAbility(heroId, ability.getAbilityConstants().getName(), targetCell.getRow(), targetCell.getColumn());
     }
 
+    @Override
     public void castAbility(int heroId, Ability ability, int targetCellRow, int targetCellColumn) {
         castAbility(heroId, ability.getAbilityConstants().getName(), targetCellRow, targetCellColumn);
     }
 
+    @Override
     public void castAbility(Hero hero, Ability ability, Cell targetCell) {
         castAbility(hero.getId(), ability.getAbilityConstants().getName(), targetCell.getRow(), targetCell.getColumn());
     }
 
+    @Override
     public void castAbility(Hero hero, Ability ability, int targetCellRow, int targetCellColumn) {
         castAbility(hero.getId(), ability.getAbilityConstants().getName(), targetCellRow, targetCellColumn);
     }
 
+    @Override
     public void moveHero(int heroId, Direction[] directions) {
 //        String[] directionStrings = new String[directions.length];
 //        for (int i = 0; i < directions.length; i++) {
@@ -255,25 +267,28 @@ public class Game{ // TODO implement World
         sender.accept(new Message(Event.EVENT, event));
     }
 
+    @Override
     public void moveHero(Hero hero, Direction[] directions) {
         moveHero(hero.getId(), directions);
     }
 
+    @Override
     public void pickHero(HeroName heroName) {
         Event event = new Event("pick", new Object[]{heroName.toString()});
         sender.accept(new Message(Event.EVENT, event));
     }
 
+    @Override
     public boolean isAccessible(int cellRow, int cellColumn) {
         if (!map.isInMap(cellRow, cellColumn))
             return false;
         return !map.getCell(cellRow, cellColumn).isWall();
     }
 
+    @Override
     public boolean isAccessible(Cell cell) {
         return !cell.isWall();
     }
-
 
     /**
      * In case of start cell and end cell being the same cells, return empty array.
@@ -283,6 +298,7 @@ public class Game{ // TODO implement World
      * @param endCell
      * @return
      */
+    @Override
     public Direction[] getPathMoveDirections(Cell startCell, Cell endCell) {
         if (startCell == endCell || startCell.isWall() || endCell.isWall()) return new Direction[0];
 
@@ -316,50 +332,53 @@ public class Game{ // TODO implement World
     }
 
 
+    @Override
     public Direction[] getPathMoveDirections(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn) {
         if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(endCellRow, endCellColumn))
             return new Direction[0];
         return getPathMoveDirections(map.getCell(startCellRow, startCellColumn), map.getCell(endCellRow, endCellColumn));
     }
 
+    @Override
     public boolean isReachable(Cell startCell, Cell targetCell) {
         return (getPathMoveDirections(startCell, targetCell) != new Direction[0]) || startCell == targetCell;
     }
 
+    @Override
     public boolean isReachable(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn) {
         if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(endCellRow, endCellColumn))
             return false;
         return isReachable(map.getCell(startCellRow, startCellColumn), map.getCell(endCellRow, endCellColumn));
     }
 
+    @Override
     public int manhattanDistance(Cell startCell, Cell endCell) {
         return Math.abs(startCell.getRow() - endCell.getRow()) + Math.abs(startCell.getColumn() - endCell.getColumn());
     }
 
+    @Override
     public int manhattanDistance(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn) {
         if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(endCellRow, endCellColumn)) return -1;
         return manhattanDistance(map.getCell(startCellRow, startCellColumn), map.getCell(endCellRow, endCellColumn));
     }
 
+    @Override
     public Cell[] getImpactCells(AbilityName abilityName, Cell startCell, Cell targetCell) {
         AbilityConstants abilityConstants = getAbilityConstants(abilityName);
-        if (abilityConstants.isLobbing()) {
-            return new Cell[]{targetCell};
-        }
-        if (startCell.isWall() || startCell == targetCell) {
+        if ((!abilityConstants.isLobbing() && startCell.isWall()) || startCell == targetCell) {
             return new Cell[]{startCell};
         }
         ArrayList<Cell> impactCells = new ArrayList<>();
-        Cell[] rayCells = getRayCells(startCell, targetCell);
+        Cell[] rayCells = getRayCells(startCell, targetCell, abilityConstants.isLobbing());
         Cell lastCell = null;
         for (Cell cell : rayCells) {
             if (manhattanDistance(startCell, cell) > abilityConstants.getRange())
                 break;
             lastCell = cell;
             if ((getOppHero(cell) != null && !abilityConstants.getType().equals(AbilityType.HEAL))
-                    || ((getMyHero(cell) != null && abilityConstants.getType().equals(AbilityType.HEAL)))) {
+                    || (getMyHero(cell) != null && abilityConstants.getType().equals(AbilityType.HEAL))) {
                 impactCells.add(cell);
-                if (!abilityConstants.isPiercing()) break;
+                if (!abilityConstants.isPiercing() && !abilityConstants.isLobbing()) break;
             }
         }
         if (!impactCells.contains(lastCell))
@@ -367,19 +386,38 @@ public class Game{ // TODO implement World
         return impactCells.toArray(new Cell[0]);
     }
 
-    /**
-     * If start cell is a wall we would return it as the impact point.
-     *
-     * @param abilityName
-     * @param startCell
-     * @param targetCell
-     * @return
-     */
+    @Override
+    public Cell[] getImpactCells(Ability ability, Cell startCell, Cell targetCell) {
+        return getImpactCells(ability.getName(), startCell, targetCell);
+    }
+
+    @Override
+    public Cell[] getImpactCells(AbilityName abilityName, int startCellRow, int startCellColumn,
+                                 int targetCellRow, int targetCellColumn) {
+        if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(targetCellRow, targetCellColumn))
+            return new Cell[0];
+        Cell startCell = map.getCell(startCellRow, startCellColumn);
+        Cell targetCell = map.getCell(targetCellRow, targetCellColumn);
+        return getImpactCells(abilityName, startCell, targetCell);
+    }
+
+    @Override
+    public Cell[] getImpactCells(Ability ability, int startCellRow, int startCellColumn,
+                                 int targetCellRow, int targetCellColumn) {
+        if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(targetCellRow, targetCellColumn))
+            return new Cell[0];
+        Cell startCell = map.getCell(startCellRow, startCellColumn);
+        Cell targetCell = map.getCell(targetCellRow, targetCellColumn);
+        return getImpactCells(ability.getName(), startCell, targetCell);
+    }
+
+    @Override
     public Cell getImpactCell(AbilityName abilityName, Cell startCell, Cell targetCell) {
         Cell[] impactCells = getImpactCells(abilityName, startCell, targetCell);
         return impactCells[impactCells.length - 1];
     }
 
+    @Override
     public Cell getImpactCell(AbilityName abilityName, int startCellRow, int startCellColumn, int endCellRow,
                               int endCellColumn) {
         if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(endCellRow, endCellColumn)) return null;
@@ -387,15 +425,20 @@ public class Game{ // TODO implement World
                 endCellColumn));
     }
 
+    @Override
     public Cell getImpactCell(Ability ability, Cell startCell, Cell targetCell) {
-        return getImpactCell(ability.abilityConstants.getName(), startCell, targetCell);
+        return getImpactCell(ability.getAbilityConstants().getName(), startCell, targetCell);
     }
 
-    public Cell getImpactCell(Ability ability, int startCellRow, int startCellColumn, int endCellRow, int endCellColumn) {
+    @Override
+    public Cell getImpactCell(Ability ability, int startCellRow, int startCellColumn, int endCellRow,
+                              int endCellColumn) {
         if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(endCellRow, endCellColumn)) return null;
-        return getImpactCell(ability.abilityConstants.getName(), map.getCell(startCellRow, startCellColumn), map.getCell(endCellRow, endCellColumn));
+        return getImpactCell(ability.getAbilityConstants().getName(), map.getCell(startCellRow, startCellColumn),
+                map.getCell(endCellRow, endCellColumn));
     }
 
+    @Override
     public Hero[] getAbilityTargets(AbilityName abilityName, Cell startCell, Cell targetCell) {
         AbilityConstants abilityConstants = getAbilityConstants(abilityName);
         Cell[] impactCells = getImpactCells(abilityName, startCell, targetCell);
@@ -410,10 +453,12 @@ public class Game{ // TODO implement World
         }
     }
 
+    @Override
     public Hero[] getAbilityTargets(Ability ability, Cell startCell, Cell targetCell) {
         return getAbilityTargets(ability.getName(), startCell, targetCell);
     }
 
+    @Override
     public Hero[] getAbilityTargets(AbilityName abilityName, int startCellRow, int startCellColumn, int targetCellRow,
                                     int targetCellColumn) {
         if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(targetCellRow, targetCellColumn))
@@ -422,6 +467,7 @@ public class Game{ // TODO implement World
                 targetCellColumn));
     }
 
+    @Override
     public Hero[] getAbilityTargets(Ability ability, int startCellRow, int startCellColumn, int targetCellRow,
                                     int targetCellColumn) {
         if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(targetCellRow, targetCellColumn))
@@ -473,24 +519,24 @@ public class Game{ // TODO implement World
      * @param targetCell
      * @return
      */
-    public Cell[] getRayCells(Cell startCell, Cell targetCell) {
+    public Cell[] getRayCells(Cell startCell, Cell targetCell, boolean wallPiercing) {
         ArrayList<Cell> path = new ArrayList<>();
-        dfs(startCell, startCell, targetCell, new HashMap<>(), path);
+        dfs(startCell, startCell, targetCell, new HashMap<>(), path, wallPiercing);
         return path.toArray(new Cell[0]);
     }
 
     public void dfs(Cell currentCell, Cell startCell, Cell targetCell, HashMap<Cell, Boolean> isSeen,
-                    ArrayList<Cell> path) {
+                    ArrayList<Cell> path, boolean wallPiercing) {
         isSeen.put(currentCell, true);
         path.add(currentCell);
         for (Direction direction : Direction.values()) {
             Cell nextCell = getNextCell(currentCell, direction);
             if (nextCell != null && !isSeen.containsKey(nextCell) && isCloser(currentCell, targetCell, nextCell)) {
                 int collisionState = squareCollision(startCell, targetCell, nextCell);
-                if ((collisionState == 0 || collisionState == 1) && nextCell.isWall())
+                if ((collisionState == 0 || collisionState == 1) && (!wallPiercing && nextCell.isWall()))
                     return;
                 if (collisionState == 1) {
-                    dfs(nextCell, startCell, targetCell, isSeen, path);
+                    dfs(nextCell, startCell, targetCell, isSeen, path, wallPiercing);
                     return;
                 }
             }
@@ -503,10 +549,10 @@ public class Game{ // TODO implement World
                 if (map.isInMap(newRow, newColumn)) nextCell = map.getCell(newRow, newColumn);
                 if (nextCell != null && !isSeen.containsKey(nextCell) && isCloser(currentCell, targetCell, nextCell)) {
                     int collisionState = squareCollision(startCell, targetCell, nextCell);
-                    if (collisionState == 0 || collisionState == 1 && nextCell.isWall())
+                    if (collisionState == 0 || collisionState == 1 && (!wallPiercing && nextCell.isWall()))
                         return;
                     if (collisionState == 1) {
-                        dfs(nextCell, startCell, targetCell, isSeen, path);
+                        dfs(nextCell, startCell, targetCell, isSeen, path, wallPiercing);
                     }
                 }
             }
@@ -587,19 +633,22 @@ public class Game{ // TODO implement World
     }
 
 
+    @Override
     public boolean isInVision(Cell startCell, Cell endCell) {
         if (startCell.isWall() || endCell.isWall())
             return false;
-        Cell[] rayCells = getRayCells(startCell, endCell);
+        Cell[] rayCells = getRayCells(startCell, endCell, false);
         Cell lastCell = rayCells[rayCells.length - 1];
         return lastCell == endCell;
     }
 
+    @Override
     public boolean isInVision(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn) {
         if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(endCellRow, endCellColumn)) return false;
         return isInVision(map.getCell(startCellRow, startCellColumn), map.getCell(endCellRow, endCellColumn));
     }
 
+    @Override
     public Hero[] getMyHeroes() {
         return myHeroes;
     }
@@ -608,6 +657,7 @@ public class Game{ // TODO implement World
         this.myHeroes = myHeroes;
     }
 
+    @Override
     public Hero[] getOppHeroes() {
         return oppHeroes;
     }
@@ -616,6 +666,7 @@ public class Game{ // TODO implement World
         this.oppHeroes = oppHeroes;
     }
 
+    @Override
     public Hero[] getMyDeadHeroes() {
         return myDeadHeroes;
     }
@@ -624,6 +675,7 @@ public class Game{ // TODO implement World
         this.myDeadHeroes = myDeadHeroes;
     }
 
+    @Override
     public Hero[] getOppDeadHeroes() {
         return oppDeadHeroes;
     }
@@ -632,6 +684,7 @@ public class Game{ // TODO implement World
         this.oppDeadHeroes = oppDeadHeroes;
     }
 
+    @Override
     public Map getMap() {
         return map;
     }
@@ -640,6 +693,7 @@ public class Game{ // TODO implement World
         this.map = map;
     }
 
+    @Override
     public CastAbility[] getMyCastAbilities() {
         return myCastAbilities;
     }
@@ -648,6 +702,7 @@ public class Game{ // TODO implement World
         this.myCastAbilities = myCastAbilities;
     }
 
+    @Override
     public GameConstants getGameConstants() {
         return gameConstants;
     }
@@ -656,6 +711,7 @@ public class Game{ // TODO implement World
         this.gameConstants = gameConstants;
     }
 
+    @Override
     public HeroConstants[] getHeroConstants() {
         return heroConstants;
     }
@@ -664,6 +720,7 @@ public class Game{ // TODO implement World
         this.heroConstants = heroConstants;
     }
 
+    @Override
     public AbilityConstants[] getAbilityConstants() {
         return abilityConstants;
     }
@@ -672,6 +729,7 @@ public class Game{ // TODO implement World
         this.abilityConstants = abilityConstants;
     }
 
+    @Override
     public CastAbility[] getOppCastAbilities() {
         return oppCastAbilities;
     }
@@ -680,6 +738,7 @@ public class Game{ // TODO implement World
         this.oppCastAbilities = oppCastAbilities;
     }
 
+    @Override
     public int getAP() {
         return AP;
     }
@@ -688,6 +747,7 @@ public class Game{ // TODO implement World
         this.AP = AP;
     }
 
+    @Override
     public int getMyScore() {
         return myScore;
     }
@@ -696,6 +756,7 @@ public class Game{ // TODO implement World
         this.myScore = myScore;
     }
 
+    @Override
     public int getOppScore() {
         return oppScore;
     }
@@ -704,6 +765,7 @@ public class Game{ // TODO implement World
         this.oppScore = oppScore;
     }
 
+    @Override
     public int getCurrentTurn() {
         return currentTurn;
     }
@@ -712,6 +774,7 @@ public class Game{ // TODO implement World
         this.currentTurn = currentTurn;
     }
 
+    @Override
     public Phase getCurrentPhase() {
         return currentPhase;
     }
@@ -720,6 +783,7 @@ public class Game{ // TODO implement World
         this.currentPhase = currentPhase;
     }
 
+    @Override
     public int getTimeout() {
         return gameConstants.getTimeout();
     }
@@ -728,6 +792,7 @@ public class Game{ // TODO implement World
         gameConstants.setTimeout(timeout);
     }
 
+    @Override
     public int getMaxAP() {
         return gameConstants.getMaxAP();
     }
@@ -736,6 +801,7 @@ public class Game{ // TODO implement World
         gameConstants.setMaxAP(maxAP);
     }
 
+    @Override
     public int getMaxTurns() {
         return gameConstants.getMaxTurns();
     }
@@ -744,6 +810,7 @@ public class Game{ // TODO implement World
         gameConstants.setMaxTurns(maxTurns);
     }
 
+    @Override
     public int getKillScore() {
         return gameConstants.getKillScore();
     }
@@ -752,6 +819,7 @@ public class Game{ // TODO implement World
         gameConstants.setKillScore(killScore);
     }
 
+    @Override
     public int getObjectiveZoneScore() {
         return gameConstants.getObjectiveZoneScore();
     }

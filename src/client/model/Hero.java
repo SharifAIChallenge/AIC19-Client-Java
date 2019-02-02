@@ -75,11 +75,11 @@ public class Hero {
         this.id = id;
     }
 
-    public HeroConstants getHeroConstants() {
+    HeroConstants getHeroConstants() {
         return heroConstants;
     }
 
-    public void setHeroConstants(HeroConstants heroConstants) {
+    void setHeroConstants(HeroConstants heroConstants) {
         this.heroConstants = heroConstants;
     }
 

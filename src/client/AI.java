@@ -1,38 +1,36 @@
 package client;
 
 import client.model.Direction;
-import client.model.Game;
+import client.model.World;
 import client.model.Hero;
 import client.model.HeroName;
 
 public class AI
 {
 
-    public void preProcess(Game game)
+    public void preProcess(World World)
     {
         System.out.println("Process started");
     }
 
-    public void pickTurn(Game game)
+    public void pickTurn(World World)
     {
-        System.out.println("pick started");
-
-        game.pickHero(HeroName.Ruhollah);
+        World.pickHero(HeroName.Ruhollah);
     }
 
-    public void moveTurn(Game game)
+    public void moveTurn(World World)
     {
         System.out.println("move started");
-        Hero myHero = game.getMyHeroes()[0];
+        Hero myHero = World.getMyHeroes()[0];
 
-        game.moveHero(myHero.getId(), new Direction[]{Direction.UP, Direction.UP, Direction.LEFT});
+        World.moveHero(myHero.getId(), new Direction[]{Direction.UP, Direction.UP, Direction.LEFT});
     }
 
-    public void actionTurn(Game game)
+    public void actionTurn(World World)
     {
         System.out.println("action started");
-        Hero myHero = game.getMyHeroes()[0];
-        game.castAbility(myHero, myHero.getAbilities()[0], myHero.getCurrentCell());
+        Hero myHero = World.getMyHeroes()[0];
+        World.castAbility(myHero, myHero.getAbilities()[0], myHero.getCurrentCell());
     }
 
 }

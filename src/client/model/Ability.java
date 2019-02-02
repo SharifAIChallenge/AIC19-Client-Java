@@ -2,7 +2,7 @@ package client.model;
 
 public class Ability {
 
-    AbilityConstants abilityConstants;
+    private AbilityConstants abilityConstants;
     private int remCooldown;
 
     Ability(AbilityConstants abilityConstants) {
@@ -10,11 +10,11 @@ public class Ability {
         this.remCooldown = 0;
     }
 
-    public AbilityConstants getAbilityConstants() {
+    AbilityConstants getAbilityConstants() {
         return abilityConstants;
     }
 
-    public void setAbilityConstants(AbilityConstants abilityConstants) {
+    void setAbilityConstants(AbilityConstants abilityConstants) {
         this.abilityConstants = abilityConstants;
     }
 
