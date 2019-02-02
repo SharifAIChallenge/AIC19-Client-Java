@@ -9,6 +9,19 @@ public class Cell {
     private int row;
     private int column;
 
+    public Cell(){}
+
+    public Cell(int row, int column)
+    {
+        this.row = row;
+        this.column = column;
+        this.isWall = false;
+        this.isInMyRespawnZone = false;
+        this.isInOppRespawnZone = false;
+        this.isInObjectiveZone = false;
+        this.isInVision = false;
+    }
+
     public boolean isWall() {
         return isWall;
     }

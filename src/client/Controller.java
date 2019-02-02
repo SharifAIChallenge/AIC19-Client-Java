@@ -147,7 +147,7 @@ public class Controller
         Game newGame = new Game(game);
         newGame.handleTurnMessage(msg);
         Event endEvent = new Event("end", new Object[]{newGame.getCurrentTurn()});
-        if (game.getCurrentPhase() == Phase.MOVE)
+        if (newGame.getCurrentPhase() == Phase.MOVE)
         {
             moveTurn(newGame, endEvent);
         } else

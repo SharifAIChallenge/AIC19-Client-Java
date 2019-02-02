@@ -34,11 +34,11 @@ public class Game{ // TODO implement World
     }
 
     public Game(Game game) {
-        gameConstants = game.gameConstants;
-        heroConstants = game.heroConstants;
-        abilityConstants = game.abilityConstants;
-        map = game.map;
-        sender = game.sender;
+        this.gameConstants = game.gameConstants;
+        this.heroConstants = game.heroConstants;
+        this.abilityConstants = game.abilityConstants;
+        this.map = game.map;
+        this.sender = game.sender;
     }
 
     private AbilityConstants getAbilityConstants(AbilityName abilityName) {
@@ -113,7 +113,7 @@ public class Game{ // TODO implement World
             int currentHP = heroJson.get("currentHP").getAsInt();
             int respawnTime = heroJson.get("respawnTime").getAsInt();
 
-            Cell currentCell = null;
+            Cell currentCell = new Cell(-1, -1);
             if (heroJson.get("currentCell") != null)
             {
                 JsonObject currentCellJson = heroJson.get("currentCell").getAsJsonObject();
@@ -155,6 +155,7 @@ public class Game{ // TODO implement World
         myHeroes = parseHeroes(jsonRoot, "myHeroes");
         oppHeroes = parseHeroes(jsonRoot, "oppHeroes");
         currentTurn = jsonRoot.get("currentTurn").getAsInt();
+        currentPhase = Phase.PICK;
     }
 
 
@@ -246,11 +247,11 @@ public class Game{ // TODO implement World
     }
 
     public void moveHero(int heroId, Direction[] directions) {
-        String[] directionStrings = new String[directions.length];
-        for (int i = 0; i < directions.length; i++) {
-            directionStrings[i] = directions[i].toString();
-        }
-        Event event = new Event("move", new Object[]{heroId, Json.GSON.toJson(directionStrings)}); // TODO ask Ruhollah
+//        String[] directionStrings = new String[directions.length];
+//        for (int i = 0; i < directions.length; i++) {
+//            directionStrings[i] = directions[i].toString();
+//        }
+        Event event = new Event("move", new Object[]{heroId, Json.GSON.toJson(directions)}); // TODO ask Ruhollah
         sender.accept(new Message(Event.EVENT, event));
     }
 
