@@ -828,4 +828,12 @@ public class Game implements World { // TODO implement World
         gameConstants.setObjectiveZoneScore(objectiveZoneScore);
     }
 
+    @Override
+    public int getMaxScore() {
+        return gameConstants.getMaxScore();
+    }
+
+    public void setMaxScore(int maxScore) {
+        gameConstants.setMaxScore(maxScore);
+    }
 }

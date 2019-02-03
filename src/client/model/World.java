@@ -122,4 +122,6 @@ public interface World {
     int getKillScore();
 
     int getObjectiveZoneScore();
+
+    int getMaxScore();
 }

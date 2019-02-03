@@ -1,56 +1,58 @@
 package client.model;
 
-public class GameConstants
-{
+public class GameConstants {
     private int timeout;
     private int maxAP;
     private int maxTurns;
     private int killScore;
     private int objectiveZoneScore;
-    
-    public int getTimeout()
-    {
+    private int maxScore;
+
+    int getTimeout() {
         return timeout;
     }
 
-    public void setTimeout(int timeout)
-    {
+    void setTimeout(int timeout) {
         this.timeout = timeout;
     }
 
-    public int getMaxAP()
-    {
+    int getMaxAP() {
         return maxAP;
     }
 
-    public void setMaxAP(int maxAP)
-    {
+    void setMaxAP(int maxAP) {
         this.maxAP = maxAP;
     }
 
-    public int getMaxTurns()
-    {
+    int getMaxTurns() {
         return maxTurns;
     }
 
-    public void setMaxTurns(int maxTurns)
-    {
+    void setMaxTurns(int maxTurns) {
         this.maxTurns = maxTurns;
     }
 
-    public int getKillScore() {
+    int getKillScore() {
         return killScore;
     }
 
-    public void setKillScore(int killScore) {
+    void setKillScore(int killScore) {
         this.killScore = killScore;
     }
 
-    public int getObjectiveZoneScore() {
+    int getObjectiveZoneScore() {
         return objectiveZoneScore;
     }
 
-    public void setObjectiveZoneScore(int objectiveZoneScore) {
+    void setObjectiveZoneScore(int objectiveZoneScore) {
         this.objectiveZoneScore = objectiveZoneScore;
+    }
+
+    int getMaxScore() {
+        return maxScore;
+    }
+
+    void setMaxScore(int maxScore) {
+        this.maxScore = maxScore;
     }
 }

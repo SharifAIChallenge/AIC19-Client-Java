@@ -1,36 +1,42 @@
 package client;
 
 import client.model.Direction;
-import client.model.World;
 import client.model.Hero;
 import client.model.HeroName;
+import client.model.World;
 
-public class AI
-{
+import java.util.Random;
 
-    public void preProcess(World World)
-    {
-        System.out.println("Process started");
+public class AI {
+
+    public void preProcess(World world) {
+        System.out.println("pre process started");
+        world.pickHero(HeroName.Ruhollah);
+        world.pickHero(HeroName.Ali);
+        world.castAbility(1, world.getAbilityConstants()[0].getName(), 1, 1);
+        world.moveHero(1, new Direction[]{Direction.DOWN});
     }
 
-    public void pickTurn(World World)
-    {
-        World.pickHero(HeroName.Ruhollah);
+    public void pickTurn(World world) {
+        System.out.println("pick started");
+        int numberOfHeroes = world.getMyHeroes().length;
+        world.pickHero(HeroName.values()[numberOfHeroes % (HeroName.values().length)]);
     }
 
-    public void moveTurn(World World)
-    {
+    public void moveTurn(World world) {
         System.out.println("move started");
-        Hero myHero = World.getMyHeroes()[0];
-
-        World.moveHero(myHero.getId(), new Direction[]{Direction.UP, Direction.UP, Direction.LEFT});
+        for (Hero hero : world.getMyHeroes()) {
+            world.moveHero(hero.getId(), new Direction[]{Direction.UP, Direction.UP, Direction.LEFT});
+        }
     }
 
-    public void actionTurn(World World)
-    {
+    public void actionTurn(World world) {
         System.out.println("action started");
-        Hero myHero = World.getMyHeroes()[0];
-        World.castAbility(myHero, myHero.getAbilities()[0], myHero.getCurrentCell());
+        for (Hero hero : world.getMyHeroes()) {
+            world.castAbility(hero, hero.getAbilities()[(new Random().nextInt())%hero.getAbilities().length],
+                    world.getMap().getCell((new Random().nextInt())%world.getMap().getRowNum(),
+                            (new Random().nextInt())%world.getMap().getColumnNum()));
+        }
     }
 
 }
