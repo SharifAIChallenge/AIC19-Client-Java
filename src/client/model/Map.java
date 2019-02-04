@@ -47,7 +47,7 @@ public class Map
         return cells;
     }
 
-    public void setCells(Cell[][] cells)
+    void setCells(Cell[][] cells)
     {
         this.cells = cells;
     }
@@ -57,7 +57,7 @@ public class Map
         return rowNum;
     }
 
-    public void setRowNum(int rowNum)
+    void setRowNum(int rowNum)
     {
         this.rowNum = rowNum;
     }
@@ -67,7 +67,7 @@ public class Map
         return columnNum;
     }
 
-    public void setColumnNum(int columnNum)
+    void setColumnNum(int columnNum)
     {
         this.columnNum = columnNum;
     }
@@ -77,7 +77,7 @@ public class Map
         return myRespawnZone;
     }
 
-    public void setMyRespawnZone(Cell[] myRespawnZone)
+    void setMyRespawnZone(Cell[] myRespawnZone)
     {
         this.myRespawnZone = myRespawnZone;
     }
@@ -87,7 +87,7 @@ public class Map
         return oppRespawnZone;
     }
 
-    public void setOppRespawnZone(Cell[] oppRespawnZone)
+    void setOppRespawnZone(Cell[] oppRespawnZone)
     {
         this.oppRespawnZone = oppRespawnZone;
     }
@@ -97,7 +97,7 @@ public class Map
         return objectiveZone;
     }
 
-    public void setObjectiveZone(Cell[] objectiveZone)
+    void setObjectiveZone(Cell[] objectiveZone)
     {
         this.objectiveZone = objectiveZone;
     }

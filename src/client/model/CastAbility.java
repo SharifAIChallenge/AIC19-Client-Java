@@ -11,7 +11,7 @@ public class CastAbility {
         return casterId;
     }
 
-    public void setCasterId(int casterId) {
+    void setCasterId(int casterId) {
         this.casterId = casterId;
     }
 
@@ -19,7 +19,7 @@ public class CastAbility {
         return targetHeroIds;
     }
 
-    public void setTargetHeroIds(int[] targetHeroIds) {
+    void setTargetHeroIds(int[] targetHeroIds) {
         this.targetHeroIds = targetHeroIds;
     }
 
@@ -27,7 +27,7 @@ public class CastAbility {
         return startCell;
     }
 
-    public void setStartCell(Cell startCell) {
+    void setStartCell(Cell startCell) {
         this.startCell = startCell;
     }
 
@@ -35,7 +35,7 @@ public class CastAbility {
         return endCell;
     }
 
-    public void setEndCell(Cell endCell) {
+    void setEndCell(Cell endCell) {
         this.endCell = endCell;
     }
 
@@ -43,7 +43,7 @@ public class CastAbility {
         return abilityName;
     }
 
-    public void setAbilityName(AbilityName abilityName) {
+    void setAbilityName(AbilityName abilityName) {
         this.abilityName = abilityName;
     }
 }

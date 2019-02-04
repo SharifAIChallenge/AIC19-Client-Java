@@ -22,7 +22,7 @@ public class Ability {
         return remCooldown;
     }
 
-    public void setRemCooldown(int remCooldown) {
+    void setRemCooldown(int remCooldown) {
         this.remCooldown = remCooldown;
     }
 
@@ -30,7 +30,7 @@ public class Ability {
         return abilityConstants.getName();
     }
 
-    public void setName(AbilityName name) {
+    void setName(AbilityName name) {
         abilityConstants.setName(name);
     }
 
@@ -38,7 +38,7 @@ public class Ability {
         return abilityConstants.getType();
     }
 
-    public void setType(AbilityType type) {
+    void setType(AbilityType type) {
         abilityConstants.setType(type);
     }
 
@@ -46,7 +46,7 @@ public class Ability {
         return abilityConstants.getRange();
     }
 
-    public void setRange(int range) {
+    void setRange(int range) {
         abilityConstants.setRange(range);
     }
 
@@ -54,7 +54,7 @@ public class Ability {
         return abilityConstants.getAPCost();
     }
 
-    public void setAPCost(int APCost) {
+    void setAPCost(int APCost) {
         abilityConstants.setAPCost(APCost);
     }
 
@@ -62,7 +62,7 @@ public class Ability {
         return abilityConstants.getCooldown();
     }
 
-    public void setCooldown(int cooldown) {
+    void setCooldown(int cooldown) {
         abilityConstants.setCooldown(cooldown);
     }
 
@@ -70,7 +70,7 @@ public class Ability {
         return abilityConstants.getAreaOfEffect();
     }
 
-    public void setAreaOfEffect(int areaOfEffect) {
+    void setAreaOfEffect(int areaOfEffect) {
         abilityConstants.setAreaOfEffect(areaOfEffect);
     }
 
@@ -78,7 +78,7 @@ public class Ability {
         return abilityConstants.getPower();
     }
 
-    public void setPower(int power) {
+    void setPower(int power) {
         abilityConstants.setPower(power);
     }
 
@@ -86,7 +86,7 @@ public class Ability {
         return abilityConstants.isLobbing();
     }
 
-    public void setLobbing(boolean lobbing) {
+    void setLobbing(boolean lobbing) {
         abilityConstants.setLobbing(lobbing);
     }
 
@@ -94,7 +94,7 @@ public class Ability {
         return abilityConstants.isPiercing();
     }
 
-    public void setPiercing(boolean piercing) {
+    void setPiercing(boolean piercing) {
         abilityConstants.setPiercing(piercing);
     }
 }

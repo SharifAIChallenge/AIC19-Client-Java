@@ -71,7 +71,7 @@ public class Hero {
         return id;
     }
 
-    public void setId(int id) {
+    void setId(int id) {
         this.id = id;
     }
 
@@ -87,7 +87,7 @@ public class Hero {
         return abilities;
     }
 
-    public void setAbilities(Ability[] abilities) {
+    void setAbilities(Ability[] abilities) {
         this.abilities = abilities;
     }
 
@@ -95,7 +95,7 @@ public class Hero {
         return dodgeAbilities;
     }
 
-    public void setDodgeAbilities(Ability[] dodgeAbilities) {
+    void setDodgeAbilities(Ability[] dodgeAbilities) {
         this.dodgeAbilities = dodgeAbilities;
     }
 
@@ -103,7 +103,7 @@ public class Hero {
         return healAbilities;
     }
 
-    public void setHealAbilities(Ability[] healAbilities) {
+    void setHealAbilities(Ability[] healAbilities) {
         this.healAbilities = healAbilities;
     }
 
@@ -111,7 +111,7 @@ public class Hero {
         return attackAbilities;
     }
 
-    public void setAttackAbilities(Ability[] attackAbilities) {
+    void setAttackAbilities(Ability[] attackAbilities) {
         this.attackAbilities = attackAbilities;
     }
 
@@ -119,7 +119,7 @@ public class Hero {
         return currentHP;
     }
 
-    public void setCurrentHP(int currentHP) {
+    void setCurrentHP(int currentHP) {
         this.currentHP = currentHP;
     }
 
@@ -127,7 +127,7 @@ public class Hero {
         return currentCell;
     }
 
-    public void setCurrentCell(Cell currentCell) {
+    void setCurrentCell(Cell currentCell) {
         this.currentCell = currentCell;
     }
 
@@ -135,7 +135,7 @@ public class Hero {
         return recentPath;
     }
 
-    public void setRecentPath(Cell[] recentPath) {
+    void setRecentPath(Cell[] recentPath) {
         this.recentPath = recentPath;
     }
 
@@ -143,7 +143,7 @@ public class Hero {
         return heroConstants.getName();
     }
 
-    public void setName(HeroName name) {
+    void setName(HeroName name) {
         heroConstants.setName(name);
     }
 
@@ -151,7 +151,7 @@ public class Hero {
         return heroConstants.getAbilityNames();
     }
 
-    public void setAbilityNames(AbilityName[] abilityNames) {
+    void setAbilityNames(AbilityName[] abilityNames) {
         heroConstants.setAbilityNames(abilityNames);
     }
 
@@ -159,7 +159,7 @@ public class Hero {
         return heroConstants.getMaxHP();
     }
 
-    public void setMaxHP(int maxHP) {
+    void setMaxHP(int maxHP) {
         heroConstants.setMaxHP(maxHP);
     }
 
@@ -167,7 +167,7 @@ public class Hero {
         return heroConstants.getMoveAPCost();
     }
 
-    public void setMoveAPCost(int moveAPCost) {
+    void setMoveAPCost(int moveAPCost) {
         heroConstants.setMoveAPCost(moveAPCost);
     }
 
@@ -175,7 +175,7 @@ public class Hero {
         return heroConstants.getRespawnTime();
     }
 
-    public void setHeroConstantsRespawnTime(int respawnTime) {
+    void setHeroConstantsRespawnTime(int respawnTime) {
         heroConstants.setRespawnTime(respawnTime);
     }
 
@@ -183,7 +183,7 @@ public class Hero {
         return remRespawnTime;
     }
 
-    public void setRemRespawnTime(int remRespawnTime) {
+    void setRemRespawnTime(int remRespawnTime) {
         this.remRespawnTime = remRespawnTime;
     }
 }

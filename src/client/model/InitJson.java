@@ -10,7 +10,7 @@ public class InitJson {
         return map;
     }
 
-    public void setMap(Map map) {
+    void setMap(Map map) {
         this.map = map;
     }
 
@@ -18,7 +18,7 @@ public class InitJson {
         return gameConstants;
     }
 
-    public void setGameConstants(GameConstants gameConstants) {
+    void setGameConstants(GameConstants gameConstants) {
         this.gameConstants = gameConstants;
     }
 
@@ -26,7 +26,7 @@ public class InitJson {
         return heroConstants;
     }
 
-    public void setHeroConstants(HeroConstants[] heroConstants) {
+    void setHeroConstants(HeroConstants[] heroConstants) {
         this.heroConstants = heroConstants;
     }
 
@@ -34,7 +34,7 @@ public class InitJson {
         return abilityConstants;
     }
 
-    public void setAbilityConstants(AbilityConstants[] abilityConstants) {
+    void setAbilityConstants(AbilityConstants[] abilityConstants) {
         this.abilityConstants = abilityConstants;
     }
 }

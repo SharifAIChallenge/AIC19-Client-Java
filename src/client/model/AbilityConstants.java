@@ -15,7 +15,7 @@ public class AbilityConstants {
         return name;
     }
 
-    public void setName(AbilityName name) {
+    void setName(AbilityName name) {
         this.name = name;
     }
 
@@ -23,7 +23,7 @@ public class AbilityConstants {
         return type;
     }
 
-    public void setType(AbilityType type) {
+    void setType(AbilityType type) {
         this.type = type;
     }
 
@@ -31,7 +31,7 @@ public class AbilityConstants {
         return range;
     }
 
-    public void setRange(int range) {
+    void setRange(int range) {
         this.range = range;
     }
 
@@ -39,7 +39,7 @@ public class AbilityConstants {
         return APCost;
     }
 
-    public void setAPCost(int APCost) {
+    void setAPCost(int APCost) {
         this.APCost = APCost;
     }
 
@@ -47,7 +47,7 @@ public class AbilityConstants {
         return cooldown;
     }
 
-    public void setCooldown(int cooldown) {
+    void setCooldown(int cooldown) {
 
         this.cooldown = cooldown;
     }
@@ -56,7 +56,7 @@ public class AbilityConstants {
         return areaOfEffect;
     }
 
-    public void setAreaOfEffect(int areaOfEffect) {
+    void setAreaOfEffect(int areaOfEffect) {
         this.areaOfEffect = areaOfEffect;
     }
 
@@ -64,7 +64,7 @@ public class AbilityConstants {
         return power;
     }
 
-    public void setPower(int power) {
+    void setPower(int power) {
         this.power = power;
     }
 
@@ -72,7 +72,7 @@ public class AbilityConstants {
         return isLobbing;
     }
 
-    public void setLobbing(boolean lobbing) {
+    void setLobbing(boolean lobbing) {
         isLobbing = lobbing;
     }
 
@@ -80,7 +80,7 @@ public class AbilityConstants {
         return isPiercing;
     }
 
-    public void setPiercing(boolean piercing) {
+    void setPiercing(boolean piercing) {
         this.isPiercing = piercing;
     }
 }

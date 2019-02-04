@@ -14,7 +14,7 @@ public class AI {
         world.pickHero(HeroName.Ruhollah);
         world.pickHero(HeroName.Ali);
         world.castAbility(1, world.getAbilityConstants()[0].getName(), 1, 1);
-        world.moveHero(1, new Direction[]{Direction.DOWN});
+        world.moveHero(1, Direction.DOWN);
     }
 
     public void pickTurn(World world) {
@@ -26,16 +26,16 @@ public class AI {
     public void moveTurn(World world) {
         System.out.println("move started");
         for (Hero hero : world.getMyHeroes()) {
-            world.moveHero(hero.getId(), new Direction[]{Direction.UP, Direction.UP, Direction.LEFT});
+            world.moveHero(hero.getId(), Direction.DOWN);
         }
     }
 
     public void actionTurn(World world) {
         System.out.println("action started");
         for (Hero hero : world.getMyHeroes()) {
-            world.castAbility(hero, hero.getAbilities()[(new Random().nextInt())%hero.getAbilities().length],
-                    world.getMap().getCell((new Random().nextInt())%world.getMap().getRowNum(),
-                            (new Random().nextInt())%world.getMap().getColumnNum()));
+            world.castAbility(hero, hero.getAbilities()[(new Random().nextInt()) % hero.getAbilities().length],
+                    world.getMap().getCell((new Random().nextInt()) % world.getMap().getRowNum(),
+                            (new Random().nextInt()) % world.getMap().getColumnNum()));
         }
     }
 
