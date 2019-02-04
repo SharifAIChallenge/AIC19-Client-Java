@@ -9,7 +9,7 @@ public class Cell {
     private int row;
     private int column;
 
-    public Cell(){}
+    public Cell(){} //TODO delete
 
     public Cell(int row, int column)
     {

@@ -1,7 +1,6 @@
 package client.model;
 
-public interface World
-{
+public interface World {
 
     /**
      * Returns the hero with given id.
@@ -77,15 +76,10 @@ public interface World
      * Picks one of the heroes in the game for you.
      * It can only be used in PICK phase otherwise it won't do anything.
      *
-     * @param heroType Type of one the heroes in the game
+     * @param heroName Type of one the heroes in the game
      */
-    void pickHero(HeroType heroType);
+    void pickHero(HeroName heroName);
 
-/*
-    boolean isAccessible(int cellRow, int cellColumn);//TODO delete
-
-    boolean isAccessible(Cell cell);
-*/
 
     /**
      * Returns an array of directions to reach the end cell from start cell.
@@ -100,11 +94,6 @@ public interface World
 
     Direction[] getPathMoveDirections(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn);
 
-/*
-    boolean isReachable(Cell startCell, Cell targetCell);
-
-    boolean isReachable(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn); //TODO delete
-*/
 
     /**
      * Returns the Manhattan distance between two cells.
@@ -117,16 +106,6 @@ public interface World
     int manhattanDistance(Cell firstCell, Cell secondCell);
 
     int manhattanDistance(int firstCellRow, int firstCellColumn, int secondCellRow, int secondCellColumn);
-
-    /*Cell[] getImpactCells(AbilityName abilityName, Cell startCell, Cell targetCell);//TODO delete
-
-    Cell[] getImpactCells(Ability ability, Cell startCell, Cell targetCell);
-
-    Cell[] getImpactCells(AbilityName abilityName, int startCellRow, int startCellColumn,
-                          int targetCellRow, int targetCellColumn);
-
-    Cell[] getImpactCells(Ability ability, int startCellRow, int startCellColumn,
-                          int targetCellRow, int targetCellColumn);*/
 
     /**
      * Returns the cell that our ability will land on.
@@ -155,8 +134,8 @@ public interface World
      * in cells around the ability's impact cell (If they are in ability's AOE).
      *
      * @param abilityName Name of the ability we want to cast
-     * @param startCell The cell we want to cast from
-     * @param targetCell The cell we are aiming to
+     * @param startCell   The cell we want to cast from
+     * @param targetCell  The cell we are aiming to
      * @return
      */
     Hero[] getAbilityTargets(AbilityName abilityName, Cell startCell, Cell targetCell);
@@ -175,7 +154,7 @@ public interface World
      * we will know he's there.
      *
      * @param startCell The cell we want to check the vision from
-     * @param endCell The cell we want to check the vision to
+     * @param endCell   The cell we want to check the vision to
      * @return
      */
     boolean isInVision(Cell startCell, Cell endCell);
@@ -195,8 +174,6 @@ public interface World
     CastAbility[] getMyCastAbilities();
 
     CastAbility[] getOppCastAbilities();
-
-//    GameConstants getGameConstants(); //TODO delete
 
     HeroConstants[] getHeroConstants();
 

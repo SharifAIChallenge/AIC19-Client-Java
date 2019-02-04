@@ -34,7 +34,6 @@ public class Hero {
                     break;
             }
         }
-        //TODO rename
         this.abilities = abilities.toArray(new Ability[0]);
         this.dodgeAbilities = dodgeAbilities.toArray(new Ability[0]);
         this.defensiveAbilities = defensiveAbilities.toArray(new Ability[0]);
@@ -140,12 +139,12 @@ public class Hero {
         this.recentPath = recentPath;
     }
 
-    public HeroType getType() {
-        return heroConstants.getType();
+    public HeroName getName() {
+        return heroConstants.getName();
     }
 
-    void setType(HeroType type) {
-        heroConstants.setType(type);
+    void setName(HeroName name) {
+        heroConstants.setName(name);
     }
 
     public AbilityName[] getAbilityNames() {

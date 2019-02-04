@@ -66,5 +66,12 @@ public class GameConstants {
         return firstMoveTimeout;
     }
 
+    void setPreprocessTimeout(int preprocessTimeout) {
+        this.preprocessTimeout = preprocessTimeout;
+    }
 
+    void setFirstMoveTimeout(int firstMoveTimeout) {
+        this.firstMoveTimeout = firstMoveTimeout;
+    }
+    
 }

@@ -1,5 +1,5 @@
 package client.model;
 
-public enum HeroType {
+public enum HeroName {
     SENTRY, BLASTER, HEALER, GUARDIAN
 }

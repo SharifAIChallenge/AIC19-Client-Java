@@ -2,7 +2,7 @@ package client;
 
 import client.model.Direction;
 import client.model.Hero;
-import client.model.HeroType;
+import client.model.HeroName;
 import client.model.World;
 
 import java.util.Random;
@@ -11,8 +11,8 @@ public class AI {
 
     public void preProcess(World world) {
         System.out.println("pre process started");
-        world.pickHero(HeroType.GUARDIAN);
-        world.pickHero(HeroType.HEALER);
+        world.pickHero(HeroName.GUARDIAN);
+        world.pickHero(HeroName.HEALER);
         world.castAbility(1, world.getAbilityConstants()[0].getName(), 1, 1);
         world.moveHero(1, Direction.DOWN);
     }
@@ -20,7 +20,7 @@ public class AI {
     public void pickTurn(World world) {
         System.out.println("pick started");
         int numberOfHeroes = world.getMyHeroes().length;
-        world.pickHero(HeroType.values()[numberOfHeroes % (HeroType.values().length)]);
+        world.pickHero(HeroName.values()[numberOfHeroes % (HeroName.values().length)]);
     }
 
     public void moveTurn(World world) {
