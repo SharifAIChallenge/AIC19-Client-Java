@@ -173,7 +173,7 @@ public interface World
      * The return value is true if we have vision from the start cell to end cell.
      * The true value means that if there is an ally hero in start cell and an opponent hero in end cell,
      * we will know he's there.
-     * 
+     *
      * @param startCell The cell we want to check the vision from
      * @param endCell The cell we want to check the vision to
      * @return
