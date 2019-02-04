@@ -9,7 +9,8 @@ import common.network.data.Message;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class Game implements World {
+public class Game implements World
+{
     private GameConstants gameConstants;
     private HeroConstants[] heroConstants;
     private AbilityConstants[] abilityConstants;
@@ -31,11 +32,13 @@ public class Game implements World {
 
     private Consumer<Message> sender;
 
-    public Game(Consumer<Message> sender) {
+    public Game(Consumer<Message> sender)
+    {
         this.sender = sender;
     }
 
-    public Game(Game game) {
+    public Game(Game game)
+    {
         this.gameConstants = game.gameConstants;
         this.heroConstants = game.heroConstants;
         this.abilityConstants = game.abilityConstants;
@@ -55,9 +58,12 @@ public class Game implements World {
         return null;
     }
 
-    private HeroConstants getHeroConstants(HeroType heroType) {
-        for (HeroConstants heroConstants : heroConstants) {
-            if (heroConstants.getType() == heroType) {
+    private HeroConstants getHeroConstants(HeroType heroType)
+    {
+        for (HeroConstants heroConstants : heroConstants)
+        {
+            if (heroConstants.getType() == heroType)
+            {
                 return heroConstants;
             }
         }
@@ -311,18 +317,21 @@ public class Game implements World {
     }
 
     @Override
-    public void pickHero(HeroType heroType) {
+    public void pickHero(HeroType heroType)
+    {
         Event event = new Event("pick", new Object[]{heroType.toString()});
         sender.accept(new Message(Event.EVENT, event));
     }
 
-    public boolean isAccessible(int cellRow, int cellColumn) {
+    public boolean isAccessible(int cellRow, int cellColumn)
+    {
         if (!map.isInMap(cellRow, cellColumn))
             return false;
         return !map.getCell(cellRow, cellColumn).isWall();
     }
 
-    public boolean isAccessible(Cell cell) {
+    public boolean isAccessible(Cell cell)
+    {
         return !cell.isWall();
     }
 
@@ -382,30 +391,41 @@ public class Game implements World {
                 map.getCell(endCellRow, endCellColumn));
     }
 
-    public boolean isReachable(Cell startCell, Cell targetCell) {
+    public boolean isReachable(Cell startCell, Cell targetCell)
+    {
         return (getPathMoveDirections(startCell, targetCell) != new Direction[0]) || startCell == targetCell;
     }
 
-    public boolean isReachable(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn) {
+    public boolean isReachable(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn)
+    {
         if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(endCellRow, endCellColumn))
             return false;
         return isReachable(map.getCell(startCellRow, startCellColumn), map.getCell(endCellRow, endCellColumn));
     }
 
     @Override
-    public int manhattanDistance(Cell startCell, Cell endCell)
+    public int manhattanDistance(Cell firstCell, Cell secondCell)
     {
-        return Math.abs(startCell.getRow() - endCell.getRow()) + Math.abs(startCell.getColumn() - endCell.getColumn());
+        return Math.abs(firstCell.getRow() - secondCell.getRow()) + Math.abs(firstCell.getColumn() - secondCell.getColumn());
     }
 
     @Override
-    public int manhattanDistance(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn)
+    public int manhattanDistance(int firstCellRow, int firstCellColumn, int secondCellRow, int secondCellColumn)
     {
-        if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(endCellRow, endCellColumn)) return -1;
-        return manhattanDistance(map.getCell(startCellRow, startCellColumn), map.getCell(endCellRow, endCellColumn));
+        if (!map.isInMap(firstCellRow, firstCellColumn) || !map.isInMap(secondCellRow, secondCellColumn)) return -1;
+        return manhattanDistance(map.getCell(firstCellRow, firstCellColumn), map.getCell(secondCellRow, secondCellColumn));
     }
 
-    public Cell[] getImpactCells(AbilityName abilityName, Cell startCell, Cell targetCell) {
+    /*TODO*/// add Javadoc
+
+    /**
+     * @param abilityName
+     * @param startCell
+     * @param targetCell
+     * @return
+     */
+    public Cell[] getImpactCells(AbilityName abilityName, Cell startCell, Cell targetCell)
+    {
         AbilityConstants abilityConstants = getAbilityConstants(abilityName);
         if ((!abilityConstants.isLobbing() && startCell.isWall()) || startCell == targetCell)
         {
@@ -420,7 +440,8 @@ public class Game implements World {
                 break;
             lastCell = cell;
             if ((getOppHero(cell) != null && !abilityConstants.getType().equals(AbilityType.DEFENSIVE))
-                    || (getMyHero(cell) != null && abilityConstants.getType().equals(AbilityType.DEFENSIVE))) {
+                    || (getMyHero(cell) != null && abilityConstants.getType().equals(AbilityType.DEFENSIVE)))
+            {
                 impactCells.add(cell);
                 if (!abilityConstants.isLobbing()) break;
             }
@@ -430,7 +451,8 @@ public class Game implements World {
         return impactCells.toArray(new Cell[0]);
     }
 
-    public Cell[] getImpactCells(Ability ability, Cell startCell, Cell targetCell) {
+    public Cell[] getImpactCells(Ability ability, Cell startCell, Cell targetCell)
+    {
         return getImpactCells(ability.getName(), startCell, targetCell);
     }
 
@@ -571,6 +593,8 @@ public class Game implements World {
         }
         return heroes.toArray(new Hero[0]);
     }
+
+    /*TODO*/// check javadoc
 
     /**
      * Get all the cells that collide with the ray line in at least one non corner point, before reaching a wall.
@@ -793,7 +817,8 @@ public class Game implements World {
         this.myCastAbilities = myCastAbilities;
     }
 
-    public GameConstants getGameConstants() {
+    public GameConstants getGameConstants()
+    {
         return gameConstants;
     }
 
