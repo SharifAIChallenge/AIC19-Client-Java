@@ -5,6 +5,8 @@
 //
 //public class Test {
 //    public static void main(String[] args) {
+//        JsonObject j = Json.GSON.toJsonTree(new Test1()).getAsJsonObject();
+//        System.err.println(j.get("ar"));
 //        Game game = new Game();
 //        Map map = new Map();
 //        map.setRowNum(5);
@@ -50,4 +52,8 @@
 //        HeroConstants heroConstants2 = Json.GSON.fromJson(j, HeroConstants.class);
 //        System.out.println(Json.GSON.toJson(heroConstants2));
 //    }
+//}
+//
+//class Test1 {
+//    int[] ar = new int[1];
 //}

@@ -1,6 +1,7 @@
 package client.model;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import common.model.Event;
 import common.network.Json;
@@ -135,14 +136,17 @@ public class Game implements World {
                 recentCells.add(recentCell);
             }
             ArrayList<Ability> abilities = new ArrayList<>();
-            JsonArray cooldownsJson = heroJson.get("cooldowns").getAsJsonArray();
-            for (int j = 0; j < cooldownsJson.size(); j++) {
-                JsonObject cooldownJson = cooldownsJson.get(j).getAsJsonObject();
-                AbilityName abilityName = AbilityName.valueOf(cooldownJson.get("name").getAsString());
-                int remCooldown = cooldownJson.get("remCooldown").getAsInt();
-                Ability ability = new Ability(getAbilityConstants(abilityName));
-                ability.setRemCooldown(remCooldown);
-                abilities.add(ability);
+            JsonElement cooldownsElement = heroJson.get("cooldowns");
+            if (cooldownsElement != null) {
+                JsonArray cooldownsJson = cooldownsElement.getAsJsonArray();
+                for (int j = 0; j < cooldownsJson.size(); j++) {
+                    JsonObject cooldownJson = cooldownsJson.get(j).getAsJsonObject();
+                    AbilityName abilityName = AbilityName.valueOf(cooldownJson.get("name").getAsString());
+                    int remCooldown = cooldownJson.get("remCooldown").getAsInt();
+                    Ability ability = new Ability(getAbilityConstants(abilityName));
+                    ability.setRemCooldown(remCooldown);
+                    abilities.add(ability);
+                }
             }
             Hero hero = new Hero(getHeroConstants(name), id, abilities);
             hero.setCurrentHP(currentHP);
@@ -837,10 +841,12 @@ public class Game implements World {
         return movePhaseNum;
     }
 
+    @Override
     public int getPreprocessTimeout() {
         return gameConstants.getPreprocessTimeout();
     }
 
+    @Override
     public int getFirstMoveTimeout() {
         return gameConstants.getFirstMoveTimeout();
     }
