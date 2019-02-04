@@ -779,7 +779,7 @@ public class Game implements World {
     }
 
     @Override
-    public int getTimeout() {
+    public int getNormalTimeout() {
         return gameConstants.getNormalTimeout();
     }
 

@@ -65,4 +65,6 @@ public class GameConstants {
     public int getFirstMoveTimeout() {
         return firstMoveTimeout;
     }
+
+
 }
