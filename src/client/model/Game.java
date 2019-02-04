@@ -121,7 +121,7 @@ public class Game implements World {
                 JsonObject currentCellJson = heroJson.get("currentCell").getAsJsonObject();
                 int row = currentCellJson.get("row").getAsInt();
                 int column = currentCellJson.get("column").getAsInt();
-                currentCell = map.getCell(row, column); // TODO check this out, ask Ruhollah
+                currentCell = map.getCell(row, column);
             }
             JsonArray recentPathJson = heroJson.get("recentPath").getAsJsonArray();
             ArrayList<Cell> recentCells = new ArrayList<>();
@@ -262,7 +262,7 @@ public class Game implements World {
 
     @Override
     public void moveHero(int heroId, Direction direction) {
-        Event event = new Event("move", new Object[]{heroId, Json.GSON.toJson(direction)}); // TODO ask Ruhollah
+        Event event = new Event("move", new Object[]{heroId, Json.GSON.toJson(direction)}); //TODO is this ok?
         sender.accept(new Message(Event.EVENT, event));
     }
 
@@ -329,7 +329,6 @@ public class Game implements World {
         }
         return new Direction[0];
     }
-
 
     @Override
     public Direction[] getPathMoveDirections(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn) {
@@ -518,14 +517,14 @@ public class Game implements World {
      * @param targetCell
      * @return
      */
-    public Cell[] getRayCells(Cell startCell, Cell targetCell, boolean wallPiercing) {
+    private Cell[] getRayCells(Cell startCell, Cell targetCell, boolean wallPiercing) {
         ArrayList<Cell> path = new ArrayList<>();
         dfs(startCell, startCell, targetCell, new HashMap<>(), path, wallPiercing);
         return path.toArray(new Cell[0]);
     }
 
-    public void dfs(Cell currentCell, Cell startCell, Cell targetCell, HashMap<Cell, Boolean> isSeen,
-                    ArrayList<Cell> path, boolean wallPiercing) {
+    private void dfs(Cell currentCell, Cell startCell, Cell targetCell, HashMap<Cell, Boolean> isSeen,
+                     ArrayList<Cell> path, boolean wallPiercing) {
         isSeen.put(currentCell, true);
         path.add(currentCell);
         for (Direction direction : Direction.values()) {
@@ -557,7 +556,7 @@ public class Game implements World {
             }
     }
 
-    public boolean isCloser(Cell currentCell, Cell targetCell, Cell nextCell) {
+    private boolean isCloser(Cell currentCell, Cell targetCell, Cell nextCell) {
         return manhattanDistance(nextCell, targetCell) <= manhattanDistance(currentCell, targetCell);
     }
 
@@ -572,8 +571,10 @@ public class Game implements World {
      * @param cell
      * @return
      */
-    public int squareCollision(Cell startCell, Cell targetCell, Cell cell) {
-        boolean hasNegative = false, hasPositive = false, hasZero = false;
+    private int squareCollision(Cell startCell, Cell targetCell, Cell cell) {
+        boolean hasNegative = false;
+        boolean hasPositive = false;
+        boolean hasZero = false;
         for (int row = 2 * cell.getRow(); row <= 2 * (cell.getRow() + 1); row += 2)
             for (int column = 2 * cell.getColumn(); column <= 2 * (cell.getColumn() + 1); column += 2) {
                 int crossProduct = crossProduct(2 * startCell.getRow() + 1, 2 * startCell.getColumn() + 1,
@@ -601,11 +602,11 @@ public class Game implements World {
      * @param y3
      * @return
      */
-    public int crossProduct(int x1, int y1, int x2, int y2, int x3, int y3) {
+    private int crossProduct(int x1, int y1, int x2, int y2, int x3, int y3) {
         return (x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1);
     }
 
-    public Cell getNextCell(Cell cell, Direction direction) {
+    private Cell getNextCell(Cell cell, Direction direction) {
         switch (direction) {
             case UP:
                 if (map.isInMap(cell.getRow() - 1, cell.getColumn()))
