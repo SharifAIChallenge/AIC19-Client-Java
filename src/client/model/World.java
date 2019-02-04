@@ -212,7 +212,11 @@ public interface World
 
     Phase getCurrentPhase();
 
-    int getTimeout();//TODO
+    int getNormalTimeout();//TODO
+
+    int getPreprocessTimeout();
+
+    int getFirstMoveTimeout();
 
     int getMaxAP();
 
@@ -225,4 +229,5 @@ public interface World
     int getMaxScore();//TODO
 
     int getMovePhaseNum();
+
 }
