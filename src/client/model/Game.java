@@ -115,10 +115,10 @@ public class Game implements World {
         for (int i = 0; i < heroesJson.size(); i++) {
             JsonObject heroJson = heroesJson.get(i).getAsJsonObject();
             int id = heroJson.get("id").getAsInt();
-            HeroType name = HeroType.valueOf(heroJson.get("type").getAsString());
+            HeroType heroType = HeroType.valueOf(heroJson.get("type").getAsString());
             int currentHP = heroJson.get("currentHP").getAsInt();
             int respawnTime = heroJson.get("respawnTime").getAsInt();
-
+            HeroConstants currentHeroConstants = getHeroConstants(heroType);
             Cell currentCell = new Cell(-1, -1);
             if (heroJson.get("currentCell") != null) {
                 JsonObject currentCellJson = heroJson.get("currentCell").getAsJsonObject();
@@ -147,8 +147,14 @@ public class Game implements World {
                     ability.setRemCooldown(remCooldown);
                     abilities.add(ability);
                 }
+            } else {
+                for (AbilityName abilityName : currentHeroConstants.getAbilityNames()) {
+                    Ability ability = new Ability(getAbilityConstants(abilityName));
+                    ability.setRemCooldown(-1);
+                    abilities.add(ability);
+                }
             }
-            Hero hero = new Hero(getHeroConstants(name), id, abilities);
+            Hero hero = new Hero(getHeroConstants(heroType), id, abilities);
             hero.setCurrentHP(currentHP);
             hero.setCurrentCell(currentCell);
             hero.setRemRespawnTime(respawnTime);
