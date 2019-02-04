@@ -162,7 +162,8 @@ public class Game implements World {
         return heroes;
     }
 
-    public void handlePickMessage(Message msg) {
+    public void handlePickMessage(Message msg)
+    {
         JsonObject jsonRoot = msg.args.get(0).getAsJsonObject();
         myHeroes = parseHeroes(jsonRoot, "myHeroes");
         oppHeroes = parseHeroes(jsonRoot, "oppHeroes");
@@ -170,15 +171,18 @@ public class Game implements World {
         currentPhase = Phase.PICK;
     }
 
-    private Hero[] parseHeroes(JsonObject rootJson, String owner) {
+    private Hero[] parseHeroes(JsonObject rootJson, String owner)
+    {
         ArrayList<Hero> heroes = new ArrayList<>();
         JsonArray heroesJson = rootJson.getAsJsonArray(owner);
-        for (int i = 0; i < heroesJson.size(); i++) {
+        for (int i = 0; i < heroesJson.size(); i++)
+        {
             int id = heroesJson.get(i).getAsJsonObject().get("id").getAsInt();
             HeroType heroType = HeroType.valueOf(heroesJson.get(i).getAsJsonObject().get("type").getAsString());
             HeroConstants heroConstants = getHeroConstants(heroType);
             ArrayList<Ability> abilities = new ArrayList<>();
-            for (AbilityName abilityName : heroConstants.getAbilityNames()) {
+            for (AbilityName abilityName : heroConstants.getAbilityNames())
+            {
                 abilities.add(new Ability(getAbilityConstants(abilityName)));
             }
             heroes.add(new Hero(heroConstants, id, abilities));
@@ -187,12 +191,15 @@ public class Game implements World {
     }
 
     @Override
-    public Hero getHero(int id) {
-        for (int i = 0; i < myHeroes.length; i++) {
+    public Hero getHero(int id)
+    {
+        for (int i = 0; i < myHeroes.length; i++)
+        {
             if (myHeroes[i].getId() == id)
                 return myHeroes[i];
         }
-        for (int i = 0; i < oppHeroes.length; i++) {
+        for (int i = 0; i < oppHeroes.length; i++)
+        {
             if (oppHeroes[i].getId() == id)
                 return oppHeroes[i];
         }
@@ -200,8 +207,10 @@ public class Game implements World {
     }
 
     @Override
-    public Hero getMyHero(Cell cell) {
-        for (Hero hero : myHeroes) {
+    public Hero getMyHero(Cell cell)
+    {
+        for (Hero hero : myHeroes)
+        {
             if (hero.getCurrentCell() == cell)
                 return hero;
         }
@@ -209,14 +218,17 @@ public class Game implements World {
     }
 
     @Override
-    public Hero getMyHero(int cellRow, int cellColumn) {
+    public Hero getMyHero(int cellRow, int cellColumn)
+    {
         if (!map.isInMap(cellRow, cellColumn)) return null;
         return getMyHero(map.getCell(cellRow, cellColumn));
     }
 
     @Override
-    public Hero getOppHero(Cell cell) {
-        for (Hero hero : oppHeroes) {
+    public Hero getOppHero(Cell cell)
+    {
+        for (Hero hero : oppHeroes)
+        {
             if (hero.getCurrentCell() == cell)
                 return hero;
         }
@@ -224,62 +236,73 @@ public class Game implements World {
     }
 
     @Override
-    public Hero getOppHero(int cellRow, int cellColumn) {
+    public Hero getOppHero(int cellRow, int cellColumn)
+    {
         if (!map.isInMap(cellRow, cellColumn)) return null;
         return getOppHero(map.getCell(cellRow, cellColumn));
     }
 
     @Override
-    public void castAbility(int heroId, AbilityName abilityName, int targetCellRow, int targetCellColumn) {
+    public void castAbility(int heroId, AbilityName abilityName, int targetCellRow, int targetCellColumn)
+    {
         Event event = new Event("cast", new Object[]{heroId, abilityName.toString(), targetCellRow,
                 targetCellColumn});
         sender.accept(new Message(Event.EVENT, event));
     }
 
     @Override
-    public void castAbility(int heroId, AbilityName abilityName, Cell targetCell) {
+    public void castAbility(int heroId, AbilityName abilityName, Cell targetCell)
+    {
         castAbility(heroId, abilityName, targetCell.getRow(), targetCell.getColumn());
     }
 
     @Override
-    public void castAbility(Hero hero, AbilityName abilityName, Cell targetCell) {
+    public void castAbility(Hero hero, AbilityName abilityName, Cell targetCell)
+    {
         castAbility(hero.getId(), abilityName, targetCell.getRow(), targetCell.getColumn());
     }
 
     @Override
-    public void castAbility(Hero hero, AbilityName abilityName, int targetCellRow, int targetCellColumn) {
+    public void castAbility(Hero hero, AbilityName abilityName, int targetCellRow, int targetCellColumn)
+    {
         castAbility(hero.getId(), abilityName, targetCellRow, targetCellColumn);
     }
 
     @Override
-    public void castAbility(int heroId, Ability ability, Cell targetCell) {
+    public void castAbility(int heroId, Ability ability, Cell targetCell)
+    {
         castAbility(heroId, ability.getAbilityConstants().getName(), targetCell.getRow(), targetCell.getColumn());
     }
 
     @Override
-    public void castAbility(int heroId, Ability ability, int targetCellRow, int targetCellColumn) {
+    public void castAbility(int heroId, Ability ability, int targetCellRow, int targetCellColumn)
+    {
         castAbility(heroId, ability.getAbilityConstants().getName(), targetCellRow, targetCellColumn);
     }
 
     @Override
-    public void castAbility(Hero hero, Ability ability, Cell targetCell) {
+    public void castAbility(Hero hero, Ability ability, Cell targetCell)
+    {
         castAbility(hero.getId(), ability.getAbilityConstants().getName(), targetCell.getRow(),
                 targetCell.getColumn());
     }
 
     @Override
-    public void castAbility(Hero hero, Ability ability, int targetCellRow, int targetCellColumn) {
+    public void castAbility(Hero hero, Ability ability, int targetCellRow, int targetCellColumn)
+    {
         castAbility(hero.getId(), ability.getAbilityConstants().getName(), targetCellRow, targetCellColumn);
     }
 
     @Override
-    public void moveHero(int heroId, Direction direction) {
+    public void moveHero(int heroId, Direction direction)
+    {
         Event event = new Event("move", new Object[]{heroId, Json.GSON.toJson(direction)}); //TODO is this ok?
         sender.accept(new Message(Event.EVENT, event));
     }
 
     @Override
-    public void moveHero(Hero hero, Direction direction) {
+    public void moveHero(Hero hero, Direction direction)
+    {
         moveHero(hero.getId(), direction);
     }
 
@@ -308,7 +331,8 @@ public class Game implements World {
      * @return
      */
     @Override
-    public Direction[] getPathMoveDirections(Cell startCell, Cell endCell) {
+    public Direction[] getPathMoveDirections(Cell startCell, Cell endCell)
+    {
         if (startCell == endCell || startCell.isWall() || endCell.isWall()) return new Direction[0];
 
         HashMap<Cell, Pair<Cell, Direction>> lastMoveInfo = new HashMap<>(); // saves parent cell and direction to go from parent cell to current cell
@@ -318,20 +342,25 @@ public class Game implements World {
         lastMoveInfo.put(startCell, new Pair<>(null, null));
         bfsQueue[queueTail++] = startCell;
 
-        while (queueHead != queueTail) {
+        while (queueHead != queueTail)
+        {
             Cell currentCell = bfsQueue[queueHead++];
-            if (currentCell == endCell) {
+            if (currentCell == endCell)
+            {
                 ArrayList<Direction> directions = new ArrayList<>();
-                while (currentCell != startCell) {
+                while (currentCell != startCell)
+                {
                     directions.add(lastMoveInfo.get(currentCell).getSecond());
                     currentCell = lastMoveInfo.get(currentCell).getFirst();
                 }
                 Collections.reverse(directions);
                 return directions.toArray(new Direction[0]);
             }
-            for (Direction direction : Direction.values()) {
+            for (Direction direction : Direction.values())
+            {
                 Cell nextCell = getNextCell(currentCell, direction);
-                if (nextCell != null && isAccessible(nextCell) && !lastMoveInfo.containsKey(nextCell)) {
+                if (nextCell != null && isAccessible(nextCell) && !lastMoveInfo.containsKey(nextCell))
+                {
                     lastMoveInfo.put(nextCell, new Pair<>(currentCell, direction));
                     bfsQueue[queueTail++] = nextCell;
                 }
@@ -341,7 +370,8 @@ public class Game implements World {
     }
 
     @Override
-    public Direction[] getPathMoveDirections(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn) {
+    public Direction[] getPathMoveDirections(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn)
+    {
         if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(endCellRow, endCellColumn))
             return new Direction[0];
         return getPathMoveDirections(map.getCell(startCellRow, startCellColumn),
@@ -359,25 +389,29 @@ public class Game implements World {
     }
 
     @Override
-    public int manhattanDistance(Cell startCell, Cell endCell) {
-        return Math.abs(startCell.getRow() - endCell.getRow()) + Math.abs(startCell.getColumn() - endCell.getColumn());
+    public int manhattanDistance(Cell firstCell, Cell secondCell)
+    {
+        return Math.abs(firstCell.getRow() - secondCell.getRow()) + Math.abs(firstCell.getColumn() - secondCell.getColumn());
     }
 
     @Override
-    public int manhattanDistance(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn) {
-        if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(endCellRow, endCellColumn)) return -1;
-        return manhattanDistance(map.getCell(startCellRow, startCellColumn), map.getCell(endCellRow, endCellColumn));
+    public int manhattanDistance(int firstCellRow, int firstCellColumn, int secondCellRow, int secondCellColumn)
+    {
+        if (!map.isInMap(firstCellRow, firstCellColumn) || !map.isInMap(secondCellRow, secondCellColumn)) return -1;
+        return manhattanDistance(map.getCell(firstCellRow, firstCellColumn), map.getCell(secondCellRow, secondCellColumn));
     }
 
     public Cell[] getImpactCells(AbilityName abilityName, Cell startCell, Cell targetCell) {
         AbilityConstants abilityConstants = getAbilityConstants(abilityName);
-        if ((!abilityConstants.isLobbing() && startCell.isWall()) || startCell == targetCell) {
+        if ((!abilityConstants.isLobbing() && startCell.isWall()) || startCell == targetCell)
+        {
             return new Cell[]{startCell};
         }
         ArrayList<Cell> impactCells = new ArrayList<>();
         Cell[] rayCells = getRayCells(startCell, targetCell, abilityConstants.isLobbing());
         Cell lastCell = null;
-        for (Cell cell : rayCells) {
+        for (Cell cell : rayCells)
+        {
             if (manhattanDistance(startCell, cell) > abilityConstants.getRange())
                 break;
             lastCell = cell;
@@ -397,7 +431,8 @@ public class Game implements World {
     }
 
     public Cell[] getImpactCells(AbilityName abilityName, int startCellRow, int startCellColumn,
-                                 int targetCellRow, int targetCellColumn) {
+                                 int targetCellRow, int targetCellColumn)
+    {
         if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(targetCellRow, targetCellColumn))
             return new Cell[0];
         Cell startCell = map.getCell(startCellRow, startCellColumn);
@@ -406,7 +441,8 @@ public class Game implements World {
     }
 
     public Cell[] getImpactCells(Ability ability, int startCellRow, int startCellColumn,
-                                 int targetCellRow, int targetCellColumn) {
+                                 int targetCellRow, int targetCellColumn)
+    {
         if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(targetCellRow, targetCellColumn))
             return new Cell[0];
         Cell startCell = map.getCell(startCellRow, startCellColumn);
@@ -415,27 +451,31 @@ public class Game implements World {
     }
 
     @Override
-    public Cell getImpactCell(AbilityName abilityName, Cell startCell, Cell targetCell) {
+    public Cell getImpactCell(AbilityName abilityName, Cell startCell, Cell targetCell)
+    {
         Cell[] impactCells = getImpactCells(abilityName, startCell, targetCell);
         return impactCells[impactCells.length - 1];
     }
 
     @Override
     public Cell getImpactCell(AbilityName abilityName, int startCellRow, int startCellColumn, int endCellRow,
-                              int endCellColumn) {
+                              int endCellColumn)
+    {
         if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(endCellRow, endCellColumn)) return null;
         return getImpactCell(abilityName, map.getCell(startCellRow, startCellColumn), map.getCell(endCellRow,
                 endCellColumn));
     }
 
     @Override
-    public Cell getImpactCell(Ability ability, Cell startCell, Cell targetCell) {
+    public Cell getImpactCell(Ability ability, Cell startCell, Cell targetCell)
+    {
         return getImpactCell(ability.getAbilityConstants().getName(), startCell, targetCell);
     }
 
     @Override
     public Cell getImpactCell(Ability ability, int startCellRow, int startCellColumn, int endCellRow,
-                              int endCellColumn) {
+                              int endCellColumn)
+    {
         if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(endCellRow, endCellColumn)) return null;
         return getImpactCell(ability.getAbilityConstants().getName(), map.getCell(startCellRow, startCellColumn),
                 map.getCell(endCellRow, endCellColumn));
@@ -443,26 +483,30 @@ public class Game implements World {
 
     /*TODO*/// handle isLobbing
     @Override
-    public Hero[] getAbilityTargets(AbilityName abilityName, Cell startCell, Cell targetCell) {
+    public Hero[] getAbilityTargets(AbilityName abilityName, Cell startCell, Cell targetCell)
+    {
         AbilityConstants abilityConstants = getAbilityConstants(abilityName);
         Cell[] impactCells = getImpactCells(abilityName, startCell, targetCell);
         ArrayList<Cell> affectedCells = getCellsInAOE(impactCells[impactCells.length - 1],
                 abilityConstants.getAreaOfEffect());
         if (abilityConstants.getType() == AbilityType.DEFENSIVE) {
             return getMyHeroesInCells(affectedCells.toArray(new Cell[0]));
-        } else {
+        } else
+        {
             return getOppHeroesInCells(affectedCells.toArray(new Cell[0]));
         }
     }
 
     @Override
-    public Hero[] getAbilityTargets(Ability ability, Cell startCell, Cell targetCell) {
+    public Hero[] getAbilityTargets(Ability ability, Cell startCell, Cell targetCell)
+    {
         return getAbilityTargets(ability.getName(), startCell, targetCell);
     }
 
     @Override
     public Hero[] getAbilityTargets(AbilityName abilityName, int startCellRow, int startCellColumn, int targetCellRow,
-                                    int targetCellColumn) {
+                                    int targetCellColumn)
+    {
         if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(targetCellRow, targetCellColumn))
             return new Hero[0];
         return getAbilityTargets(abilityName, map.getCell(startCellRow, startCellColumn), map.getCell(targetCellRow,
@@ -471,17 +515,21 @@ public class Game implements World {
 
     @Override
     public Hero[] getAbilityTargets(Ability ability, int startCellRow, int startCellColumn, int targetCellRow,
-                                    int targetCellColumn) {
+                                    int targetCellColumn)
+    {
         if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(targetCellRow, targetCellColumn))
             return new Hero[0];
         return getAbilityTargets(ability.getName(), map.getCell(startCellRow, startCellColumn),
                 map.getCell(targetCellRow, targetCellColumn));
     }
 
-    private ArrayList<Cell> getCellsInAOE(Cell impactCell, int AOE) {
+    private ArrayList<Cell> getCellsInAOE(Cell impactCell, int AOE)
+    {
         ArrayList<Cell> cells = new ArrayList<>();
-        for (int row = impactCell.getRow() - AOE; row <= impactCell.getRow() + AOE; row++) {
-            for (int col = impactCell.getColumn() - AOE; col <= impactCell.getColumn() + AOE; col++) {
+        for (int row = impactCell.getRow() - AOE; row <= impactCell.getRow() + AOE; row++)
+        {
+            for (int col = impactCell.getColumn() - AOE; col <= impactCell.getColumn() + AOE; col++)
+            {
                 if (!map.isInMap(row, col)) continue;
                 Cell cell = map.getCell(row, col);
                 if (manhattanDistance(impactCell, cell) <= AOE)
@@ -491,22 +539,28 @@ public class Game implements World {
         return cells;
     }
 
-    private Hero[] getOppHeroesInCells(Cell[] cells) {
+    private Hero[] getOppHeroesInCells(Cell[] cells)
+    {
         ArrayList<Hero> heroes = new ArrayList<>();
-        for (Cell cell : cells) {
+        for (Cell cell : cells)
+        {
             Hero hero = getOppHero(cell);
-            if (hero != null) {
+            if (hero != null)
+            {
                 heroes.add(hero);
             }
         }
         return heroes.toArray(new Hero[0]);
     }
 
-    private Hero[] getMyHeroesInCells(Cell[] cells) {
+    private Hero[] getMyHeroesInCells(Cell[] cells)
+    {
         ArrayList<Hero> heroes = new ArrayList<>();
-        for (Cell cell : cells) {
+        for (Cell cell : cells)
+        {
             Hero hero = getMyHero(cell);
-            if (hero != null) {
+            if (hero != null)
+            {
                 heroes.add(hero);
             }
         }
@@ -521,46 +575,55 @@ public class Game implements World {
      * @param targetCell
      * @return
      */
-    private Cell[] getRayCells(Cell startCell, Cell targetCell, boolean wallPiercing) {
+    private Cell[] getRayCells(Cell startCell, Cell targetCell, boolean wallPiercing)
+    {
         ArrayList<Cell> path = new ArrayList<>();
         dfs(startCell, startCell, targetCell, new HashMap<>(), path, wallPiercing);
         return path.toArray(new Cell[0]);
     }
 
     private void dfs(Cell currentCell, Cell startCell, Cell targetCell, HashMap<Cell, Boolean> isSeen,
-                     ArrayList<Cell> path, boolean wallPiercing) {
+                     ArrayList<Cell> path, boolean wallPiercing)
+    {
         isSeen.put(currentCell, true);
         path.add(currentCell);
-        for (Direction direction : Direction.values()) {
+        for (Direction direction : Direction.values())
+        {
             Cell nextCell = getNextCell(currentCell, direction);
-            if (nextCell != null && !isSeen.containsKey(nextCell) && isCloser(currentCell, targetCell, nextCell)) {
+            if (nextCell != null && !isSeen.containsKey(nextCell) && isCloser(currentCell, targetCell, nextCell))
+            {
                 int collisionState = squareCollision(startCell, targetCell, nextCell);
                 if ((collisionState == 0 || collisionState == 1) && (!wallPiercing && nextCell.isWall()))
                     return;
-                if (collisionState == 1) {
+                if (collisionState == 1)
+                {
                     dfs(nextCell, startCell, targetCell, isSeen, path, wallPiercing);
                     return;
                 }
             }
         }
         for (int dRow = -1; dRow <= 1; dRow += 2)
-            for (int dColumn = -1; dColumn <= 1; dColumn += 2) {
+            for (int dColumn = -1; dColumn <= 1; dColumn += 2)
+            {
                 int newRow = currentCell.getRow() + dRow;
                 int newColumn = currentCell.getColumn() + dColumn;
                 Cell nextCell = null;
                 if (map.isInMap(newRow, newColumn)) nextCell = map.getCell(newRow, newColumn);
-                if (nextCell != null && !isSeen.containsKey(nextCell) && isCloser(currentCell, targetCell, nextCell)) {
+                if (nextCell != null && !isSeen.containsKey(nextCell) && isCloser(currentCell, targetCell, nextCell))
+                {
                     int collisionState = squareCollision(startCell, targetCell, nextCell);
                     if (collisionState == 0 || collisionState == 1 && (!wallPiercing && nextCell.isWall()))
                         return;
-                    if (collisionState == 1) {
+                    if (collisionState == 1)
+                    {
                         dfs(nextCell, startCell, targetCell, isSeen, path, wallPiercing);
                     }
                 }
             }
     }
 
-    private boolean isCloser(Cell currentCell, Cell targetCell, Cell nextCell) {
+    private boolean isCloser(Cell currentCell, Cell targetCell, Cell nextCell)
+    {
         return manhattanDistance(nextCell, targetCell) <= manhattanDistance(currentCell, targetCell);
     }
 
@@ -575,12 +638,14 @@ public class Game implements World {
      * @param cell
      * @return
      */
-    private int squareCollision(Cell startCell, Cell targetCell, Cell cell) {
+    private int squareCollision(Cell startCell, Cell targetCell, Cell cell)
+    {
         boolean hasNegative = false;
         boolean hasPositive = false;
         boolean hasZero = false;
         for (int row = 2 * cell.getRow(); row <= 2 * (cell.getRow() + 1); row += 2)
-            for (int column = 2 * cell.getColumn(); column <= 2 * (cell.getColumn() + 1); column += 2) {
+            for (int column = 2 * cell.getColumn(); column <= 2 * (cell.getColumn() + 1); column += 2)
+            {
                 int crossProduct = crossProduct(2 * startCell.getRow() + 1, 2 * startCell.getColumn() + 1,
                         2 * targetCell.getRow() + 1, 2 * targetCell.getColumn() + 1, row, column);
                 if (crossProduct < 0) hasNegative = true;
@@ -606,12 +671,15 @@ public class Game implements World {
      * @param y3
      * @return
      */
-    private int crossProduct(int x1, int y1, int x2, int y2, int x3, int y3) {
+    private int crossProduct(int x1, int y1, int x2, int y2, int x3, int y3)
+    {
         return (x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1);
     }
 
-    private Cell getNextCell(Cell cell, Direction direction) {
-        switch (direction) {
+    private Cell getNextCell(Cell cell, Direction direction)
+    {
+        switch (direction)
+        {
             case UP:
                 if (map.isInMap(cell.getRow() - 1, cell.getColumn()))
                     return map.getCell(cell.getRow() - 1, cell.getColumn());
@@ -638,7 +706,8 @@ public class Game implements World {
 
 
     @Override
-    public boolean isInVision(Cell startCell, Cell endCell) {
+    public boolean isInVision(Cell startCell, Cell endCell)
+    {
         if (startCell.isWall() || endCell.isWall())
             return false;
         Cell[] rayCells = getRayCells(startCell, endCell, false);
@@ -647,62 +716,75 @@ public class Game implements World {
     }
 
     @Override
-    public boolean isInVision(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn) {
+    public boolean isInVision(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn)
+    {
         if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(endCellRow, endCellColumn)) return false;
         return isInVision(map.getCell(startCellRow, startCellColumn), map.getCell(endCellRow, endCellColumn));
     }
 
     @Override
-    public Hero[] getMyHeroes() {
+    public Hero[] getMyHeroes()
+    {
         return myHeroes;
     }
 
-    void setMyHeroes(Hero[] myHeroes) {
+    void setMyHeroes(Hero[] myHeroes)
+    {
         this.myHeroes = myHeroes;
     }
 
     @Override
-    public Hero[] getOppHeroes() {
+    public Hero[] getOppHeroes()
+    {
         return oppHeroes;
     }
 
-    void setOppHeroes(Hero[] oppHeroes) {
+    void setOppHeroes(Hero[] oppHeroes)
+    {
         this.oppHeroes = oppHeroes;
     }
 
     @Override
-    public Hero[] getMyDeadHeroes() {
+    public Hero[] getMyDeadHeroes()
+    {
         return myDeadHeroes;
     }
 
-    void setMyDeadHeroes(Hero[] myDeadHeroes) {
+    void setMyDeadHeroes(Hero[] myDeadHeroes)
+    {
         this.myDeadHeroes = myDeadHeroes;
     }
 
     @Override
-    public Hero[] getOppDeadHeroes() {
+    public Hero[] getOppDeadHeroes()
+    {
         return oppDeadHeroes;
     }
 
-    void setOppDeadHeroes(Hero[] oppDeadHeroes) {
+    void setOppDeadHeroes(Hero[] oppDeadHeroes)
+    {
         this.oppDeadHeroes = oppDeadHeroes;
     }
 
     @Override
-    public Map getMap() {
+    public Map getMap()
+    {
         return map;
     }
 
-    void setMap(Map map) {
+    void setMap(Map map)
+    {
         this.map = map;
     }
 
     @Override
-    public CastAbility[] getMyCastAbilities() {
+    public CastAbility[] getMyCastAbilities()
+    {
         return myCastAbilities;
     }
 
-    void setMyCastAbilities(CastAbility[] myCastAbilities) {
+    void setMyCastAbilities(CastAbility[] myCastAbilities)
+    {
         this.myCastAbilities = myCastAbilities;
     }
 
@@ -710,79 +792,96 @@ public class Game implements World {
         return gameConstants;
     }
 
-    void setGameConstants(GameConstants gameConstants) {
+    void setGameConstants(GameConstants gameConstants)
+    {
         this.gameConstants = gameConstants;
     }
 
     @Override
-    public HeroConstants[] getHeroConstants() {
+    public HeroConstants[] getHeroConstants()
+    {
         return heroConstants;
     }
 
-    void setHeroConstants(HeroConstants[] heroConstants) {
+    void setHeroConstants(HeroConstants[] heroConstants)
+    {
         this.heroConstants = heroConstants;
     }
 
     @Override
-    public AbilityConstants[] getAbilityConstants() {
+    public AbilityConstants[] getAbilityConstants()
+    {
         return abilityConstants;
     }
 
-    void setAbilityConstants(AbilityConstants[] abilityConstants) {
+    void setAbilityConstants(AbilityConstants[] abilityConstants)
+    {
         this.abilityConstants = abilityConstants;
     }
 
     @Override
-    public CastAbility[] getOppCastAbilities() {
+    public CastAbility[] getOppCastAbilities()
+    {
         return oppCastAbilities;
     }
 
-    void setOppCastAbilities(CastAbility[] oppCastAbilities) {
+    void setOppCastAbilities(CastAbility[] oppCastAbilities)
+    {
         this.oppCastAbilities = oppCastAbilities;
     }
 
     @Override
-    public int getAP() {
+    public int getAP()
+    {
         return AP;
     }
 
-    void setAP(int AP) {
+    void setAP(int AP)
+    {
         this.AP = AP;
     }
 
     @Override
-    public int getMyScore() {
+    public int getMyScore()
+    {
         return myScore;
     }
 
-    void setMyScore(int myScore) {
+    void setMyScore(int myScore)
+    {
         this.myScore = myScore;
     }
 
     @Override
-    public int getOppScore() {
+    public int getOppScore()
+    {
         return oppScore;
     }
 
-    void setOppScore(int oppScore) {
+    void setOppScore(int oppScore)
+    {
         this.oppScore = oppScore;
     }
 
     @Override
-    public int getCurrentTurn() {
+    public int getCurrentTurn()
+    {
         return currentTurn;
     }
 
-    void setCurrentTurn(int currentTurn) {
+    void setCurrentTurn(int currentTurn)
+    {
         this.currentTurn = currentTurn;
     }
 
     @Override
-    public Phase getCurrentPhase() {
+    public Phase getCurrentPhase()
+    {
         return currentPhase;
     }
 
-    void setCurrentPhase(Phase currentPhase) {
+    void setCurrentPhase(Phase currentPhase)
+    {
         this.currentPhase = currentPhase;
     }
 
@@ -796,52 +895,63 @@ public class Game implements World {
     }
 
     @Override
-    public int getMaxAP() {
+    public int getMaxAP()
+    {
         return gameConstants.getMaxAP();
     }
 
-    void setMaxAP(int maxAP) {
+    void setMaxAP(int maxAP)
+    {
         gameConstants.setMaxAP(maxAP);
     }
 
     @Override
-    public int getMaxTurns() {
+    public int getMaxTurns()
+    {
         return gameConstants.getMaxTurns();
     }
 
-    void setMaxTurns(int maxTurns) {
+    void setMaxTurns(int maxTurns)
+    {
         gameConstants.setMaxTurns(maxTurns);
     }
 
     @Override
-    public int getKillScore() {
+    public int getKillScore()
+    {
         return gameConstants.getKillScore();
     }
 
-    void setKillScore(int killScore) {
+    void setKillScore(int killScore)
+    {
         gameConstants.setKillScore(killScore);
     }
 
     @Override
-    public int getObjectiveZoneScore() {
+    public int getObjectiveZoneScore()
+    {
         return gameConstants.getObjectiveZoneScore();
     }
 
-    void setObjectiveZoneScore(int objectiveZoneScore) {
+    void setObjectiveZoneScore(int objectiveZoneScore)
+    {
         gameConstants.setObjectiveZoneScore(objectiveZoneScore);
     }
 
     @Override
-    public int getMaxScore() {
+    public int getMaxScore()
+    {
         return gameConstants.getMaxScore();
     }
 
-    void setMaxScore(int maxScore) {
+    void setMaxScore(int maxScore)
+    {
         gameConstants.setMaxScore(maxScore);
     }
 
     @Override
-    public int getMovePhaseNum() {
+    public int getMovePhaseNum()
+    {
         return movePhaseNum;
     }
 
