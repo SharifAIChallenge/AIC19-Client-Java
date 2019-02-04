@@ -92,8 +92,8 @@ public interface World
      * In case of start cell and end cell being the same cells, return empty array.
      * If there is no path, return empty array.
      *
-     * @param startCell
-     * @param endCell
+     * @param startCell The cell we start path from
+     * @param endCell The cell we want to reach
      * @return
      */
     Direction[] getPathMoveDirections(Cell startCell, Cell endCell);
@@ -151,8 +151,9 @@ public interface World
 
     /**
      * Returns all the heroes an ability will affect on, if we cast it from a specified cell to another.
-     * For offensive abilities it will return enemy heroes, and for defensive abilities it will return ally heroes
-     * in cells around the ability's impact cell (If they are in ability's AOE).
+     * For OFFENSIVE or DODGE abilities it will return enemy heroes,
+     * and for DEFENSIVE abilities it will return ally heroes in cells around the ability's impact cell
+     * (If they are in ability's AOE).
      *
      * @param abilityName Name of the ability we want to cast
      * @param startCell The cell we want to cast from
