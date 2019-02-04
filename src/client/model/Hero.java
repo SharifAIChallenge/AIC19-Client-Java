@@ -7,7 +7,7 @@ public class Hero {
     private int id;
     private HeroConstants heroConstants;
     private Ability[] abilities;
-    private Ability[] dodgeAbilities;
+    private Ability[] dashAbilities;
     private Ability[] healAbilities;
     private Ability[] attackAbilities;
     private int currentHP;
@@ -18,7 +18,7 @@ public class Hero {
     Hero(HeroConstants heroConstants, int id, ArrayList<Ability> abilities) {
         this.id = id;
         this.heroConstants = heroConstants;
-        ArrayList<Ability> dodgeAbilities = new ArrayList<>();
+        ArrayList<Ability> dashAbilities = new ArrayList<>();
         ArrayList<Ability> healAbilities = new ArrayList<>();
         ArrayList<Ability> attackAbilities = new ArrayList<>();
         for (Ability ability : abilities) {
@@ -26,8 +26,8 @@ public class Hero {
                 case HEAL:
                     healAbilities.add(ability);
                     break;
-                case DODGE:
-                    dodgeAbilities.add(ability);
+                case DASH:
+                    dashAbilities.add(ability);
                     break;
                 case ATTACK:
                     attackAbilities.add(ability);
@@ -35,7 +35,7 @@ public class Hero {
             }
         }
         this.abilities = abilities.toArray(new Ability[0]);
-        this.dodgeAbilities = dodgeAbilities.toArray(new Ability[0]);
+        this.dashAbilities = dashAbilities.toArray(new Ability[0]);
         this.healAbilities = healAbilities.toArray(new Ability[0]);
         this.attackAbilities = attackAbilities.toArray(new Ability[0]);
         currentHP = heroConstants.getMaxHP();
@@ -91,12 +91,12 @@ public class Hero {
         this.abilities = abilities;
     }
 
-    public Ability[] getDodgeAbilities() {
-        return dodgeAbilities;
+    public Ability[] getDashAbilities() {
+        return dashAbilities;
     }
 
-    void setDodgeAbilities(Ability[] dodgeAbilities) {
-        this.dodgeAbilities = dodgeAbilities;
+    void setDashAbilities(Ability[] dashAbilities) {
+        this.dashAbilities = dashAbilities;
     }
 
     public Ability[] getHealAbilities() {

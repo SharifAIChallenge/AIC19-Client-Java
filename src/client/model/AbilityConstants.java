@@ -9,7 +9,6 @@ public class AbilityConstants {
     private int areaOfEffect;
     private int power;
     private boolean isLobbing;
-    private boolean isPiercing;
 
     public AbilityName getName() {
         return name;
@@ -74,13 +73,5 @@ public class AbilityConstants {
 
     void setLobbing(boolean lobbing) {
         isLobbing = lobbing;
-    }
-
-    public boolean isPiercing() {
-        return isPiercing;
-    }
-
-    void setPiercing(boolean piercing) {
-        this.isPiercing = piercing;
     }
 }

@@ -89,12 +89,4 @@ public class Ability {
     void setLobbing(boolean lobbing) {
         abilityConstants.setLobbing(lobbing);
     }
-
-    public boolean isPiercing() {
-        return abilityConstants.isPiercing();
-    }
-
-    void setPiercing(boolean piercing) {
-        abilityConstants.setPiercing(piercing);
-    }
 }
