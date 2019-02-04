@@ -1,19 +1,21 @@
 package client.model;
 
 public class GameConstants {
-    private int timeout;
+    private int normalTimeout;
+    private int preprocessTimeout;
+    private int firstMoveTimeout;
     private int maxAP;
     private int maxTurns;
     private int killScore;
     private int objectiveZoneScore;
     private int maxScore;
 
-    int getTimeout() {
-        return timeout;
+    int getNormalTimeout() {
+        return normalTimeout;
     }
 
-    void setTimeout(int timeout) {
-        this.timeout = timeout;
+    void setNormalTimeout(int normalTimeout) {
+        this.normalTimeout = normalTimeout;
     }
 
     int getMaxAP() {
@@ -54,5 +56,13 @@ public class GameConstants {
 
     void setMaxScore(int maxScore) {
         this.maxScore = maxScore;
+    }
+
+    public int getPreprocessTimeout() {
+        return preprocessTimeout;
+    }
+
+    public int getFirstMoveTimeout() {
+        return firstMoveTimeout;
     }
 }
