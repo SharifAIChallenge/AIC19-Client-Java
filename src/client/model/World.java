@@ -37,7 +37,7 @@ public interface World {
 
     /**
      * Cast one of this hero's abilities.
-     * In can only be used in ACTION phase otherwise it won't do anything.
+     * It can only be used in ACTION phase otherwise it won't do anything.
      *
      * @param heroId           Id of hero
      * @param abilityName      Name of the ability we want to cast
@@ -87,7 +87,7 @@ public interface World {
      * If there is no path, return empty array.
      *
      * @param startCell The cell we start path from
-     * @param endCell The cell we want to reach
+     * @param endCell   The cell we want to reach
      * @return
      */
     Direction[] getPathMoveDirections(Cell startCell, Cell endCell);
@@ -110,8 +110,8 @@ public interface World {
     /**
      * Returns the cell that our ability will land on.
      * If the ability is a lobbing ability it would pass all the walls and hits the last cell in ability's range.
-     * Otherwise it may hit a wall and land on the cell before it, or if there is no wall, it would also hit
-     * the last cell in ability's range.
+     * Otherwise it may hit a wall or a target hero and land on the cell before it, or if there is no wall or hero,
+     * it would also hit the last cell in ability's range.
      *
      * @param abilityName Name of the ability we want to cast
      * @param startCell   The cell we want to cast from
@@ -129,7 +129,7 @@ public interface World {
                        int endCellColumn);
 
     /**
-     * Returns all the heroes an ability will affect on, if we cast it from a specified cell to another.
+     * Returns all the heroes an ability will affect, if we cast it from a specified cell to another.
      * For OFFENSIVE or DODGE abilities it will return enemy heroes,
      * and for DEFENSIVE abilities it will return ally heroes in cells around the ability's impact cell
      * (If they are in ability's AOE).
@@ -190,7 +190,7 @@ public interface World {
 
     Phase getCurrentPhase();
 
-    int getNormalTimeout();//TODO
+    int getNormalTimeout();//TODO add to doc
 
     int getPreprocessTimeout();
 
@@ -204,7 +204,7 @@ public interface World {
 
     int getObjectiveZoneScore();
 
-    int getMaxScore();//TODO
+    int getMaxScore();
 
     int getMovePhaseNum();
 
