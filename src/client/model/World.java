@@ -27,9 +27,9 @@ public interface World {
 
     void castAbility(Hero hero, Ability ability, int targetCellRow, int targetCellColumn);
 
-    void moveHero(int heroId, Direction[] directions);
+    void moveHero(int heroId, Direction direction);
 
-    void moveHero(Hero hero, Direction[] directions);
+    void moveHero(Hero hero, Direction direction);
 
     void pickHero(HeroName heroName);
 
@@ -124,4 +124,6 @@ public interface World {
     int getObjectiveZoneScore();
 
     int getMaxScore();
+
+    int getMovePhaseNum();
 }

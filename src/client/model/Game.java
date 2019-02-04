@@ -9,7 +9,7 @@ import common.network.data.Message;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class Game implements World { // TODO implement World
+public class Game implements World {
     private GameConstants gameConstants;
     private HeroConstants[] heroConstants;
     private AbilityConstants[] abilityConstants;
@@ -27,6 +27,8 @@ public class Game implements World { // TODO implement World
     private int currentTurn;
 
     private Phase currentPhase;
+    private int movePhaseNum;
+
     private Consumer<Message> sender;
 
     public Game(Consumer<Message> sender) {
@@ -77,6 +79,7 @@ public class Game implements World { // TODO implement World
         oppScore = jsonRoot.get("oppScore").getAsInt();
         currentTurn = jsonRoot.get("currentTurn").getAsInt();
         currentPhase = Phase.valueOf(jsonRoot.get("currentPhase").getAsString());
+        movePhaseNum = jsonRoot.get("movePhaseNum").getAsInt();
         AP = jsonRoot.get("AP").getAsInt();
         Cell[][] turnCells = Json.GSON.fromJson(jsonRoot.get("map").getAsJsonArray(), Cell[][].class);
         this.map.setCells(turnCells);
@@ -258,18 +261,14 @@ public class Game implements World { // TODO implement World
     }
 
     @Override
-    public void moveHero(int heroId, Direction[] directions) {
-//        String[] directionStrings = new String[directions.length];
-//        for (int i = 0; i < directions.length; i++) {
-//            directionStrings[i] = directions[i].toString();
-//        }
-        Event event = new Event("move", new Object[]{heroId, Json.GSON.toJson(directions)}); // TODO ask Ruhollah
+    public void moveHero(int heroId, Direction direction) {
+        Event event = new Event("move", new Object[]{heroId, Json.GSON.toJson(direction)}); // TODO ask Ruhollah
         sender.accept(new Message(Event.EVENT, event));
     }
 
     @Override
-    public void moveHero(Hero hero, Direction[] directions) {
-        moveHero(hero.getId(), directions);
+    public void moveHero(Hero hero, Direction direction) {
+        moveHero(hero.getId(), direction);
     }
 
     @Override
@@ -653,7 +652,7 @@ public class Game implements World { // TODO implement World
         return myHeroes;
     }
 
-    public void setMyHeroes(Hero[] myHeroes) {
+    void setMyHeroes(Hero[] myHeroes) {
         this.myHeroes = myHeroes;
     }
 
@@ -662,7 +661,7 @@ public class Game implements World { // TODO implement World
         return oppHeroes;
     }
 
-    public void setOppHeroes(Hero[] oppHeroes) {
+    void setOppHeroes(Hero[] oppHeroes) {
         this.oppHeroes = oppHeroes;
     }
 
@@ -671,7 +670,7 @@ public class Game implements World { // TODO implement World
         return myDeadHeroes;
     }
 
-    public void setMyDeadHeroes(Hero[] myDeadHeroes) {
+    void setMyDeadHeroes(Hero[] myDeadHeroes) {
         this.myDeadHeroes = myDeadHeroes;
     }
 
@@ -680,7 +679,7 @@ public class Game implements World { // TODO implement World
         return oppDeadHeroes;
     }
 
-    public void setOppDeadHeroes(Hero[] oppDeadHeroes) {
+    void setOppDeadHeroes(Hero[] oppDeadHeroes) {
         this.oppDeadHeroes = oppDeadHeroes;
     }
 
@@ -689,7 +688,7 @@ public class Game implements World { // TODO implement World
         return map;
     }
 
-    public void setMap(Map map) {
+    void setMap(Map map) {
         this.map = map;
     }
 
@@ -698,7 +697,7 @@ public class Game implements World { // TODO implement World
         return myCastAbilities;
     }
 
-    public void setMyCastAbilities(CastAbility[] myCastAbilities) {
+    void setMyCastAbilities(CastAbility[] myCastAbilities) {
         this.myCastAbilities = myCastAbilities;
     }
 
@@ -707,7 +706,7 @@ public class Game implements World { // TODO implement World
         return gameConstants;
     }
 
-    public void setGameConstants(GameConstants gameConstants) {
+    void setGameConstants(GameConstants gameConstants) {
         this.gameConstants = gameConstants;
     }
 
@@ -716,7 +715,7 @@ public class Game implements World { // TODO implement World
         return heroConstants;
     }
 
-    public void setHeroConstants(HeroConstants[] heroConstants) {
+    void setHeroConstants(HeroConstants[] heroConstants) {
         this.heroConstants = heroConstants;
     }
 
@@ -725,7 +724,7 @@ public class Game implements World { // TODO implement World
         return abilityConstants;
     }
 
-    public void setAbilityConstants(AbilityConstants[] abilityConstants) {
+    void setAbilityConstants(AbilityConstants[] abilityConstants) {
         this.abilityConstants = abilityConstants;
     }
 
@@ -734,7 +733,7 @@ public class Game implements World { // TODO implement World
         return oppCastAbilities;
     }
 
-    public void setOppCastAbilities(CastAbility[] oppCastAbilities) {
+    void setOppCastAbilities(CastAbility[] oppCastAbilities) {
         this.oppCastAbilities = oppCastAbilities;
     }
 
@@ -743,7 +742,7 @@ public class Game implements World { // TODO implement World
         return AP;
     }
 
-    public void setAP(int AP) {
+    void setAP(int AP) {
         this.AP = AP;
     }
 
@@ -752,7 +751,7 @@ public class Game implements World { // TODO implement World
         return myScore;
     }
 
-    public void setMyScore(int myScore) {
+    void setMyScore(int myScore) {
         this.myScore = myScore;
     }
 
@@ -761,7 +760,7 @@ public class Game implements World { // TODO implement World
         return oppScore;
     }
 
-    public void setOppScore(int oppScore) {
+    void setOppScore(int oppScore) {
         this.oppScore = oppScore;
     }
 
@@ -770,7 +769,7 @@ public class Game implements World { // TODO implement World
         return currentTurn;
     }
 
-    public void setCurrentTurn(int currentTurn) {
+    void setCurrentTurn(int currentTurn) {
         this.currentTurn = currentTurn;
     }
 
@@ -779,7 +778,7 @@ public class Game implements World { // TODO implement World
         return currentPhase;
     }
 
-    public void setCurrentPhase(Phase currentPhase) {
+    void setCurrentPhase(Phase currentPhase) {
         this.currentPhase = currentPhase;
     }
 
@@ -788,7 +787,7 @@ public class Game implements World { // TODO implement World
         return gameConstants.getTimeout();
     }
 
-    public void setTimeout(int timeout) {
+    void setTimeout(int timeout) {
         gameConstants.setTimeout(timeout);
     }
 
@@ -797,7 +796,7 @@ public class Game implements World { // TODO implement World
         return gameConstants.getMaxAP();
     }
 
-    public void setMaxAP(int maxAP) {
+    void setMaxAP(int maxAP) {
         gameConstants.setMaxAP(maxAP);
     }
 
@@ -806,7 +805,7 @@ public class Game implements World { // TODO implement World
         return gameConstants.getMaxTurns();
     }
 
-    public void setMaxTurns(int maxTurns) {
+    void setMaxTurns(int maxTurns) {
         gameConstants.setMaxTurns(maxTurns);
     }
 
@@ -815,7 +814,7 @@ public class Game implements World { // TODO implement World
         return gameConstants.getKillScore();
     }
 
-    public void setKillScore(int killScore) {
+    void setKillScore(int killScore) {
         gameConstants.setKillScore(killScore);
     }
 
@@ -824,7 +823,7 @@ public class Game implements World { // TODO implement World
         return gameConstants.getObjectiveZoneScore();
     }
 
-    public void setObjectiveZoneScore(int objectiveZoneScore) {
+    void setObjectiveZoneScore(int objectiveZoneScore) {
         gameConstants.setObjectiveZoneScore(objectiveZoneScore);
     }
 
@@ -833,7 +832,12 @@ public class Game implements World { // TODO implement World
         return gameConstants.getMaxScore();
     }
 
-    public void setMaxScore(int maxScore) {
+    void setMaxScore(int maxScore) {
         gameConstants.setMaxScore(maxScore);
+    }
+
+    @Override
+    public int getMovePhaseNum() {
+        return movePhaseNum;
     }
 }
