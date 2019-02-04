@@ -52,9 +52,9 @@ public class Game implements World {
         return null;
     }
 
-    private HeroConstants getHeroConstants(HeroName heroName) {
+    private HeroConstants getHeroConstants(HeroType heroType) {
         for (HeroConstants heroConstants : heroConstants) {
-            if (heroConstants.getName() == heroName) {
+            if (heroConstants.getType() == heroType) {
                 return heroConstants;
             }
         }
@@ -112,7 +112,7 @@ public class Game implements World {
         for (int i = 0; i < heroesJson.size(); i++) {
             JsonObject heroJson = heroesJson.get(i).getAsJsonObject();
             int id = heroJson.get("id").getAsInt();
-            HeroName name = HeroName.valueOf(heroJson.get("type").getAsString());
+            HeroType name = HeroType.valueOf(heroJson.get("type").getAsString());
             int currentHP = heroJson.get("currentHP").getAsInt();
             int respawnTime = heroJson.get("respawnTime").getAsInt();
 
@@ -165,8 +165,8 @@ public class Game implements World {
         JsonArray heroesJson = rootJson.getAsJsonArray(owner);
         for (int i = 0; i < heroesJson.size(); i++) {
             int id = heroesJson.get(i).getAsJsonObject().get("id").getAsInt();
-            HeroName heroName = HeroName.valueOf(heroesJson.get(i).getAsJsonObject().get("type").getAsString());
-            HeroConstants heroConstants = getHeroConstants(heroName);
+            HeroType heroType = HeroType.valueOf(heroesJson.get(i).getAsJsonObject().get("type").getAsString());
+            HeroConstants heroConstants = getHeroConstants(heroType);
             ArrayList<Ability> abilities = new ArrayList<>();
             for (AbilityName abilityName : heroConstants.getAbilityNames()) {
                 abilities.add(new Ability(getAbilityConstants(abilityName)));
@@ -272,19 +272,17 @@ public class Game implements World {
     }
 
     @Override
-    public void pickHero(HeroName heroName) {
-        Event event = new Event("pick", new Object[]{heroName.toString()});
+    public void pickHero(HeroType heroType) {
+        Event event = new Event("pick", new Object[]{heroType.toString()});
         sender.accept(new Message(Event.EVENT, event));
     }
 
-    @Override
     public boolean isAccessible(int cellRow, int cellColumn) {
         if (!map.isInMap(cellRow, cellColumn))
             return false;
         return !map.getCell(cellRow, cellColumn).isWall();
     }
 
-    @Override
     public boolean isAccessible(Cell cell) {
         return !cell.isWall();
     }
@@ -337,12 +335,10 @@ public class Game implements World {
         return getPathMoveDirections(map.getCell(startCellRow, startCellColumn), map.getCell(endCellRow, endCellColumn));
     }
 
-    @Override
     public boolean isReachable(Cell startCell, Cell targetCell) {
         return (getPathMoveDirections(startCell, targetCell) != new Direction[0]) || startCell == targetCell;
     }
 
-    @Override
     public boolean isReachable(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn) {
         if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(endCellRow, endCellColumn))
             return false;
@@ -360,7 +356,6 @@ public class Game implements World {
         return manhattanDistance(map.getCell(startCellRow, startCellColumn), map.getCell(endCellRow, endCellColumn));
     }
 
-    @Override
     public Cell[] getImpactCells(AbilityName abilityName, Cell startCell, Cell targetCell) {
         AbilityConstants abilityConstants = getAbilityConstants(abilityName);
         if ((!abilityConstants.isLobbing() && startCell.isWall()) || startCell == targetCell) {
@@ -373,8 +368,8 @@ public class Game implements World {
             if (manhattanDistance(startCell, cell) > abilityConstants.getRange())
                 break;
             lastCell = cell;
-            if ((getOppHero(cell) != null && !abilityConstants.getType().equals(AbilityType.HEAL))
-                    || (getMyHero(cell) != null && abilityConstants.getType().equals(AbilityType.HEAL))) {
+            if ((getOppHero(cell) != null && !abilityConstants.getType().equals(AbilityType.DEFENSIVE))
+                    || (getMyHero(cell) != null && abilityConstants.getType().equals(AbilityType.DEFENSIVE))) {
                 impactCells.add(cell);
                 if (!abilityConstants.isPiercing() && !abilityConstants.isLobbing()) break;
             }
@@ -384,12 +379,10 @@ public class Game implements World {
         return impactCells.toArray(new Cell[0]);
     }
 
-    @Override
     public Cell[] getImpactCells(Ability ability, Cell startCell, Cell targetCell) {
         return getImpactCells(ability.getName(), startCell, targetCell);
     }
 
-    @Override
     public Cell[] getImpactCells(AbilityName abilityName, int startCellRow, int startCellColumn,
                                  int targetCellRow, int targetCellColumn) {
         if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(targetCellRow, targetCellColumn))
@@ -399,7 +392,6 @@ public class Game implements World {
         return getImpactCells(abilityName, startCell, targetCell);
     }
 
-    @Override
     public Cell[] getImpactCells(Ability ability, int startCellRow, int startCellColumn,
                                  int targetCellRow, int targetCellColumn) {
         if (!map.isInMap(startCellRow, startCellColumn) || !map.isInMap(targetCellRow, targetCellColumn))
@@ -444,7 +436,7 @@ public class Game implements World {
         for (Cell cell : impactCells) {
             affectedCells.addAll(getCellsInAOE(cell, abilityConstants.getAreaOfEffect()));
         }
-        if (abilityConstants.getType() == AbilityType.HEAL) {
+        if (abilityConstants.getType() == AbilityType.DEFENSIVE) {
             return getMyHeroesInCells(affectedCells.toArray(new Cell[0]));
         } else {
             return getOppHeroesInCells(affectedCells.toArray(new Cell[0]));
@@ -702,7 +694,6 @@ public class Game implements World {
         this.myCastAbilities = myCastAbilities;
     }
 
-    @Override
     public GameConstants getGameConstants() {
         return gameConstants;
     }

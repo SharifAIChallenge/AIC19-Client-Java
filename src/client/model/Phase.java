@@ -1,6 +1,5 @@
 package client.model;
 
-public enum Phase
-{
-    PICK,MOVE,ACTION;
+public enum Phase {
+    PICK, MOVE, ACTION;
 }

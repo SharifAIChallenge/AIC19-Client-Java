@@ -8,8 +8,8 @@ public class Hero {
     private HeroConstants heroConstants;
     private Ability[] abilities;
     private Ability[] dodgeAbilities;
-    private Ability[] healAbilities;
-    private Ability[] attackAbilities;
+    private Ability[] defensiveAbilities;
+    private Ability[] offensiveAbilities;
     private int currentHP;
     private int remRespawnTime;
     private Cell currentCell;
@@ -19,25 +19,26 @@ public class Hero {
         this.id = id;
         this.heroConstants = heroConstants;
         ArrayList<Ability> dodgeAbilities = new ArrayList<>();
-        ArrayList<Ability> healAbilities = new ArrayList<>();
-        ArrayList<Ability> attackAbilities = new ArrayList<>();
+        ArrayList<Ability> defensiveAbilities = new ArrayList<>();
+        ArrayList<Ability> offensiveAbilities = new ArrayList<>();
         for (Ability ability : abilities) {
             switch (ability.getAbilityConstants().getType()) {
-                case HEAL:
-                    healAbilities.add(ability);
+                case DEFENSIVE:
+                    defensiveAbilities.add(ability);
                     break;
                 case DODGE:
                     dodgeAbilities.add(ability);
                     break;
-                case ATTACK:
-                    attackAbilities.add(ability);
+                case OFFENSIVE:
+                    offensiveAbilities.add(ability);
                     break;
             }
         }
+        //TODO rename
         this.abilities = abilities.toArray(new Ability[0]);
         this.dodgeAbilities = dodgeAbilities.toArray(new Ability[0]);
-        this.healAbilities = healAbilities.toArray(new Ability[0]);
-        this.attackAbilities = attackAbilities.toArray(new Ability[0]);
+        this.defensiveAbilities = defensiveAbilities.toArray(new Ability[0]);
+        this.offensiveAbilities = offensiveAbilities.toArray(new Ability[0]);
         currentHP = heroConstants.getMaxHP();
     }
 
@@ -99,20 +100,20 @@ public class Hero {
         this.dodgeAbilities = dodgeAbilities;
     }
 
-    public Ability[] getHealAbilities() {
-        return healAbilities;
+    public Ability[] getDefensiveAbilities() {
+        return defensiveAbilities;
     }
 
-    void setHealAbilities(Ability[] healAbilities) {
-        this.healAbilities = healAbilities;
+    void setDefensiveAbilities(Ability[] defensiveAbilities) {
+        this.defensiveAbilities = defensiveAbilities;
     }
 
-    public Ability[] getAttackAbilities() {
-        return attackAbilities;
+    public Ability[] getOffensiveAbilities() {
+        return offensiveAbilities;
     }
 
-    void setAttackAbilities(Ability[] attackAbilities) {
-        this.attackAbilities = attackAbilities;
+    void setOffensiveAbilities(Ability[] offensiveAbilities) {
+        this.offensiveAbilities = offensiveAbilities;
     }
 
     public int getCurrentHP() {
@@ -139,12 +140,12 @@ public class Hero {
         this.recentPath = recentPath;
     }
 
-    public HeroName getName() {
-        return heroConstants.getName();
+    public HeroType getType() {
+        return heroConstants.getType();
     }
 
-    void setName(HeroName name) {
-        heroConstants.setName(name);
+    void setType(HeroType type) {
+        heroConstants.setType(type);
     }
 
     public AbilityName[] getAbilityNames() {

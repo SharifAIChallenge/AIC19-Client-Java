@@ -31,25 +31,29 @@ public interface World {
 
     void moveHero(Hero hero, Direction direction);
 
-    void pickHero(HeroName heroName);
+    void pickHero(HeroType heroType);
 
-    boolean isAccessible(int cellRow, int cellColumn);
+/*
+    boolean isAccessible(int cellRow, int cellColumn);//TODO delete
 
     boolean isAccessible(Cell cell);
+*/
 
     Direction[] getPathMoveDirections(Cell startCell, Cell endCell);
 
     Direction[] getPathMoveDirections(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn);
 
+/*
     boolean isReachable(Cell startCell, Cell targetCell);
 
-    boolean isReachable(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn);
+    boolean isReachable(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn); //TODO delete
+*/
 
     int manhattanDistance(Cell startCell, Cell endCell);
 
     int manhattanDistance(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn);
 
-    Cell[] getImpactCells(AbilityName abilityName, Cell startCell, Cell targetCell);
+    /*Cell[] getImpactCells(AbilityName abilityName, Cell startCell, Cell targetCell);//TODO delete
 
     Cell[] getImpactCells(Ability ability, Cell startCell, Cell targetCell);
 
@@ -57,7 +61,7 @@ public interface World {
                           int targetCellRow, int targetCellColumn);
 
     Cell[] getImpactCells(Ability ability, int startCellRow, int startCellColumn,
-                          int targetCellRow, int targetCellColumn);
+                          int targetCellRow, int targetCellColumn);*/
 
     Cell getImpactCell(AbilityName abilityName, Cell startCell, Cell targetCell);
 
@@ -95,13 +99,13 @@ public interface World {
 
     CastAbility[] getMyCastAbilities();
 
-    GameConstants getGameConstants();
+    CastAbility[] getOppCastAbilities();
+
+//    GameConstants getGameConstants(); //TODO delete
 
     HeroConstants[] getHeroConstants();
 
     AbilityConstants[] getAbilityConstants();
-
-    CastAbility[] getOppCastAbilities();
 
     int getAP();
 
@@ -113,7 +117,7 @@ public interface World {
 
     Phase getCurrentPhase();
 
-    int getTimeout();
+    int getTimeout();//TODO
 
     int getMaxAP();
 
@@ -123,7 +127,7 @@ public interface World {
 
     int getObjectiveZoneScore();
 
-    int getMaxScore();
+    int getMaxScore();//TODO
 
     int getMovePhaseNum();
 }

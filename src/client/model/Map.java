@@ -2,8 +2,7 @@ package client.model;
 
 import java.util.ArrayList;
 
-public class Map
-{
+public class Map {
     private Cell[][] cells;
     private int rowNum;
     private int columnNum;
@@ -11,26 +10,21 @@ public class Map
     private Cell[] oppRespawnZone;
     private Cell[] objectiveZone;
 
-    public Cell getCell(int row, int column)
-    {
+    public Cell getCell(int row, int column) {
         if (!isInMap(row, column)) return null;
         return cells[row][column];
     }
 
-    public boolean isInMap(int row, int column)
-    {
+    public boolean isInMap(int row, int column) {
         return (row >= 0 && row < rowNum && column >= 0 && column < columnNum);
     }
 
-    public void calculateZones()
-    {
+    void calculateZones() {
         ArrayList<Cell> myRespawnZone = new ArrayList<>();
         ArrayList<Cell> oppRespawnZone = new ArrayList<>();
         ArrayList<Cell> objectiveZone = new ArrayList<>();
-        for (int row = 0; row < rowNum; row++)
-        {
-            for (int column = 0; column < columnNum; column++)
-            {
+        for (int row = 0; row < rowNum; row++) {
+            for (int column = 0; column < columnNum; column++) {
                 Cell cell = cells[row][column];
                 if (cell.isInMyRespawnZone()) myRespawnZone.add(cell);
                 if (cell.isInOppRespawnZone()) oppRespawnZone.add(cell);
@@ -42,63 +36,51 @@ public class Map
         this.objectiveZone = objectiveZone.toArray(new Cell[0]);
     }
 
-    public Cell[][] getCells()
-    {
+    public Cell[][] getCells() {
         return cells;
     }
 
-    void setCells(Cell[][] cells)
-    {
+    void setCells(Cell[][] cells) {
         this.cells = cells;
     }
 
-    public int getRowNum()
-    {
+    public int getRowNum() {
         return rowNum;
     }
 
-    void setRowNum(int rowNum)
-    {
+    void setRowNum(int rowNum) {
         this.rowNum = rowNum;
     }
 
-    public int getColumnNum()
-    {
+    public int getColumnNum() {
         return columnNum;
     }
 
-    void setColumnNum(int columnNum)
-    {
+    void setColumnNum(int columnNum) {
         this.columnNum = columnNum;
     }
 
-    public Cell[] getMyRespawnZone()
-    {
+    public Cell[] getMyRespawnZone() {
         return myRespawnZone;
     }
 
-    void setMyRespawnZone(Cell[] myRespawnZone)
-    {
+    void setMyRespawnZone(Cell[] myRespawnZone) {
         this.myRespawnZone = myRespawnZone;
     }
 
-    public Cell[] getOppRespawnZone()
-    {
+    public Cell[] getOppRespawnZone() {
         return oppRespawnZone;
     }
 
-    void setOppRespawnZone(Cell[] oppRespawnZone)
-    {
+    void setOppRespawnZone(Cell[] oppRespawnZone) {
         this.oppRespawnZone = oppRespawnZone;
     }
 
-    public Cell[] getObjectiveZone()
-    {
+    public Cell[] getObjectiveZone() {
         return objectiveZone;
     }
 
-    void setObjectiveZone(Cell[] objectiveZone)
-    {
+    void setObjectiveZone(Cell[] objectiveZone) {
         this.objectiveZone = objectiveZone;
     }
 }

@@ -44,7 +44,7 @@
 //        heroConstants.setAbilityNames(AbilityName.values());
 //        heroConstants.setMaxHP(100);
 //        heroConstants.setMoveAPCost(300);
-//        heroConstants.setName(HeroName.HEALER);
+//        heroConstants.setType(HeroType.HEALER);
 //        JsonObject j = Json.GSON.toJsonTree(heroConstants).getAsJsonObject();
 //
 //        HeroConstants heroConstants2 = Json.GSON.fromJson(j, HeroConstants.class);

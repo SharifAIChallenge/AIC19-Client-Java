@@ -97,4 +97,8 @@ public class Ability {
     void setPiercing(boolean piercing) {
         abilityConstants.setPiercing(piercing);
     }
+
+    boolean isReady() {
+        return remCooldown == 0;
+    }
 }

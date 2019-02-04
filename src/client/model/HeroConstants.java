@@ -2,20 +2,21 @@ package client.model;
 
 public class HeroConstants
 {
-    private HeroName name;
+    private HeroType type;
     private AbilityName[] abilityNames;
     private int maxHP;
     private int moveAPCost;
     private int respawnTime;
 
-    public HeroName getName()
+    public HeroType getType()
     {
-        return name;
+        return type;
     }
 
-    void setName(HeroName name)
+
+    void setType(HeroType type)
     {
-        this.name = name;
+        this.type = type;
     }
 
     public AbilityName[] getAbilityNames()
