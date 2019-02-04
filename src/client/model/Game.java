@@ -1,7 +1,6 @@
 package client.model;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import common.model.Event;
 import common.network.Json;
@@ -136,9 +135,8 @@ public class Game implements World {
                 recentCells.add(recentCell);
             }
             ArrayList<Ability> abilities = new ArrayList<>();
-            JsonElement cooldownsElement = heroJson.get("cooldowns");
-            if (cooldownsElement != null) {
-                JsonArray cooldownsJson = cooldownsElement.getAsJsonArray();
+            if (heroJson.get("cooldowns") != null) {
+                JsonArray cooldownsJson = heroJson.get("cooldowns").getAsJsonArray();
                 for (int j = 0; j < cooldownsJson.size(); j++) {
                     JsonObject cooldownJson = cooldownsJson.get(j).getAsJsonObject();
                     AbilityName abilityName = AbilityName.valueOf(cooldownJson.get("name").getAsString());
