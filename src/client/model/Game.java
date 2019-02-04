@@ -513,18 +513,8 @@ public class Game implements World
     {
         AbilityConstants abilityConstants = getAbilityConstants(abilityName);
         Cell[] impactCells = getImpactCells(abilityName, startCell, targetCell);
-        Set<Cell> affectedCells = new HashSet<>();
-        if (abilityConstants.isLobbing())
-        {
-            affectedCells.addAll(getCellsInAOE(impactCells[impactCells.length - 1],
-                    abilityConstants.getAreaOfEffect()));
-        } else
-        {
-            for (Cell cell : impactCells)
-            {
-                affectedCells.addAll(getCellsInAOE(cell, abilityConstants.getAreaOfEffect()));
-            }
-        }
+        ArrayList<Cell> affectedCells = getCellsInAOE(impactCells[impactCells.length - 1],
+                abilityConstants.getAreaOfEffect());
         if (abilityConstants.getType() == AbilityType.HEAL)
         {
             return getMyHeroesInCells(affectedCells.toArray(new Cell[0]));
