@@ -45,12 +45,9 @@ public class Game implements World {
         this.sender = game.sender;
     }
 
-    private AbilityConstants getAbilityConstants(AbilityName abilityName)
-    {
-        for (AbilityConstants abilityConstants : abilityConstants)
-        {
-            if (abilityConstants.getName() == abilityName)
-            {
+    private AbilityConstants getAbilityConstants(AbilityName abilityName) {
+        for (AbilityConstants abilityConstants : abilityConstants) {
+            if (abilityConstants.getName() == abilityName) {
                 return abilityConstants;
             }
         }
@@ -66,8 +63,7 @@ public class Game implements World {
         return null;
     }
 
-    public void handleInitMessage(Message msg)
-    {
+    public void handleInitMessage(Message msg) {
         JsonArray messageArray = msg.args;
         JsonObject mainObject = messageArray.get(0).getAsJsonObject();
 
@@ -79,8 +75,7 @@ public class Game implements World {
         abilityConstants = initJson.getAbilityConstants();
     }
 
-    public void handleTurnMessage(Message msg)
-    {
+    public void handleTurnMessage(Message msg) {
         JsonObject jsonRoot = msg.args.get(0).getAsJsonObject();
         myScore = jsonRoot.get("myScore").getAsInt();
         oppScore = jsonRoot.get("oppScore").getAsInt();
@@ -96,10 +91,8 @@ public class Game implements World {
         ArrayList<Hero> myHeroes = getHeroesFromJson(myHeroesJson);
         this.myHeroes = myHeroes.toArray(new Hero[0]);
         ArrayList<Hero> myDeadHeroes = new ArrayList<>();
-        for (Hero hero : myHeroes)
-        {
-            if (hero.getCurrentHP() == 0)
-            {
+        for (Hero hero : myHeroes) {
+            if (hero.getCurrentHP() == 0) {
                 myDeadHeroes.add(hero);
             }
         }
@@ -108,21 +101,17 @@ public class Game implements World {
         ArrayList<Hero> oppHeroes = getHeroesFromJson(oppHeroesJson);
         this.oppHeroes = oppHeroes.toArray(new Hero[0]);
         ArrayList<Hero> oppDeadHeroes = new ArrayList<>();
-        for (Hero hero : oppHeroes)
-        {
-            if (hero.getCurrentHP() == 0)
-            {
+        for (Hero hero : oppHeroes) {
+            if (hero.getCurrentHP() == 0) {
                 oppDeadHeroes.add(hero);
             }
         }
         this.oppDeadHeroes = oppDeadHeroes.toArray(new Hero[0]);
     }
 
-    private ArrayList<Hero> getHeroesFromJson(JsonArray heroesJson)
-    {
+    private ArrayList<Hero> getHeroesFromJson(JsonArray heroesJson) {
         ArrayList<Hero> heroes = new ArrayList<>();
-        for (int i = 0; i < heroesJson.size(); i++)
-        {
+        for (int i = 0; i < heroesJson.size(); i++) {
             JsonObject heroJson = heroesJson.get(i).getAsJsonObject();
             int id = heroJson.get("id").getAsInt();
             HeroType name = HeroType.valueOf(heroJson.get("type").getAsString());
@@ -130,8 +119,7 @@ public class Game implements World {
             int respawnTime = heroJson.get("respawnTime").getAsInt();
 
             Cell currentCell = new Cell(-1, -1);
-            if (heroJson.get("currentCell") != null)
-            {
+            if (heroJson.get("currentCell") != null) {
                 JsonObject currentCellJson = heroJson.get("currentCell").getAsJsonObject();
                 int row = currentCellJson.get("row").getAsInt();
                 int column = currentCellJson.get("column").getAsInt();
@@ -139,8 +127,7 @@ public class Game implements World {
             }
             JsonArray recentPathJson = heroJson.get("recentPath").getAsJsonArray();
             ArrayList<Cell> recentCells = new ArrayList<>();
-            for (int j = 0; j < recentPathJson.size(); j++)
-            {
+            for (int j = 0; j < recentPathJson.size(); j++) {
                 JsonObject recentCellJson = recentPathJson.get(j).getAsJsonObject();
                 int recentRow = recentCellJson.get("row").getAsInt();
                 int recentColumn = recentCellJson.get("column").getAsInt();
@@ -149,8 +136,7 @@ public class Game implements World {
             }
             ArrayList<Ability> abilities = new ArrayList<>();
             JsonArray cooldownsJson = heroJson.get("cooldowns").getAsJsonArray();
-            for (int j = 0; j < cooldownsJson.size(); j++)
-            {
+            for (int j = 0; j < cooldownsJson.size(); j++) {
                 JsonObject cooldownJson = cooldownsJson.get(j).getAsJsonObject();
                 AbilityName abilityName = AbilityName.valueOf(cooldownJson.get("name").getAsString());
                 int remCooldown = cooldownJson.get("remCooldown").getAsInt();
@@ -572,8 +558,6 @@ public class Game implements World {
         }
         return heroes.toArray(new Hero[0]);
     }
-
-    /*TODO*/// check javadoc
 
     /**
      * Get all the cells that collide with the ray line in at least one non corner point, before reaching a wall.
