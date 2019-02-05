@@ -131,7 +131,8 @@ public class Controller
     {
         game = new Game(game);
         game.handleInitMessage(msg);
-        preProcess(game);
+        Event endEvent = new Event("end", new Object[]{game.getCurrentTurn()});
+        preProcess(game, endEvent);
     }
 
     private void handlePickMessage(Message msg)
@@ -169,9 +170,12 @@ public class Controller
         System.exit(0);
     }
 
-    private void preProcess(Game game)
+    private void preProcess(Game game, Event endEvent)
     {
-        new Thread(() -> ai.preProcess(game)).start();
+        new Thread(() -> {
+            ai.preProcess(game);
+            sendEndMsg(endEvent);
+        }).start();
     }
 
     private void pickTurn(Game game, Event endEvent)
