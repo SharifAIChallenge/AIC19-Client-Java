@@ -98,6 +98,7 @@ public interface World {
     /**
      * Returns the Manhattan distance between two cells.
      * It is actually the difference between row number and column number of the cells.
+     * Returns zero if one of the inputs is null.
      *
      * @param firstCell  First cell
      * @param secondCell Second cell
@@ -172,8 +173,10 @@ public interface World {
 
     Map getMap();
 
+    // Returns abilities cast in the last round by your own heroes.
     CastAbility[] getMyCastAbilities();
 
+    // Returns abilities cast in the last round by enemy heroes.
     CastAbility[] getOppCastAbilities();
 
     HeroConstants[] getHeroConstants();
