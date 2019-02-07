@@ -319,19 +319,19 @@ public class Game implements World {
     public Direction[] getPathMoveDirections(Cell startCell, Cell endCell) {
         if (startCell == null || endCell == null || startCell == endCell ||
                 startCell.isWall() || endCell.isWall()) return new Direction[0];
-
         HashMap<Cell, Pair<Cell, Direction>> lastMoveInfo = new HashMap<>(); // saves parent cell and direction to go from parent cell to current cell
         Cell[] bfsQueue = new Cell[map.getRowNum() * map.getColumnNum() + 10];
-        int queueHead = 0, queueTail = 0;
+        int queueHead = 0;
+        int queueTail = 0;
 
         lastMoveInfo.put(startCell, new Pair<>(null, null));
         bfsQueue[queueTail++] = startCell;
 
         while (queueHead != queueTail) {
             Cell currentCell = bfsQueue[queueHead++];
-            if (currentCell == endCell) {
+            if (currentCell.equals(endCell)) {
                 ArrayList<Direction> directions = new ArrayList<>();
-                while (currentCell != startCell) {
+                while (!currentCell.equals(startCell)) {
                     directions.add(lastMoveInfo.get(currentCell).getSecond());
                     currentCell = lastMoveInfo.get(currentCell).getFirst();
                 }
