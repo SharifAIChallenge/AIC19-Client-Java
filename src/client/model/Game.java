@@ -85,6 +85,7 @@ public class Game implements World {
         AP = jsonRoot.get("AP").getAsInt();
         Cell[][] turnCells = Json.GSON.fromJson(jsonRoot.get("map").getAsJsonArray(), Cell[][].class);
         this.map.setCells(turnCells);
+        this.map.calculateZones();
         myCastAbilities = Json.GSON.fromJson(jsonRoot.get("myCastAbilities").getAsJsonArray(), CastAbility[].class);
         oppCastAbilities = Json.GSON.fromJson(jsonRoot.get("oppCastAbilities").getAsJsonArray(), CastAbility[].class);
         JsonArray myHeroesJson = jsonRoot.getAsJsonArray("myHeroes");
