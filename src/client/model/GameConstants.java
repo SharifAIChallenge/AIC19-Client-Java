@@ -73,5 +73,19 @@ public class GameConstants {
     void setFirstMoveTimeout(int firstMoveTimeout) {
         this.firstMoveTimeout = firstMoveTimeout;
     }
-    
+
+    @Override
+    public String toString()
+    {
+        return "GameConstants{" +
+                "normalTimeout=" + normalTimeout +
+                ", preprocessTimeout=" + preprocessTimeout +
+                ", firstMoveTimeout=" + firstMoveTimeout +
+                ", maxAP=" + maxAP +
+                ", maxTurns=" + maxTurns +
+                ", killScore=" + killScore +
+                ", objectiveZoneScore=" + objectiveZoneScore +
+                ", maxScore=" + maxScore +
+                '}';
+    }
 }

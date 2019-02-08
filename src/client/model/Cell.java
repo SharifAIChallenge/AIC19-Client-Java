@@ -85,6 +85,18 @@ public class Cell {
 
     @Override
     public int hashCode() {
-        return row * 1000 + column; //TODO
+        return row * 1000 + column;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Cell{" +
+                "isWall=" + isWall +
+                ", isInMyRespawnZone=" + isInMyRespawnZone +
+                ", isInOppRespawnZone=" + isInOppRespawnZone +
+                ", isInObjectiveZone=" + isInObjectiveZone +
+                ", isInVision=" + isInVision +
+                '}';
     }
 }

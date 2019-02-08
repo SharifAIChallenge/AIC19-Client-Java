@@ -3,7 +3,8 @@ package client.model;
 
 import java.util.ArrayList;
 
-public class Hero {
+public class Hero
+{
     private int id;
     private HeroConstants heroConstants;
     private Ability[] abilities;
@@ -15,14 +16,17 @@ public class Hero {
     private Cell currentCell;
     private Cell[] recentPath;
 
-    Hero(HeroConstants heroConstants, int id, ArrayList<Ability> abilities) {
+    Hero(HeroConstants heroConstants, int id, ArrayList<Ability> abilities)
+    {
         this.id = id;
         this.heroConstants = heroConstants;
         ArrayList<Ability> dodgeAbilities = new ArrayList<>();
         ArrayList<Ability> defensiveAbilities = new ArrayList<>();
         ArrayList<Ability> offensiveAbilities = new ArrayList<>();
-        for (Ability ability : abilities) {
-            switch (ability.getAbilityConstants().getType()) {
+        for (Ability ability : abilities)
+        {
+            switch (ability.getAbilityConstants().getType())
+            {
                 case DEFENSIVE:
                     defensiveAbilities.add(ability);
                     break;
@@ -42,7 +46,8 @@ public class Hero {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(Object obj)
+    {
         if (this == obj)
             return true;
         if (obj == null)
@@ -54,137 +59,217 @@ public class Hero {
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         return id;
     }
 
-    public Ability getAbility(AbilityName abilityName) {
-        for (Ability ability : abilities) {
-            if (ability.getName() == abilityName) {
+    public Ability getAbility(AbilityName abilityName)
+    {
+        for (Ability ability : abilities)
+        {
+            if (ability.getName() == abilityName)
+            {
                 return ability;
             }
         }
         return null;
     }
 
-    public int getId() {
+    public int getId()
+    {
         return id;
     }
 
-    void setId(int id) {
+    void setId(int id)
+    {
         this.id = id;
     }
 
-    HeroConstants getHeroConstants() {
+    HeroConstants getHeroConstants()
+    {
         return heroConstants;
     }
 
-    void setHeroConstants(HeroConstants heroConstants) {
+    void setHeroConstants(HeroConstants heroConstants)
+    {
         this.heroConstants = heroConstants;
     }
 
-    public Ability[] getAbilities() {
+    public Ability[] getAbilities()
+    {
         return abilities;
     }
 
-    void setAbilities(Ability[] abilities) {
+    void setAbilities(Ability[] abilities)
+    {
         this.abilities = abilities;
     }
 
-    public Ability[] getDodgeAbilities() {
+    public Ability[] getDodgeAbilities()
+    {
         return dodgeAbilities;
     }
 
-    void setDodgeAbilities(Ability[] dodgeAbilities) {
+    void setDodgeAbilities(Ability[] dodgeAbilities)
+    {
         this.dodgeAbilities = dodgeAbilities;
     }
 
-    public Ability[] getDefensiveAbilities() {
+    public Ability[] getDefensiveAbilities()
+    {
         return defensiveAbilities;
     }
 
-    void setDefensiveAbilities(Ability[] defensiveAbilities) {
+    void setDefensiveAbilities(Ability[] defensiveAbilities)
+    {
         this.defensiveAbilities = defensiveAbilities;
     }
 
-    public Ability[] getOffensiveAbilities() {
+    public Ability[] getOffensiveAbilities()
+    {
         return offensiveAbilities;
     }
 
-    void setOffensiveAbilities(Ability[] offensiveAbilities) {
+    void setOffensiveAbilities(Ability[] offensiveAbilities)
+    {
         this.offensiveAbilities = offensiveAbilities;
     }
 
-    public int getCurrentHP() {
+    public int getCurrentHP()
+    {
         return currentHP;
     }
 
-    void setCurrentHP(int currentHP) {
+    void setCurrentHP(int currentHP)
+    {
         this.currentHP = currentHP;
     }
 
-    public Cell getCurrentCell() {
+    public Cell getCurrentCell()
+    {
         return currentCell;
     }
 
-    void setCurrentCell(Cell currentCell) {
+    void setCurrentCell(Cell currentCell)
+    {
         this.currentCell = currentCell;
     }
 
-    public Cell[] getRecentPath() {
+    public Cell[] getRecentPath()
+    {
         return recentPath;
     }
 
-    void setRecentPath(Cell[] recentPath) {
+    void setRecentPath(Cell[] recentPath)
+    {
         this.recentPath = recentPath;
     }
 
-    public HeroName getName() {
+    public HeroName getName()
+    {
         return heroConstants.getName();
     }
 
-    void setName(HeroName name) {
+    void setName(HeroName name)
+    {
         heroConstants.setName(name);
     }
 
-    public AbilityName[] getAbilityNames() {
+    public AbilityName[] getAbilityNames()
+    {
         return heroConstants.getAbilityNames();
     }
 
-    void setAbilityNames(AbilityName[] abilityNames) {
+    void setAbilityNames(AbilityName[] abilityNames)
+    {
         heroConstants.setAbilityNames(abilityNames);
     }
 
-    public int getMaxHP() {
+    public int getMaxHP()
+    {
         return heroConstants.getMaxHP();
     }
 
-    void setMaxHP(int maxHP) {
+    void setMaxHP(int maxHP)
+    {
         heroConstants.setMaxHP(maxHP);
     }
 
-    public int getMoveAPCost() {
+    public int getMoveAPCost()
+    {
         return heroConstants.getMoveAPCost();
     }
 
-    void setMoveAPCost(int moveAPCost) {
+    void setMoveAPCost(int moveAPCost)
+    {
         heroConstants.setMoveAPCost(moveAPCost);
     }
 
-    public int getHeroConstantsRespawnTime() {
+    public int getHeroConstantsRespawnTime()
+    {
         return heroConstants.getRespawnTime();
     }
 
-    void setHeroConstantsRespawnTime(int respawnTime) {
+    void setHeroConstantsRespawnTime(int respawnTime)
+    {
         heroConstants.setRespawnTime(respawnTime);
     }
 
-    public int getRemRespawnTime() {
+    public int getRemRespawnTime()
+    {
         return remRespawnTime;
     }
 
-    void setRemRespawnTime(int remRespawnTime) {
+    void setRemRespawnTime(int remRespawnTime)
+    {
         this.remRespawnTime = remRespawnTime;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Hero{" +
+                "id=" + id +
+                ", heroName=" + heroConstants.getName() +
+                ", abilities=" + getAbilitiesLog() +
+                ", currentHP=" + currentHP +
+                ", remRespawnTime=" + remRespawnTime +
+                ", currentCell={" + currentCell.getRow() + ", " + currentCell.getColumn() + "}" +
+                ", recentPath=" + getRecentPathLog() +
+                '}';
+    }
+
+    private String getRecentPathLog()
+    {
+        StringBuilder result = new StringBuilder("[");
+        for (int i = 0; i < recentPath.length; i++)
+        {
+            Cell cell = recentPath[i];
+            result.append("{" + cell.getRow() + ", " + cell.getColumn() + "}");
+            if (i != recentPath.length - 1)
+            {
+                result.append(", ");
+            }
+        }
+        result.append("]");
+        return String.valueOf(result);
+    }
+
+    private String getAbilitiesLog()
+    {
+        StringBuilder result = new StringBuilder("[");
+        for (int i = 0; i < abilities.length; i++)
+        {
+            Ability ability = abilities[i];
+            result.append("{" + ability.getName() + ", " + ability.getRemCooldown() + "}");
+            if (i != recentPath.length - 1)
+            {
+                result.append(", ");
+            }
+        }
+        result.append("]");
+        return String.valueOf(result);
     }
 }
 

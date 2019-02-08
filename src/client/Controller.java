@@ -155,8 +155,6 @@ public class Controller
         {
             actionTurn(newGame, endEvent);
         }
-        /* TODO */// log for debug
-        /* TODO */// handle moveTurn
     }
 
     /**

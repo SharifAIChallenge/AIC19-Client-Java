@@ -1,5 +1,7 @@
 package client.model;
 
+import java.util.Arrays;
+
 public class HeroConstants {
     private HeroName name;
     private AbilityName[] abilityNames;
@@ -45,5 +47,17 @@ public class HeroConstants {
 
     void setRespawnTime(int respawnTime) {
         this.respawnTime = respawnTime;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "HeroConstants{" +
+                "name=" + name +
+                ", abilityNames=" + Arrays.toString(abilityNames) +
+                ", maxHP=" + maxHP +
+                ", moveAPCost=" + moveAPCost +
+                ", respawnTime=" + respawnTime +
+                '}';
     }
 }

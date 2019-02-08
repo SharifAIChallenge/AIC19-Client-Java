@@ -1,5 +1,7 @@
 package client.model;
 
+import java.util.Arrays;
+
 public class CastAbility {
     private int casterId;
     private int[] targetHeroIds;
@@ -45,5 +47,17 @@ public class CastAbility {
 
     void setAbilityName(AbilityName abilityName) {
         this.abilityName = abilityName;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "CastAbility{" +
+                "casterId=" + casterId +
+                ", targetHeroIds=" + Arrays.toString(targetHeroIds) +
+                ", startCell=" + startCell +
+                ", endCell=" + endCell +
+                ", abilityName=" + abilityName +
+                '}';
     }
 }
