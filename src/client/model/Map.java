@@ -1,7 +1,6 @@
 package client.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Map {
     private Cell[][] cells;

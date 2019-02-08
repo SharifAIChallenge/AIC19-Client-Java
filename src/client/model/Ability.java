@@ -10,6 +10,11 @@ public class Ability {
         this.remCooldown = 0;
     }
 
+    public boolean isReady()
+    {
+        return this.remCooldown == 0;
+    }
+
     AbilityConstants getAbilityConstants() {
         return abilityConstants;
     }

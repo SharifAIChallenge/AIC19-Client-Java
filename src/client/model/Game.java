@@ -8,7 +8,6 @@ import common.network.data.Message;
 import common.util.Log;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.function.Consumer;
