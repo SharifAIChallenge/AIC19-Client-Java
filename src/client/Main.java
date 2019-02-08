@@ -13,7 +13,7 @@ import java.util.Arrays;
 
 public class Main {
 
-    private static final boolean GLOBAL_VERBOSE_FLAG = false;
+    private static final boolean GLOBAL_VERBOSE_FLAG = true;
 
     private static final String[] argNames = {"AICHostIP", "AICHostPort", "AICToken", "AICRetryDelay"};
     private static final String[] argDefaults = {"localhost", "7099", "00000000000000000000000000000000", "1000"};

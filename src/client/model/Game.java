@@ -244,12 +244,12 @@ public class Game implements World
         Log.d(TAG, "My Heroes:");
         for (Hero hero : myHeroes)
         {
-            Log.d(TAG, hero.toString());
+            Log.d(TAG, hero.getName().toString());
         }
         Log.d(TAG, "Opponent Heroes:");
         for (Hero hero : oppHeroes)
         {
-            Log.d(TAG, hero.toString());
+            Log.d(TAG, hero.getName().toString());
         }
     }
 
