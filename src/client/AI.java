@@ -11,10 +11,6 @@ public class AI {
 
     public void preProcess(World world) {
         System.out.println("pre process started");
-        world.pickHero(HeroName.GUARDIAN);
-        world.pickHero(HeroName.HEALER);
-        world.castAbility(1, world.getAbilityConstants()[0].getName(), 1, 1);
-        world.moveHero(1, Direction.DOWN);
     }
 
     public void pickTurn(World world) {
@@ -25,8 +21,9 @@ public class AI {
 
     public void moveTurn(World world) {
         System.out.println("move started");
+        Random random = new Random();
         for (Hero hero : world.getMyHeroes()) {
-            world.moveHero(hero.getId(), Direction.DOWN);
+            world.moveHero(hero.getId(), Direction.values()[random.nextInt(4)]);
         }
     }
 

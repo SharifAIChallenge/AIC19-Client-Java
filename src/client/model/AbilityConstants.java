@@ -74,4 +74,19 @@ public class AbilityConstants {
     void setLobbing(boolean lobbing) {
         isLobbing = lobbing;
     }
+
+    @Override
+    public String toString()
+    {
+        return "AbilityConstants{" +
+                "name=" + name +
+                ", type=" + type +
+                ", range=" + range +
+                ", APCost=" + APCost +
+                ", cooldown=" + cooldown +
+                ", areaOfEffect=" + areaOfEffect +
+                ", power=" + power +
+                ", isLobbing=" + isLobbing +
+                '}';
+    }
 }

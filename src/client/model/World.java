@@ -193,7 +193,7 @@ public interface World {
 
     Phase getCurrentPhase();
 
-    int getNormalTimeout();//TODO add to doc
+    int getNormalTimeout();
 
     int getPreprocessTimeout();
 

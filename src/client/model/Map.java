@@ -83,4 +83,23 @@ public class Map {
     void setObjectiveZone(Cell[] objectiveZone) {
         this.objectiveZone = objectiveZone;
     }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder result=new StringBuilder("Map: rowNum=" + rowNum+" columnNum="+columnNum+"\n");
+        for (int i=0;i<rowNum;i++)
+        {
+            for(int j=0;j<columnNum;j++)
+            {
+                result.append(cells[i][j].toString());
+                if(j!=columnNum-1)
+                {
+                    result.append(", ");
+                }
+            }
+            result.append("\n");
+        }
+        return String.valueOf(result);
+    }
 }
