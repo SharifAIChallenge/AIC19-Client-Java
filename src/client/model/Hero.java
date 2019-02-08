@@ -229,6 +229,9 @@ public class Hero
     @Override
     public String toString()
     {
+        if (currentCell == null)
+            return "";
+
         return "Hero{" +
                 "id=" + id +
                 ", heroName=" + heroConstants.getName() +
@@ -258,6 +261,9 @@ public class Hero
 
     private String getAbilitiesLog()
     {
+        if (recentPath == null)
+            return "";
+
         StringBuilder result = new StringBuilder("[");
         for (int i = 0; i < abilities.length; i++)
         {
