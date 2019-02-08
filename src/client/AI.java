@@ -17,7 +17,7 @@ public class AI {
     }
 
     public void pickTurn(World world) {
-        //System.out.println("pick started");
+        System.out.println("pick started");
         int numberOfHeroes = world.getMyHeroes().length;
         world.pickHero(HeroName.values()[numberOfHeroes % (HeroName.values().length)]);
     }
@@ -27,12 +27,12 @@ public class AI {
         for (Hero hero : world.getMyHeroes()) {
             world.moveHero(hero.getId(), Direction.DOWN);
         }*/
-        Cell startCell = world.getMyHeroes()[0].getCurrentCell();
+       /* Cell startCell = world.getMyHeroes()[0].getCurrentCell();
         Cell endCell = world.getMap().getObjectiveZone()[0];
         Direction[] directions = world.getPathMoveDirections(startCell, endCell);
         System.err.println("StartCell: " + startCell.getRow() + " " + startCell.getColumn() + " " + startCell.isWall());
         System.err.println("EndCell: " + endCell.getRow() + " " + endCell.getColumn() + " " + endCell.isWall());
-        System.err.println(directions.length);
+        System.err.println(directions.length);*/
 
     }
 
