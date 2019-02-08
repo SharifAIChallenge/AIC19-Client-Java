@@ -33,9 +33,9 @@ public class AI {
     public void actionTurn(World world) {
         System.out.println("action started");
         for (Hero hero : world.getMyHeroes()) {
-            world.castAbility(hero, hero.getAbilities()[(new Random().nextInt()) % hero.getAbilities().length],
-                    world.getMap().getCell((new Random().nextInt()) % world.getMap().getRowNum(),
-                            (new Random().nextInt()) % world.getMap().getColumnNum()));
+            world.castAbility(hero, hero.getAbilities()[Math.abs(new Random().nextInt()) % hero.getAbilities().length],
+                    world.getMap().getCell(Math.abs(new Random().nextInt()) % world.getMap().getRowNum(),
+                            Math.abs(new Random().nextInt()) % world.getMap().getColumnNum()));
         }
     }
 
