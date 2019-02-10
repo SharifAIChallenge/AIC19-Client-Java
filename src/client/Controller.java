@@ -131,7 +131,7 @@ public class Controller
     {
         game = new Game(game);
         game.handleInitMessage(msg);
-        Event endEvent = new Event("end", new Object[]{game.getCurrentTurn()});
+        Event endEvent = new Event("init-end", new Object[]{});
         preProcess(game, endEvent);
     }
 
@@ -139,7 +139,7 @@ public class Controller
     {
         Game newGame = new Game(game);
         newGame.handlePickMessage(msg);
-        Event endEvent = new Event("end", new Object[]{newGame.getCurrentTurn()});
+        Event endEvent = new Event("pick-end", new Object[]{newGame.getCurrentTurn()});
         pickTurn(newGame, endEvent);
     }
 
@@ -147,12 +147,14 @@ public class Controller
     {
         Game newGame = new Game(game);
         newGame.handleTurnMessage(msg);
-        Event endEvent = new Event("end", new Object[]{newGame.getCurrentTurn()});
+        Event endEvent;
         if (newGame.getCurrentPhase() == Phase.MOVE)
         {
+            endEvent = new Event("move-end", new Object[]{newGame.getCurrentTurn(), newGame.getMovePhaseNum()});
             moveTurn(newGame, endEvent);
         } else
         {
+            endEvent = new Event("action-end", new Object[]{newGame.getCurrentTurn()});
             actionTurn(newGame, endEvent);
         }
     }

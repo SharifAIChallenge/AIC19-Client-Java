@@ -328,7 +328,7 @@ public class Game implements World
     public void castAbility(int heroId, AbilityName abilityName, int targetCellRow, int targetCellColumn)
     {
         Event event = new Event("cast", new Object[]{heroId, abilityName.toString(), targetCellRow,
-                targetCellColumn});
+                targetCellColumn, currentTurn});
         sender.accept(new Message(Event.EVENT, event));
         Log.d(TAG, "Request: cast Ability @ heroId:" + heroId + " abilityName:" + abilityName +
                 " targetCellRow:" + targetCellRow + " targetCellColumn:" + targetCellColumn);
@@ -387,7 +387,8 @@ public class Game implements World
     @Override
     public void moveHero(int heroId, Direction direction)
     {
-        Event event = new Event("move", new Object[]{heroId, Json.GSON.toJson(direction)});
+        Event event = new Event("move", new Object[]{heroId, Json.GSON.toJson(direction), currentTurn,
+                movePhaseNum});
         sender.accept(new Message(Event.EVENT, event));
         Log.d(TAG, "Request: move Hero @ heroId:" + heroId + " direction:" + direction);
     }
@@ -402,7 +403,7 @@ public class Game implements World
     @Override
     public void pickHero(HeroName heroName)
     {
-        Event event = new Event("pick", new Object[]{heroName.toString()});
+        Event event = new Event("pick", new Object[]{heroName.toString(), currentTurn});
         sender.accept(new Message(Event.EVENT, event));
         Log.d(TAG, "Request: pick Hero @ heroName:" + heroName);
     }
