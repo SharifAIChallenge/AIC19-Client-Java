@@ -1,5 +1,7 @@
 package client.model;
 
+import java.util.Collection;
+
 public interface World {
 
     /**
@@ -80,6 +82,15 @@ public interface World {
      */
     void pickHero(HeroName heroName);
 
+    Direction[] getPathMoveDirections(Cell startCell, Cell endCell, Cell[] blockedCells);
+
+    Direction[] getPathMoveDirections(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn,
+                                      Cell[] blockedCells);
+
+    Direction[] getPathMoveDirections(Cell startCell, Cell endCell, Collection<Cell> blockedCells);
+
+    Direction[] getPathMoveDirections(int startCellRow, int startCellColumn, int endCellRow, int endCellColumn,
+                                      Collection<Cell> blockedCells);
 
     /**
      * Returns an array of directions to reach the end cell from start cell.
