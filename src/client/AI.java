@@ -7,6 +7,8 @@ import java.util.Random;
 public class AI
 {
 
+    private Random random = new Random();
+
     public void preProcess(World world)
     {
         System.out.println("pre process started");
@@ -21,7 +23,6 @@ public class AI
     public void moveTurn(World world)
     {
         System.out.println("move started");
-        Random random = new Random();
         Hero[] heroes = world.getMyHeroes();
 
         for (Hero hero : heroes)
@@ -33,7 +34,6 @@ public class AI
     public void actionTurn(World world) {
         System.out.println("action started");
         Hero[] heroes = world.getMyHeroes();
-        Random random = new Random();
         Map map = world.getMap();
         for (Hero hero : heroes)
         {
