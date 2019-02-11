@@ -4,7 +4,7 @@
 It is recommended to use IntelliJ IDEA(JetBtains):
 
 ```
-import directory you want to save and run the code
+Import directory you want to save and run the code
 Then just run main function in Main.java
 ```
 
