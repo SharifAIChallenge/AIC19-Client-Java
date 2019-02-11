@@ -1,1 +1,14 @@
-# AIC2019-Client-Java
+# AI Challenge 2019 Java Client
+## Setup instructions
+
+It is recommended to use IntelliJ IDEA(JetBtains):
+
+```
+import directory you want to save and run the code
+Then just run main function in Main.java
+```
+
+
+
+
+
