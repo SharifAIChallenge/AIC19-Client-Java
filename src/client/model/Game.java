@@ -7,10 +7,7 @@ import common.network.Json;
 import common.network.data.Message;
 import common.util.Log;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class Game implements World {
@@ -37,8 +34,7 @@ public class Game implements World {
     private final String TAG = "GAME";
 
 
-    public Game(Consumer<Message> sender)
-    {
+    public Game(Consumer<Message> sender) {
         this.sender = sender;
     }
 
@@ -85,9 +81,9 @@ public class Game implements World {
         map.calculateZones();
 
         heroConstants = initJson.getHeroConstants();
-        Log.d(TAG, heroConstants.toString());
+        Log.d(TAG, Arrays.toString(heroConstants));
         abilityConstants = initJson.getAbilityConstants();
-        Log.d(TAG, abilityConstants.toString());
+        Log.d(TAG, Arrays.toString(abilityConstants));
     }
 
     public void handleTurnMessage(Message msg) {
@@ -113,16 +109,17 @@ public class Game implements World {
         this.map.calculateZones();
 
         myCastAbilities = Json.GSON.fromJson(jsonRoot.get("myCastAbilities").getAsJsonArray(), CastAbility[].class);
+        validateCastAbilityCells(myCastAbilities);
         Log.d(TAG, "My Cast Abilities:");
         for (CastAbility castAbility : myCastAbilities) {
             Log.d(TAG, castAbility.toString());
         }
         oppCastAbilities = Json.GSON.fromJson(jsonRoot.get("oppCastAbilities").getAsJsonArray(), CastAbility[].class);
+        validateCastAbilityCells(oppCastAbilities);
         Log.d(TAG, "Opponent Cast Abilities:");
         for (CastAbility castAbility : oppCastAbilities) {
             Log.d(TAG, castAbility.toString());
         }
-
         JsonArray myHeroesJson = jsonRoot.getAsJsonArray("myHeroes");
         ArrayList<Hero> myHeroes = getHeroesFromJson(myHeroesJson);
         this.myHeroes = myHeroes.toArray(new Hero[0]);
@@ -152,6 +149,17 @@ public class Game implements World {
             }
         }
         this.oppDeadHeroes = oppDeadHeroes.toArray(new Hero[0]);
+    }
+
+    private void validateCastAbilityCells(CastAbility[] castAbilities) {
+        for (CastAbility castAbility : castAbilities) {
+            if (castAbility.getStartCell() == null) {
+                castAbility.setStartCell(new Cell(-1, -1));
+            }
+            if (castAbility.getEndCell() == null) {
+                castAbility.setEndCell(new Cell(-1, -1));
+            }
+        }
     }
 
     private ArrayList<Hero> getHeroesFromJson(JsonArray heroesJson) {
@@ -337,8 +345,7 @@ public class Game implements World {
     }
 
     @Override
-    public void moveHero(int heroId, Direction direction)
-    {
+    public void moveHero(int heroId, Direction direction) {
         Event event = new Event("move", new Object[]{heroId, Json.GSON.toJson(direction), currentTurn,
                 movePhaseNum});
         sender.accept(new Message(Event.EVENT, event));
@@ -352,8 +359,7 @@ public class Game implements World {
     }
 
     @Override
-    public void pickHero(HeroName heroName)
-    {
+    public void pickHero(HeroName heroName) {
         Event event = new Event("pick", new Object[]{heroName.toString(), currentTurn});
         sender.accept(new Message(Event.EVENT, event));
         Log.d(TAG, "Request: pick Hero @ heroName:" + heroName);
