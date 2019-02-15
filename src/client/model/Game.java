@@ -109,13 +109,13 @@ public class Game implements World {
         this.map.calculateZones();
 
         myCastAbilities = Json.GSON.fromJson(jsonRoot.get("myCastAbilities").getAsJsonArray(), CastAbility[].class);
-        validateCastAbilityCells(myCastAbilities);
+        setCastAbilitiesCells(myCastAbilities);
         Log.d(TAG, "My Cast Abilities:");
         for (CastAbility castAbility : myCastAbilities) {
             Log.d(TAG, castAbility.toString());
         }
         oppCastAbilities = Json.GSON.fromJson(jsonRoot.get("oppCastAbilities").getAsJsonArray(), CastAbility[].class);
-        validateCastAbilityCells(oppCastAbilities);
+        setCastAbilitiesCells(oppCastAbilities);
         Log.d(TAG, "Opponent Cast Abilities:");
         for (CastAbility castAbility : oppCastAbilities) {
             Log.d(TAG, castAbility.toString());
@@ -151,13 +151,18 @@ public class Game implements World {
         this.oppDeadHeroes = oppDeadHeroes.toArray(new Hero[0]);
     }
 
-    private void validateCastAbilityCells(CastAbility[] castAbilities) {
+    private void setCastAbilitiesCells(CastAbility[] castAbilities) {
         for (CastAbility castAbility : castAbilities) {
             if (castAbility.getStartCell() == null) {
                 castAbility.setStartCell(new Cell(-1, -1));
+            } else {
+                castAbility.setStartCell(map.getCell(castAbility.getStartCell()));
             }
+
             if (castAbility.getEndCell() == null) {
                 castAbility.setEndCell(new Cell(-1, -1));
+            } else {
+                castAbility.setEndCell(map.getCell(castAbility.getEndCell()));
             }
         }
     }

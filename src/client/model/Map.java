@@ -85,21 +85,21 @@ public class Map {
     }
 
     @Override
-    public String toString()
-    {
-        StringBuilder result=new StringBuilder("Map: rowNum=" + rowNum+" columnNum="+columnNum+"\n");
-        for (int i=0;i<rowNum;i++)
-        {
-            for(int j=0;j<columnNum;j++)
-            {
+    public String toString() {
+        StringBuilder result = new StringBuilder("Map: rowNum=" + rowNum + " columnNum=" + columnNum + "\n");
+        for (int i = 0; i < rowNum; i++) {
+            for (int j = 0; j < columnNum; j++) {
                 result.append(cells[i][j].toString());
-                if(j!=columnNum-1)
-                {
+                if (j != columnNum - 1) {
                     result.append(", ");
                 }
             }
             result.append("\n");
         }
         return String.valueOf(result);
+    }
+
+    Cell getCell(Cell cell) {
+        return getCell(cell.getRow(), cell.getColumn());
     }
 }
