@@ -26,13 +26,14 @@ public class Game implements World {
     private int myScore;
     private int oppScore;
     private int currentTurn;
+    private int maxOvertime;
+    private int remainingOvertime;
 
     private Phase currentPhase;
     private int movePhaseNum;
 
     private Consumer<Message> sender;
     private final String TAG = "GAME";
-
 
     public Game(Consumer<Message> sender) {
         this.sender = sender;
@@ -93,6 +94,8 @@ public class Game implements World {
         currentTurn = jsonRoot.get("currentTurn").getAsInt();
         currentPhase = Phase.valueOf(jsonRoot.get("currentPhase").getAsString());
         movePhaseNum = jsonRoot.get("movePhaseNum").getAsInt();
+        remainingOvertime = jsonRoot.get("remainingOvertime").getAsInt();
+        maxOvertime = jsonRoot.get("maxOvertime").getAsInt();
         AP = jsonRoot.get("AP").getAsInt();
         Log.d(TAG, "-------------------------------------------- " + "parsing turn " + currentTurn + " --------------------------------------------");
         Log.d(TAG, "Game Values{" +
@@ -101,6 +104,8 @@ public class Game implements World {
                 ", currentPhase=" + currentPhase +
                 ", movePhaseNum=" + movePhaseNum +
                 ", AP=" + AP +
+                ", remainingOvertime=" + remainingOvertime +
+                ", maxOvertime=" + maxOvertime +
                 '}');
 
         Cell[][] turnCells = Json.GSON.fromJson(jsonRoot.get("map").getAsJsonArray(), Cell[][].class);
@@ -501,10 +506,10 @@ public class Game implements World {
             if (manhattanDistance(startCell, cell) > abilityConstants.getRange())
                 break;
             lastCell = cell;
-            if ((getOppHero(cell) != null && !abilityConstants.getType().equals(AbilityType.DEFENSIVE))
+            if (!abilityConstants.isLobbing() && (getOppHero(cell) != null && !abilityConstants.getType().equals(AbilityType.DEFENSIVE))
                     || (getMyHero(cell) != null && abilityConstants.getType().equals(AbilityType.DEFENSIVE))) {
                 impactCells.add(cell);
-                if (!abilityConstants.isLobbing()) break;
+                if (!abilityConstants.isPiercing()) break;
             }
         }
         if (!impactCells.contains(lastCell))
@@ -1009,5 +1014,23 @@ public class Game implements World {
         return gameConstants.getFirstMoveTimeout();
     }
 
+    @Override
+    public int getMaxOvertime() {
+        return maxOvertime;
+    }
 
+    @Override
+    public int getRemainingOvertime() {
+        return remainingOvertime;
+    }
+
+    @Override
+    public int getInitOvertime(){
+        return gameConstants.getInitOvertime();
+    }
+
+    @Override
+    public int getMaxScoreDiff(){
+        return gameConstants.getMaxScoreDiff();
+    }
 }

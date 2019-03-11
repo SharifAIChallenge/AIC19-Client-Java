@@ -10,8 +10,7 @@ public class Ability {
         this.remCooldown = 0;
     }
 
-    public boolean isReady()
-    {
+    public boolean isReady() {
         return this.remCooldown == 0;
     }
 
@@ -93,5 +92,9 @@ public class Ability {
 
     void setLobbing(boolean lobbing) {
         abilityConstants.setLobbing(lobbing);
+    }
+
+    public boolean isPiercing() {
+        return abilityConstants.isPiercing();
     }
 }

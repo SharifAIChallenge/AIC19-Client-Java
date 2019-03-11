@@ -9,6 +9,8 @@ public class GameConstants {
     private int killScore;
     private int objectiveZoneScore;
     private int maxScore;
+    private int initOvertime;
+    private int maxScoreDiff;
 
     int getNormalTimeout() {
         return normalTimeout;
@@ -72,6 +74,22 @@ public class GameConstants {
 
     void setFirstMoveTimeout(int firstMoveTimeout) {
         this.firstMoveTimeout = firstMoveTimeout;
+    }
+
+    public int getInitOvertime() {
+        return initOvertime;
+    }
+
+    public void setInitOvertime(int initOvertime) {
+        this.initOvertime = initOvertime;
+    }
+
+    public int getMaxScoreDiff() {
+        return maxScoreDiff;
+    }
+
+    public void setMaxScoreDiff(int maxScoreDiff) {
+        this.maxScoreDiff = maxScoreDiff;
     }
 
     @Override
