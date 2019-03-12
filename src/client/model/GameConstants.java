@@ -11,6 +11,7 @@ public class GameConstants {
     private int maxScore;
     private int initOvertime;
     private int maxScoreDiff;
+    private int totalMovePhases;
 
     int getNormalTimeout() {
         return normalTimeout;
@@ -88,8 +89,16 @@ public class GameConstants {
         return maxScoreDiff;
     }
 
-    public void setMaxScoreDiff(int maxScoreDiff) {
+    void setMaxScoreDiff(int maxScoreDiff) {
         this.maxScoreDiff = maxScoreDiff;
+    }
+
+    public int getTotalMovePhases() {
+        return totalMovePhases;
+    }
+
+    void setTotalMovePhases(int totalMovePhases) {
+        this.totalMovePhases = totalMovePhases;
     }
 
     @Override

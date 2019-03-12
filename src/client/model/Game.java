@@ -506,7 +506,8 @@ public class Game implements World {
             if (manhattanDistance(startCell, cell) > abilityConstants.getRange())
                 break;
             lastCell = cell;
-            if (!abilityConstants.isLobbing() && (getOppHero(cell) != null && !abilityConstants.getType().equals(AbilityType.DEFENSIVE))
+            if (!abilityConstants.isLobbing() &&
+                    (getOppHero(cell) != null && !abilityConstants.getType().equals(AbilityType.DEFENSIVE))
                     || (getMyHero(cell) != null && abilityConstants.getType().equals(AbilityType.DEFENSIVE))) {
                 impactCells.add(cell);
                 if (!abilityConstants.isPiercing()) break;
@@ -1032,5 +1033,10 @@ public class Game implements World {
     @Override
     public int getMaxScoreDiff(){
         return gameConstants.getMaxScoreDiff();
+    }
+
+    @Override
+    public int getTotalMovePhases(){
+        return gameConstants.getTotalMovePhases();
     }
 }

@@ -229,4 +229,6 @@ public interface World {
     int getInitOvertime();
 
     int getMaxScoreDiff();
+
+    int getTotalMovePhases();
 }
