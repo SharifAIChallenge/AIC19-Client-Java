@@ -579,8 +579,15 @@ public class Game implements World {
             return new Hero[0];
         }
         Cell[] impactCells = getImpactCells(abilityName, startCell, targetCell);
-        ArrayList<Cell> affectedCells = getCellsInAOE(impactCells[impactCells.length - 1],
-                abilityConstants.getAreaOfEffect());
+        ArrayList<Cell> affectedCells;
+        if (impactCells.length > 1)
+        {
+            affectedCells = new ArrayList<>(Arrays.asList(impactCells));
+        } else
+        {
+            affectedCells = getCellsInAOE(impactCells[impactCells.length - 1],
+                    abilityConstants.getAreaOfEffect());
+        }
         if (abilityConstants.getType() == AbilityType.DEFENSIVE) {
             return getMyHeroesInCells(affectedCells.toArray(new Cell[0]));
         } else {
